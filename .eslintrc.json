@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "extends": ["@nuxtjs/eslint-config-typescript"],
+  "rules": {
+    "space-before-function-paren": "off",
+    "comma-dangle": "off",
+    "arrow-parens": ["error", "always"],
+    "curly": ["error", "multi-line"],
+    "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      { "functions": false, "classes": false, "variables": false }
+    ],
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": [
+      "error",
+      { "builtinGlobals": false, "ignoreDeclarationMerge": true }
+    ],
+    "no-void": ["error", { "allowAsStatement": true }],
+    "require-await": "off",
+    "@typescript-eslint/require-await": "error",
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "fixStyle": "inline-type-imports"
+      }
+    ],
+    "@typescript-eslint/no-extra-semi": "off",
+    "indent": "off",
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "warn"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.eslint.json"
+  }
+}

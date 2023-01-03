@@ -1,0 +1,94 @@
+{
+  "name": "@braw/vue-intl-controller",
+  "version": "1.0.0",
+  "description": "Integrate @formatjs/intl into your Vue apps for easier internationalisation",
+  "keywords": [
+    "i18n",
+    "vue2"
+  ],
+  "license": "MIT",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
+    "./types/arguments": {
+      "import": "./dist/types/arguments.mjs",
+      "require": "./dist/types/arguments.cjs",
+      "types": "./dist/types/arguments.d.ts"
+    },
+    "./events": {
+      "import": "./dist/events/index.mjs",
+      "require": "./dist/events/index.cjs",
+      "types": "./dist/events/index.d.ts"
+    },
+    "./plugin": {
+      "import": "./dist/plugin.mjs",
+      "require": "./dist/plugin.cjs",
+      "types": "./dist/plugin.d.ts"
+    },
+    "./controller": {
+      "import": "./dist/controller.mjs",
+      "require": "./dist/controller.cjs",
+      "types": "./dist/controller.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components.mjs",
+      "require": "./dist/components.cjs",
+      "types": "./dist/components.d.ts"
+    },
+    "./sources/*": {
+      "import": "./dist/sources/*.mjs",
+      "require": "./dist/sources/*.cjs",
+      "types": "./dist/sources/*.d.ts"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:raw": "del-cli dist && tsc --noEmit false",
+    "build": "unbuild",
+    "dev": "vitest dev",
+    "prepack": "pnpm run build && pnpm run test",
+    "test": "vitest run",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.7",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.6",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.18.6",
+    "@nuxtjs/eslint-config-typescript": "^12.0.0",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@types/node": "^18.11.12",
+    "del-cli": "^5.0.0",
+    "eslint": "^8.30.0",
+    "prettier": "^2.8.1",
+    "prettier-plugin-jsdoc": "^0.4.2",
+    "semantic-release": "^19.0.5",
+    "typescript": "^4.9.4",
+    "unbuild": "^1.0.2",
+    "vitest": "^0.26.2"
+  },
+  "dependencies": {
+    "@braw/async-computed": "^4.0.1",
+    "@braw/extended-intl": "^1.0.0",
+    "@formatjs/intl": "^2.6.3",
+    "@formatjs/intl-localematcher": "^0.2.32",
+    "intl-messageformat": "^10.2.5",
+    "vue": "^2.7.14"
+  },
+  "peerDependencies": {
+    "@formatjs/icu-messageformat-parser": "^2.1.14"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

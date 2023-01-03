@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ES2022",
+    "moduleResolution": "NodeNext",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": true,
+    "strictBindCallApply": true,
+    "importsNotUsedAsValues": "error",
+    "rootDir": "src",
+    "resolveJsonModule": true,
+    "noEmit": true
+  },
+  "exclude": ["test/**/*", "dist/**/*", "typings", "./*.ts"]
+}
