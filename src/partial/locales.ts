@@ -4,18 +4,18 @@ import {
   AutomaticStateChangeEvent,
   LocaleChangeEvent,
   LocaleLoadEvent,
-} from './events/index.js'
-import type { AutomationPartial } from './IntlController.prefers.js'
-import type { ControllerConfiguration } from './IntlController.config.js'
-import type { EventTargetPartial } from './IntlController.events.js'
-import type { Locale, LocaleDescriptor, MessagesMap } from './types/index.js'
+} from '../events/index.js'
+import type { Locale, LocaleDescriptor, MessagesMap } from '../types/index.js'
 import {
   defineGetters,
   defineRefGetters,
   mergeDescriptors,
-} from './utils/definer.js'
-import { createHashMap, hasKey } from './utils/hashmap.js'
-import { observe } from './utils/vue.js'
+} from '../utils/definer.js'
+import { createHashMap, hasKey } from '../utils/hashmap.js'
+import { observe } from '../utils/vue.js'
+import type { EventTargetPartial } from './events.js'
+import type { ControllerConfiguration } from './config.js'
+import type { AutomationPartial } from './prefers.js'
 
 export interface LocalesPartial {
   /** A reference to a map containing locale data. */

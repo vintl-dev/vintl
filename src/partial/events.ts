@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { AutomaticStateChangeEvent } from './events/index.js'
+import type { AutomaticStateChangeEvent } from '../events/index.js'
 import {
   ErrorEvent,
   isAsyncEvent,
@@ -11,10 +11,10 @@ import {
   type EventTarget,
   type LocaleChangeEvent,
   type LocaleLoadEvent,
-} from './events/index.js'
-import type { IntlController } from './IntlController.types.js'
+} from '../events/index.js'
+import type { IntlController } from './types.js'
 
-type ControllerEvents =
+export type ControllerEvents =
   | LocaleChangeEvent
   | LocaleLoadEvent
   | ErrorEvent

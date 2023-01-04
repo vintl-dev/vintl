@@ -1,14 +1,14 @@
 import { type Ref, ref } from 'vue'
-import { usePrefersPartial } from './IntlController.prefers.js'
+import { usePrefersPartial } from './partial/prefers.js'
 import {
   type ControllerConfiguration,
   useConfigPartial,
-} from './IntlController.config.js'
-import { useLocaleDataPartial } from './IntlController.data.js'
-import { useEventTargetPartial } from './IntlController.events.js'
-import { useIntlPartial } from './IntlController.intl.js'
-import { useLocalesPartial } from './IntlController.locales.js'
-import type { IntlController } from './IntlController.types.js'
+} from './partial/config.js'
+import { useLocaleDataPartial } from './partial/data.js'
+import { useEventTargetPartial } from './partial/events.js'
+import { useIntlPartial } from './partial/intl.js'
+import { useLocalesPartial } from './partial/locales.js'
+import type { IntlController } from './partial/types.js'
 import type { Locale } from './types/index.js'
 import { mergeDescriptors } from './utils/definer.js'
 

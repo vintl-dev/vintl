@@ -1,3 +1,3 @@
-export type { IntlController } from './IntlController.types.js'
+export type { IntlController } from './partial/types.js'
 
 export { createController } from './IntlController.js'

@@ -1,12 +1,12 @@
 import { computed, type ComputedRef, type Ref } from 'vue'
-import type { ControllerConfiguration } from './IntlController.config.js'
-import type { Locale } from './types/locales.js'
-import type { MessagesMap } from './types/messages.js'
+import type { Locale } from '../types/locales.js'
+import type { MessagesMap } from '../types/messages.js'
 import {
   defineGetters,
   defineRefGetters,
   mergeDescriptors,
-} from './utils/definer.js'
+} from '../utils/definer.js'
+import type { ControllerConfiguration } from './config.js'
 
 export interface LocaleDataPartial {
   /** Read-only reference to default messages map. */

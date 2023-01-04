@@ -1,9 +1,9 @@
 import { match as matchLocale } from '@formatjs/intl-localematcher'
 import { computed, isRef, shallowRef } from 'vue'
-import type { ControllerConfiguration } from './IntlController.config.js'
-import type { PreferredLocalesSource } from './types/sources.js'
-import { defineRefGetters, mergeDescriptors } from './utils/definer.js'
-import { observe } from './utils/vue.js'
+import type { PreferredLocalesSource } from '../types/sources.js'
+import { defineRefGetters, mergeDescriptors } from '../utils/definer.js'
+import { observe } from '../utils/vue.js'
+import type { ControllerConfiguration } from './config.js'
 
 interface SourceEntry {
   /** The source. */

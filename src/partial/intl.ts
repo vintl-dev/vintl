@@ -4,12 +4,12 @@ import {
   type IntlShape,
 } from '@braw/extended-intl'
 import { computed, type ComputedRef, ref } from 'vue'
-import type { ControllerConfiguration } from './IntlController.config.js'
-import type { MessagesMap } from './types/messages.js'
-import { defineRefGetters } from './utils/definer.js'
-import { createHashMap as createHashmap } from './utils/hashmap.js'
-import type { ReverseMap } from './utils/types.js'
-import { observe } from './utils/vue.js'
+import type { MessagesMap } from '../types/messages.js'
+import { defineRefGetters } from '../utils/definer.js'
+import { createHashMap as createHashmap } from '../utils/hashmap.js'
+import type { ReverseMap } from '../utils/types.js'
+import { observe } from '../utils/vue.js'
+import type { ControllerConfiguration } from './config.js'
 
 const formatAliases = {
   formatCompactNumber: 'compactNumber',

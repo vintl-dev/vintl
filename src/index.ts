@@ -1,4 +1,4 @@
-export type { FormatAliases } from './IntlController.intl.js'
+export type { FormatAliases } from './partial/intl.js'
 
 export * from './types/index.js'
 

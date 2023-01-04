@@ -1,5 +1,5 @@
 import type { MessageValueType } from '../index.js'
-import type { FormatAliases } from '../IntlController.intl.js'
+import type { FormatAliases } from '../partial/intl.js'
 import { getInstance } from '../utils/vue.js'
 
 export function useFormatters(): FormatAliases<MessageValueType> {

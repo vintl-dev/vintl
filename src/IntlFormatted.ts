@@ -1,5 +1,5 @@
 import { type Component, defineComponent, type PropType } from 'vue'
-import type { IntlController } from './IntlController.types.js'
+import type { IntlController } from './partial/types.js'
 import type {
   MessageContent,
   MessageDescriptor,

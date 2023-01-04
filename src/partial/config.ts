@@ -1,10 +1,13 @@
 import { computed, reactive } from 'vue'
-import type { LocaleDescriptor, PreferredLocalesSource } from './types/index.js'
+import type {
+  LocaleDescriptor,
+  PreferredLocalesSource,
+} from '../types/index.js'
 import {
   defineGetters,
   defineRefGetters,
   mergeDescriptors,
-} from './utils/definer.js'
+} from '../utils/definer.js'
 
 /** Represents the controller configuration (state). */
 export interface ControllerConfiguration {
