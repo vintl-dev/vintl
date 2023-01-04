@@ -5,7 +5,7 @@ specifiers:
   '@babel/plugin-proposal-nullish-coalescing-operator': ^7.18.6
   '@babel/preset-env': ^7.20.2
   '@babel/preset-typescript': ^7.18.6
-  '@braw/async-computed': ^4.0.1
+  '@braw/async-computed': ^5.0.1
   '@braw/extended-intl': ^1.0.0
   '@formatjs/icu-messageformat-parser': ^2.1.14
   '@formatjs/intl': ^2.6.3
@@ -25,7 +25,7 @@ specifiers:
   vue: ^2.7.14
 
 dependencies:
-  '@braw/async-computed': 4.0.1_vue@2.7.14
+  '@braw/async-computed': 5.0.1_vue@2.7.14
   '@braw/extended-intl': 1.0.0_5z2uyglkpx2pojit5sth3lmdyi
   '@formatjs/icu-messageformat-parser': 2.1.14
   '@formatjs/intl': 2.6.3_typescript@4.9.4
@@ -1239,8 +1239,8 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
-  /@braw/async-computed/4.0.1_vue@2.7.14:
-    resolution: {integrity: sha512-1BGHc+Q1lqZQn6EbG4VJWNoCiE4w+2D9KpYxO3jnIXriN74tjItsOB840naRJPpTDMa4MJescyzoWLnnIVF9ag==}
+  /@braw/async-computed/5.0.1_vue@2.7.14:
+    resolution: {integrity: sha512-oK1j8VLI2DKlgDMAaix9E89U/xgd/1c8T34sBzeoxAVrGVTYqtC8AAJBfxP9HFZVmp4ZnOrZ+qDlu8+wZKlbLA==}
     peerDependencies:
       vue: ^2.7 || ^3.2.45
     dependencies:

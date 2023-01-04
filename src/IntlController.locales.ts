@@ -164,16 +164,13 @@ export function useLocalesPartial<T>(
         throw new Error('No locale descriptor exists for the current locale')
       }
 
-      const abortController = new AbortController()
-
       const event = new LocaleLoadEvent(locale)
 
-      abortController.signal.addEventListener('abort', event.cancel.bind(null))
+      this.onCancel(event.cancel.bind(null))
 
       if (!(await eventTarget.dispatchEvent(event))) {
         throw new Error(
           `Cannot load locale messages for the locale "${locale.descriptor.code}": load event is cancelled`,
-          { cause: abortController.signal.reason },
         )
       }
 

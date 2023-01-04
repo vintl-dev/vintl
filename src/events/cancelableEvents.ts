@@ -20,8 +20,6 @@ export interface CancelableEvent {
  * Implements {@link CancelableEvent} on the instance of event that supports it.
  *
  * @param event Event that supports cancellation.
- * @param controller {@link AbortController} responsible for cancellation of
- *   event.
  */
 export function implementCancelation(event: CancelableEvent) {
   let cancelled = false
