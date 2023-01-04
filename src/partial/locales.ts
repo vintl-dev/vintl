@@ -107,10 +107,10 @@ export interface LocalesPartial {
   ): Promise<void>
 }
 
-export function useLocalesPartial<T>(
+export function useLocalesPartial<ControllerType>(
   initialLocaleData: Record<string, Locale> | undefined,
-  $config: ControllerConfiguration,
-  eventTarget: EventTargetPartial<T>,
+  $config: ControllerConfiguration<ControllerType>,
+  eventTarget: EventTargetPartial<ControllerType>,
   prefersPartial: AutomationPartial,
 ): LocalesPartial {
   const $locales: Ref<Record<string, Locale>> = ref(

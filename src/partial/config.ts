@@ -10,7 +10,7 @@ import {
 } from '../utils/definer.js'
 
 /** Represents the controller configuration (state). */
-export interface ControllerConfiguration {
+export interface ControllerConfiguration<_ControllerType> {
   /**
    * BCP 47 language tag of the currently used locale.
    *
@@ -53,9 +53,9 @@ export interface ControllerConfiguration {
   preferredLocaleSources: PreferredLocalesSource[]
 }
 
-export interface ConfigPartial {
+export interface ConfigPartial<ControllerType> {
   /** Reactive configuration of the controller. */
-  get $config(): ControllerConfiguration
+  get $config(): ControllerConfiguration<ControllerType>
 
   /** BCP 47 code of the default locale. */
   get defaultLocale(): string
@@ -64,10 +64,10 @@ export interface ConfigPartial {
   get intlLocale(): Intl.Locale
 }
 
-export function useConfigPartial(
-  initialConfiguration?: Partial<ControllerConfiguration>,
-): ConfigPartial {
-  const $config = reactive<ControllerConfiguration>(
+export function useConfigPartial<ControllerType>(
+  initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
+): ConfigPartial<ControllerType> {
+  const $config = reactive<ControllerConfiguration<ControllerType>>(
     (() => {
       const defaultLocale = initialConfiguration?.defaultLocale ?? 'en-US'
       const locale = initialConfiguration?.locale ?? defaultLocale

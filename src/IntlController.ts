@@ -12,11 +12,11 @@ import type { IntlController } from './partial/types.js'
 import type { Locale } from './types/index.js'
 import { mergeDescriptors } from './utils/definer.js'
 
-export function createController<T>(
-  initialConfiguration?: Partial<ControllerConfiguration>,
+export function createController<ControllerType>(
+  initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
   initialLocaleData?: Record<string, Locale>,
-): IntlController<T> {
-  const $controller: Ref<IntlController<T> | null> = ref(null)
+): IntlController<ControllerType> {
+  const $controller: Ref<IntlController<ControllerType> | null> = ref(null)
 
   const configPartial = useConfigPartial(initialConfiguration)
 
@@ -36,7 +36,7 @@ export function createController<T>(
     localesPartial.$locales,
   )
 
-  const intlPartial = useIntlPartial<T>(
+  const intlPartial = useIntlPartial<ControllerType>(
     configPartial.$config,
     dataPartial.$messages,
   )

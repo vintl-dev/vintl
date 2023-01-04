@@ -37,8 +37,8 @@ export interface AutomationPartial {
   removeSource(source: PreferredLocalesSource): void
 }
 
-export function usePrefersPartial(
-  $config: ControllerConfiguration,
+export function usePrefersPartial<ControllerType>(
+  $config: ControllerConfiguration<ControllerType>,
 ): AutomationPartial {
   const $sources = shallowRef<readonly SourceEntry[]>([])
 

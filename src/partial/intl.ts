@@ -57,16 +57,16 @@ export interface IntlPartial<T> {
   get intl(): IntlShape<T>
 }
 
-export function useIntlPartial<T>(
-  $config: ControllerConfiguration,
+export function useIntlPartial<ControllerType>(
+  $config: ControllerConfiguration<ControllerType>,
   $messages: ComputedRef<Partial<MessagesMap>>,
-): IntlPartial<T> {
-  const $formats = ref(createHashmap() as FormatAliases<T>)
+): IntlPartial<ControllerType> {
+  const $formats = ref(createHashmap() as FormatAliases<ControllerType>)
 
   const intlCache = createIntlCache()
 
   const $intl = computed(() =>
-    createIntl<T>(
+    createIntl<ControllerType>(
       {
         locale: $config.locale,
         defaultLocale: $config.defaultLocale,
@@ -79,7 +79,7 @@ export function useIntlPartial<T>(
   observe($intl, (intl) => {
     const formats = $formats.value as Record<keyof InvertedMapping, unknown>
     for (const [intlProp, alias] of Object.entries(formatAliases)) {
-      formats[alias] = intl[intlProp as keyof IntlShape<T>]
+      formats[alias] = intl[intlProp as keyof IntlShape<ControllerType>]
     }
   })
 

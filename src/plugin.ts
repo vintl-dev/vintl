@@ -8,9 +8,9 @@ import type { TranslateFunction } from './types/translateFunction.js'
 import { createHashMap } from './utils/hashmap.js'
 
 /** Represents options for the plugin. */
-export interface PluginOptions {
+export interface PluginOptions<ControllerType> {
   /** Options for the controller. */
-  controllerOpts?: Partial<ControllerConfiguration>
+  controllerOpts?: Partial<ControllerConfiguration<ControllerType>>
 
   /**
    * Whether the `IntlFormatted` will be registered as a global component.
@@ -128,7 +128,7 @@ export type InjectedProperties<
 
 export interface Plugin<ControllerType> extends PluginObject<never> {
   getOrCreateController(
-    config?: Partial<ControllerConfiguration>,
+    config?: Partial<ControllerConfiguration<ControllerType>>,
   ): IntlController<ControllerType>
   getInjections(): PluginInjections<ControllerType>
   toProperties(): InjectedProperties<ControllerType>
@@ -175,7 +175,7 @@ function createTranslateFunction<ControllerType>(
 }
 
 export function createPlugin<ControllerType = string>(
-  opts?: PluginOptions,
+  opts?: PluginOptions<ControllerType>,
 ): Plugin<ControllerType> {
   let controllerInstance: IntlController<ControllerType> | null = null
 

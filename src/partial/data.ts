@@ -34,8 +34,8 @@ export interface LocaleDataPartial {
   get resources(): Partial<VueIntlController.LocaleResources>
 }
 
-export function useLocaleDataPartial(
-  $config: ControllerConfiguration,
+export function useLocaleDataPartial<ControllerType>(
+  $config: ControllerConfiguration<ControllerType>,
   $locales: Ref<Record<string, Locale>>,
 ): LocaleDataPartial {
   function getLocale(localeCode: string) {

@@ -5,10 +5,10 @@ import type { EventTargetPartial } from './events.js'
 import type { IntlPartial } from './intl.js'
 import type { LocalesPartial } from './locales.js'
 
-export interface IntlController<T>
+export interface IntlController<ControllerType>
   extends AutomationPartial,
-    ConfigPartial,
+    ConfigPartial<ControllerType>,
     LocaleDataPartial,
-    EventTargetPartial<T>,
-    IntlPartial<T>,
+    EventTargetPartial<ControllerType>,
+    IntlPartial<ControllerType>,
     LocalesPartial {}
