@@ -64,36 +64,37 @@ export interface ConfigPartial<ControllerType> {
   get intlLocale(): Intl.Locale
 }
 
+function createConfig<ControllerType>(
+  initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
+): ControllerConfiguration<ControllerType> {
+  const defaultLocale = initialConfiguration?.defaultLocale ?? 'en-US'
+  const locale = initialConfiguration?.locale ?? defaultLocale
+
+  let locales = initialConfiguration?.locales
+
+  if (locales == null) {
+    locales = []
+
+    locales.push({ code: defaultLocale })
+
+    if (locale !== defaultLocale) {
+      locales.push({ code: locale })
+    }
+  }
+
+  return {
+    defaultLocale,
+    locale,
+    locales,
+    usePreferredLocale: initialConfiguration?.usePreferredLocale ?? false,
+    preferredLocaleSources: initialConfiguration?.preferredLocaleSources ?? [],
+  }
+}
+
 export function useConfigPartial<ControllerType>(
   initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
 ): ConfigPartial<ControllerType> {
-  const $config = reactive<ControllerConfiguration<ControllerType>>(
-    (() => {
-      const defaultLocale = initialConfiguration?.defaultLocale ?? 'en-US'
-      const locale = initialConfiguration?.locale ?? defaultLocale
-
-      let locales = initialConfiguration?.locales
-
-      if (locales == null) {
-        locales = []
-
-        locales.push({ code: defaultLocale })
-
-        if (locale !== defaultLocale) {
-          locales.push({ code: locale })
-        }
-      }
-
-      return {
-        defaultLocale,
-        locale,
-        locales,
-        usePreferredLocale: initialConfiguration?.usePreferredLocale ?? false,
-        preferredLocaleSources:
-          initialConfiguration?.preferredLocaleSources ?? [],
-      }
-    })(),
-  )
+  const $config = reactive(createConfig(initialConfiguration))
 
   const $intlLocale = computed(() => new Intl.Locale($config.locale))
 
