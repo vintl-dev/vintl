@@ -8,13 +8,13 @@ import { useEventTargetPartial } from './partial/events.js'
 import { useIntlPartial } from './partial/intl.js'
 import { useLocalesPartial } from './partial/locales.js'
 import type { IntlController } from './partial/types.js'
-import type { Locale } from './types/index.js'
+import type { Locale, LocaleDescriptor } from './types/index.js'
 import { mergeDescriptors } from './utils/definer.js'
 import { useDeclarativeEvents } from './partial/declarativeEvents.js'
 
 export function createController<ControllerType>(
   initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
-  initialLocaleData?: Record<string, Locale>,
+  initialLocaleData?: Map<LocaleDescriptor, Locale>,
 ): IntlController<ControllerType> {
   const controllerBox: { value: IntlController<ControllerType> | null } = {
     value: null,
@@ -37,7 +37,7 @@ export function createController<ControllerType>(
 
   const dataPartial = useLocaleDataPartial(
     configPartial.$config,
-    localesPartial.$locales,
+    localesPartial,
   )
 
   const intlPartial = useIntlPartial<ControllerType>(

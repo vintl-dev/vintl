@@ -40,9 +40,12 @@ class LocaleLoadEvent implements Event {
    */
   public readonly resources: Partial<VueIntlController.LocaleResources>
 
-  /** @param locale Locale object which the initial values will be mapped from. */
-  public constructor(locale: Locale) {
-    this.locale = locale.descriptor
+  /**
+   * @param localeDescriptor Locale descriptor that describes active locale.
+   * @param locale Locale object which the initial values will be mapped from.
+   */
+  public constructor(localeDescriptor: LocaleDescriptor, locale: Locale) {
+    this.locale = localeDescriptor
 
     this.messages = locale.messages ?? (createHashMap() as MessagesMap)
 

@@ -11,15 +11,16 @@ import {
   defineRefGetters,
   mergeDescriptors,
 } from '../utils/definer.js'
-import { createHashMap, hasKey } from '../utils/hashmap.js'
+import { createHashMap } from '../utils/hashmap.js'
 import { observe } from '../utils/vue.js'
+import { find, includes } from '../utils/iterators.js'
 import type { EventTargetPartial } from './events.js'
 import type { ControllerConfiguration } from './config.js'
 import type { AutomationPartial } from './prefers.js'
 
 export interface LocalesPartial {
   /** A reference to a map containing locale data. */
-  get $locales(): Ref<Record<string, Locale>>
+  get $locales(): Ref<Map<LocaleDescriptor, Locale>>
 
   /** Read-only reference to the current loading promise. */
   get $loading(): AsyncComputedRef<void>
@@ -37,8 +38,8 @@ export interface LocalesPartial {
   get locale(): string
 
   /**
-   * Finds a descriptor for one of the existing locales. Descriptor objects
-   * contain useful information.
+   * Finds a descriptor for one of the existing locales. Descriptor objects may
+   * contain useful information regarding the presentation of locale.
    *
    * @param localeCode BCP 47 locale code to search for descriptor.
    * @returns Descriptor for the locale or `undefined`, if none exists.
@@ -115,46 +116,63 @@ export interface LocalesPartial {
 }
 
 export function useLocalesPartial<ControllerType>(
-  initialLocaleData: Record<string, Locale> | undefined,
+  initialLocaleData: Map<LocaleDescriptor, Locale> | undefined,
   $config: ControllerConfiguration<ControllerType>,
   eventTarget: EventTargetPartial<ControllerType>,
   prefersPartial: AutomationPartial,
 ): LocalesPartial {
-  const $locales: Ref<Record<string, Locale>> = ref(
-    Object.assign(createHashMap(), initialLocaleData),
+  const $locales: Ref<Map<LocaleDescriptor, Locale>> = ref(
+    new Map(initialLocaleData),
   )
 
   observe(
     () => $config.locales,
-    (availableLocales) => {
-      const knownLocaleCodes = new Set()
-      const locales = $locales.value
+    (newLocales) => {
+      const knownLocales = new Map($locales.value)
 
-      for (const descriptor of availableLocales) {
-        if (knownLocaleCodes.has(descriptor.code)) {
-          throw new Error('Duplicate locale code detected')
+      const knownLocaleCodes = new Set<string>()
+
+      for (const locale of newLocales) {
+        if (knownLocaleCodes.has(locale.code)) {
+          throw new Error(`Duplicate locale ${locale.code} has been detected`)
         }
 
-        knownLocaleCodes.add(descriptor.code)
+        knownLocaleCodes.add(locale.code)
 
-        if (!hasKey(locales, descriptor.code)) {
-          locales[descriptor.code] = {
-            get descriptor() {
-              return descriptor
-            },
-            messages: createHashMap() as MessagesMap,
-            resources: createHashMap(),
-          }
+        if (includes(knownLocales.keys(), locale)) continue
+
+        knownLocales.set(locale, {
+          messages: createHashMap() as MessagesMap,
+          resources: createHashMap(),
+        })
+      }
+
+      for (const knownLocale of knownLocales.keys()) {
+        if (!newLocales.includes(knownLocale)) {
+          knownLocales.delete(knownLocale)
         }
       }
 
-      for (const code of Object.keys(locales)) {
-        if (!knownLocaleCodes.has(code)) {
-          delete locales[code]
-        }
-      }
+      $locales.value = knownLocales
     },
   )
+
+  function getLocaleDescriptor(localeCode: string) {
+    return find(
+      $locales.value.keys(),
+      (descriptor) => descriptor.code === localeCode,
+    )
+  }
+
+  function getLocale(localeDescriptor: LocaleDescriptor) {
+    return $locales.value.get(localeDescriptor)
+  }
+
+  function getLocaleByCode(localeCode: string) {
+    const descriptor = getLocaleDescriptor(localeCode)
+    if (descriptor == null) return undefined
+    return getLocale(descriptor)
+  }
 
   const $automatic = computed(() => $config.usePreferredLocale)
 
@@ -166,24 +184,30 @@ export function useLocalesPartial<ControllerType>(
 
   const $loading = asyncComputed({
     watch() {
-      return $locales.value[$locale.value]
+      return getLocaleDescriptor($locale.value)
     },
-    async get(locale) {
-      if (locale == null) {
+    async get(descriptor) {
+      if (descriptor == null) {
         throw new Error('No locale descriptor exists for the current locale')
+      }
+
+      const locale = getLocale(descriptor)
+
+      if (locale == null) {
+        throw new Error('No locale exists for the active locale descriptor')
       }
 
       if (lastLoadedLocale === locale) return
 
       lastLoadedLocale = locale
 
-      const event = new LocaleLoadEvent(locale)
+      const event = new LocaleLoadEvent(descriptor, locale)
 
       this.onCancel(event.cancel.bind(null))
 
       if (!(await eventTarget.dispatchEvent(event))) {
         throw new Error(
-          `Cannot load locale messages for the locale "${locale.descriptor.code}": load event is cancelled`,
+          `Cannot load locale messages for the locale "${descriptor.code}": load event is cancelled`,
         )
       }
 
@@ -214,10 +238,6 @@ export function useLocalesPartial<ControllerType>(
       }
     },
   )
-
-  function getLocaleDescriptor(localeCode: string) {
-    return $locales.value[localeCode]?.descriptor
-  }
 
   function addLocale(
     descriptor: string | LocaleDescriptor,
@@ -268,23 +288,17 @@ export function useLocalesPartial<ControllerType>(
     let locale: Locale | undefined
 
     if (typeof descriptor === 'string') {
-      locale = $locales.value[descriptor]
-    } else {
-      for (const knownLocale of Object.values($locales.value)) {
-        if (knownLocale.descriptor === descriptor) {
-          locale = knownLocale
-        }
-      }
-    }
+      locale = getLocaleByCode(descriptor)
 
-    if (locale == null) {
-      if (typeof descriptor === 'string') {
-        // eslint-disable-next-line unicorn/prefer-type-error
-        throw new Error(`Locale "${descriptor}" does not exist`)
-      } else {
-        // eslint-disable-next-line unicorn/prefer-type-error
+      if (locale == null) {
+        throw new Error(`Locale with code "${descriptor}" does not exist`)
+      }
+    } else {
+      locale = getLocale(descriptor)
+
+      if (locale == null) {
         throw new Error(
-          `Locale with provided descriptor (for ${descriptor.code}) does not exist`,
+          `Locale with the provided descriptor (for ${descriptor.code}) does not exist`,
         )
       }
     }

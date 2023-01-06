@@ -45,9 +45,6 @@ export interface LocaleDescriptor {
 
 /** Represents a locale object. */
 export interface Locale {
-  /** Descriptor for the locale. */
-  get descriptor(): LocaleDescriptor
-
   /** Messages for the locale. */
   messages: MessagesMap
 

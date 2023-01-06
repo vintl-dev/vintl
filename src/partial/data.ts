@@ -1,12 +1,13 @@
-import { computed, type ComputedRef, type Ref } from 'vue'
-import type { Locale } from '../types/locales.js'
+import { computed, type ComputedRef } from 'vue'
 import type { MessagesMap } from '../types/messages.js'
 import {
   defineGetters,
   defineRefGetters,
   mergeDescriptors,
 } from '../utils/definer.js'
+import { createHashMap } from '../utils/hashmap.js'
 import type { ControllerConfiguration } from './config.js'
+import type { LocalesPartial } from './locales.js'
 
 export interface LocaleDataPartial {
   /** Read-only reference to default messages map. */
@@ -36,29 +37,36 @@ export interface LocaleDataPartial {
 
 export function useLocaleDataPartial<ControllerType>(
   $config: ControllerConfiguration<ControllerType>,
-  $locales: Ref<Record<string, Locale>>,
+  locales: LocalesPartial,
 ): LocaleDataPartial {
   function getLocale(localeCode: string) {
-    const locale = $locales.value[localeCode]
+    const descriptor = locales.getLocaleDescriptor(localeCode)
 
-    if (locale == null) {
+    if (descriptor == null) {
       throw new Error(`Unknown locale "${localeCode}"`)
     }
 
-    return locale
+    return locales.$locales.value.get(descriptor)
   }
 
   const $defaultMessages = computed(
-    () => getLocale($config.defaultLocale).messages,
+    () =>
+      getLocale($config.defaultLocale)?.messages ??
+      (createHashMap() as MessagesMap),
   )
 
-  const $messages = computed(() => getLocale($config.locale).messages)
+  const $messages = computed(
+    () =>
+      getLocale($config.locale)?.messages ?? (createHashMap() as MessagesMap),
+  )
 
   const $defaultResources = computed(
-    () => getLocale($config.defaultLocale).resources,
+    () => getLocale($config.defaultLocale)?.resources ?? createHashMap(),
   )
 
-  const $resources = computed(() => getLocale($config.locale).resources)
+  const $resources = computed(
+    () => getLocale($config.locale)?.resources ?? createHashMap(),
+  )
 
   const refs = {
     $defaultMessages,

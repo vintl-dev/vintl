@@ -88,24 +88,21 @@ describe('controller', () => {
     },
   } as const
 
-  test('locales are added', () => {
+  test('locales are added', async () => {
     for (const localeCode of Object.keys(localesMap)) {
       controller.addLocale(localeCode, true)
+      await controller.waitUntilReady()
     }
 
-    expect(Object.keys(controller.$locales.value)).toEqual(
+    expect([...controller.$locales.value.keys()].map((it) => it.code)).toEqual(
       expect.arrayContaining(Object.keys(localesMap)),
     )
   })
 
-  // FIXME: re-creating locale descriptor ideally should trigger localeload
-  //  since behaviour of loader may rely on the meta properties. Unfortunately,
-  //  current structure does not allow that. So this is something for the future.
-
-  // test('AB localeload event called after locale creation', () => {
-  //   expect(autoBoundLocaleLoadListener).toHaveBeenCalledOnce()
-  //   autoBoundLocaleLoadListener.mockClear()
-  // })
+  test('AB localeload event called after locale creation', () => {
+    expect(autoBoundLocaleLoadListener).toHaveBeenCalledOnce()
+    autoBoundLocaleLoadListener.mockClear()
+  })
 
   test('throws for duplicate locales', () => {
     expect(() => controller.addLocale('en-US')).toThrow(
