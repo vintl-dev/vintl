@@ -105,6 +105,13 @@ export interface LocalesPartial {
   changeLocale(
     localeCode: 'auto' | (string & Record<never, never>),
   ): Promise<void>
+
+  /**
+   * Waits until the locale loading is complete and controller is ready for use.
+   *
+   * @throws If error occurs during the locale loading.
+   */
+  waitUntilReady(): Promise<void>
 }
 
 export function useLocalesPartial<ControllerType>(
@@ -323,6 +330,10 @@ export function useLocalesPartial<ControllerType>(
     await $loading.promise
   }
 
+  async function waitUntilReady() {
+    await $loading.promise
+  }
+
   return mergeDescriptors(
     defineGetters({ $loading, $locales }),
     defineRefGetters({ $automatic, $locale }),
@@ -335,6 +346,7 @@ export function useLocalesPartial<ControllerType>(
       removeLocale,
       addMessages,
       changeLocale,
+      waitUntilReady,
     },
   )
 }
