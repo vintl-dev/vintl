@@ -8,9 +8,10 @@ import {
   defineRefGetters,
   mergeDescriptors,
 } from '../utils/definer.js'
+import type { ControllerEventsMap } from './declarativeEvents.js'
 
 /** Represents the controller configuration (state). */
-export interface ControllerConfiguration<_ControllerType> {
+export interface ControllerConfiguration<ControllerType> {
   /**
    * BCP 47 language tag of the currently used locale.
    *
@@ -51,6 +52,9 @@ export interface ControllerConfiguration<_ControllerType> {
    * @default [ ] // Fall backs to default locale.
    */
   preferredLocaleSources: PreferredLocalesSource[]
+
+  /** Defines a map of event listeners to auto-bind. */
+  listen: ControllerEventsMap<ControllerType>
 }
 
 export interface ConfigPartial<ControllerType> {
@@ -88,6 +92,7 @@ function createConfig<ControllerType>(
     locales,
     usePreferredLocale: initialConfiguration?.usePreferredLocale ?? false,
     preferredLocaleSources: initialConfiguration?.preferredLocaleSources ?? [],
+    listen: initialConfiguration?.listen ?? {},
   }
 }
 

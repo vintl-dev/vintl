@@ -10,6 +10,7 @@ import { useLocalesPartial } from './partial/locales.js'
 import type { IntlController } from './partial/types.js'
 import type { Locale } from './types/index.js'
 import { mergeDescriptors } from './utils/definer.js'
+import { useDeclarativeEvents } from './partial/declarativeEvents.js'
 
 export function createController<ControllerType>(
   initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
@@ -22,6 +23,8 @@ export function createController<ControllerType>(
   const configPartial = useConfigPartial(initialConfiguration)
 
   const eventTargetPartial = useEventTargetPartial(controllerBox)
+
+  useDeclarativeEvents(configPartial.$config, eventTargetPartial)
 
   const prefersPartial = usePrefersPartial(configPartial.$config)
 

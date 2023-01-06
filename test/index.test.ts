@@ -22,6 +22,10 @@ import {
 import { createPlugin, type Plugin } from '../dist/plugin'
 import { parseHeaderValue } from '../dist/sources/header'
 
+const autoBoundLocaleLoadListener = vi.fn((_e: LocaleLoadEvent) => {})
+
+const autoBoundLocaleChangeListener = vi.fn((_e: LocaleChangeEvent) => {})
+
 let plugin: Plugin<string>
 
 let translate: TranslateFunction
@@ -30,7 +34,16 @@ let controller: IntlController<string>
 
 describe('plugin', () => {
   test('can be created', () => {
-    plugin = createPlugin()
+    plugin = createPlugin({
+      controllerOpts: {
+        listen: {
+          localeload: {
+            listener: autoBoundLocaleLoadListener,
+          },
+          localechange: [autoBoundLocaleChangeListener],
+        },
+      },
+    })
 
     expect(plugin).toBeDefined()
   })
@@ -42,6 +55,11 @@ describe('plugin', () => {
     expect(instance).toHaveProperty('$i18n')
     expect(instance).toHaveProperty('$t')
     expect(instance).toHaveProperty('$fmt')
+  })
+
+  test('localechange was called during initialisation', () => {
+    expect(autoBoundLocaleLoadListener).toHaveBeenCalledOnce()
+    autoBoundLocaleLoadListener.mockClear()
   })
 
   test('returns properties', () => {
@@ -79,6 +97,15 @@ describe('controller', () => {
       expect.arrayContaining(Object.keys(localesMap)),
     )
   })
+
+  // FIXME: re-creating locale descriptor ideally should trigger localeload
+  //  since behaviour of loader may rely on the meta properties. Unfortunately,
+  //  current structure does not allow that. So this is something for the future.
+
+  // test('AB localeload event called after locale creation', () => {
+  //   expect(autoBoundLocaleLoadListener).toHaveBeenCalledOnce()
+  //   autoBoundLocaleLoadListener.mockClear()
+  // })
 
   test('throws for duplicate locales', () => {
     expect(() => controller.addLocale('en-US')).toThrow(
@@ -118,6 +145,10 @@ describe('controller', () => {
     await expect(controller.changeLocale('uk')).resolves.toBeUndefined()
     expect(controller.locale).toBe('uk')
     expect(controller.$loading.promise).not.toBe(promiseBeforeChange)
+  })
+
+  test('AB localechange event was called after locale change', () => {
+    expect(autoBoundLocaleChangeListener).toHaveBeenCalledOnce()
   })
 
   test('messages match locale', () => {
@@ -263,6 +294,28 @@ describe('controller events', () => {
   test('can remove callbacks', () => {
     controller.removeEventListener('localechange', localeChangeCallback)
     controller.removeEventListener('localeload', localeLoadCallback)
+  })
+
+  test('AB callbacks can be changed', () => {
+    autoBoundLocaleChangeListener.mockClear()
+
+    controller.$config.listen = {
+      localechange: [
+        {
+          listener: autoBoundLocaleChangeListener,
+          options: {
+            once: true,
+          },
+        },
+      ],
+    }
+  })
+
+  test('re-bound AB localechange callback is called once', async () => {
+    await controller.changeLocale('uk')
+    await controller.changeLocale('en-US')
+
+    expect(autoBoundLocaleChangeListener).toHaveBeenCalledOnce()
   })
 
   test('localechange callbacks are called properly', async () => {
