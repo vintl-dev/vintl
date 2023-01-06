@@ -155,6 +155,8 @@ export function useLocalesPartial<ControllerType>(
 
   const $locale = computed(() => $automaticLocaleCode.value ?? $config.locale)
 
+  let lastLoadedLocale: Locale | null = null
+
   const $loading = asyncComputed({
     watch() {
       return $locales.value[$locale.value]
@@ -163,6 +165,10 @@ export function useLocalesPartial<ControllerType>(
       if (locale == null) {
         throw new Error('No locale descriptor exists for the current locale')
       }
+
+      if (lastLoadedLocale === locale) return
+
+      lastLoadedLocale = locale
 
       const event = new LocaleLoadEvent(locale)
 
