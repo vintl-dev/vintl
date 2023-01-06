@@ -1,4 +1,3 @@
-import { type Ref, ref } from 'vue'
 import { usePrefersPartial } from './partial/prefers.js'
 import {
   type ControllerConfiguration,
@@ -16,11 +15,13 @@ export function createController<ControllerType>(
   initialConfiguration?: Partial<ControllerConfiguration<ControllerType>>,
   initialLocaleData?: Record<string, Locale>,
 ): IntlController<ControllerType> {
-  const $controller: Ref<IntlController<ControllerType> | null> = ref(null)
+  const controllerBox: { value: IntlController<ControllerType> | null } = {
+    value: null,
+  }
 
   const configPartial = useConfigPartial(initialConfiguration)
 
-  const eventTargetPartial = useEventTargetPartial($controller)
+  const eventTargetPartial = useEventTargetPartial(controllerBox)
 
   const prefersPartial = usePrefersPartial(configPartial.$config)
 
@@ -41,7 +42,7 @@ export function createController<ControllerType>(
     dataPartial.$messages,
   )
 
-  $controller.value = mergeDescriptors(
+  controllerBox.value = mergeDescriptors(
     configPartial,
     localesPartial,
     intlPartial,
@@ -50,5 +51,5 @@ export function createController<ControllerType>(
     eventTargetPartial,
   )
 
-  return $controller.value
+  return controllerBox.value
 }

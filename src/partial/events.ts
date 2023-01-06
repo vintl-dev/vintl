@@ -1,4 +1,3 @@
-import type { Ref } from 'vue'
 import type { AutomaticStateChangeEvent } from '../events/index.js'
 import {
   ErrorEvent,
@@ -25,9 +24,9 @@ export type EventTargetPartial<T> = EventTarget<
   IntlController<T>
 >
 
-export function useEventTargetPartial<T>(
-  $controller: Ref<IntlController<T> | null>,
-): EventTargetPartial<T> {
+export function useEventTargetPartial<T>(controllerBox: {
+  value: IntlController<T> | null
+}): EventTargetPartial<T> {
   type Controller = IntlController<T>
 
   type EventEntry = {
@@ -125,7 +124,7 @@ export function useEventTargetPartial<T>(
         }
 
         try {
-          const ret = entry.listener.call($controller.value!, event)
+          const ret = entry.listener.call(controllerBox.value!, event)
 
           if (allowAsync) await ret
         } catch (err) {
