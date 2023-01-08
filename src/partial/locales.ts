@@ -319,7 +319,7 @@ export function useLocalesPartial<ControllerType>(
       if (!eventTarget.dispatchEvent(new AutomaticStateChangeEvent(true))) {
         throw new Error('Enabling of automatic mode has been cancelled')
       }
-    } else {
+    } else if ($automatic.value) {
       const autoSwitchOffCanceled = eventTarget.dispatchEvent(
         new AutomaticStateChangeEvent(false),
       )
