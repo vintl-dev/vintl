@@ -146,6 +146,12 @@ describe('controller', () => {
 
   test('AB localechange event was called after locale change', () => {
     expect(autoBoundLocaleChangeListener).toHaveBeenCalledOnce()
+    autoBoundLocaleChangeListener.mockClear()
+  })
+
+  test('AB localeload event was called after locale change', () => {
+    expect(autoBoundLocaleLoadListener).toHaveBeenCalledOnce()
+    autoBoundLocaleLoadListener.mockClear()
   })
 
   test('messages match locale', () => {
