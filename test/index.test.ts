@@ -242,12 +242,7 @@ describe('controller automation', () => {
 describe('controller events', () => {
   const localeChangeCallback = vi.fn((_e: LocaleChangeEvent) => {})
 
-  const localeLoadCallback = vi.fn(async (e: LocaleLoadEvent) => {
-    await Promise.resolve()
-    e.addResources({
-      isUkrainian: e.locale.code === 'uk',
-    })
-  })
+  const localeLoadCallback = vi.fn((_e: LocaleLoadEvent) => {})
 
   class CustomEvent implements Event {
     static type = 'customEvent'
@@ -344,24 +339,61 @@ describe('controller events', () => {
   })
 
   test('localeload callbacks are called properly', async () => {
-    controller.addEventListener('localeload', localeLoadCallback)
+    const extendingLocaleLoadCallback = vi.fn(async (e: LocaleLoadEvent) => {
+      await Promise.resolve()
+
+      let languageName: string
+
+      switch (e.locale.code) {
+        case 'de':
+          languageName = 'Deutsch'
+          break
+        case 'uk':
+          languageName = 'Українська'
+          break
+        case 'en-US':
+          languageName = 'American English'
+          break
+        default:
+          languageName = 'Unknown language'
+          break
+      }
+
+      e.addMessages({ languageName })
+
+      e.addResources({
+        isUkrainian: e.locale.code === 'uk',
+      })
+    })
+
+    controller.addEventListener('localeload', extendingLocaleLoadCallback)
 
     await controller.changeLocale('uk')
 
-    expect(localeLoadCallback).toHaveBeenCalledOnce()
+    expect(extendingLocaleLoadCallback).toHaveBeenCalledOnce()
 
-    const lastLocaleLoadCall = localeLoadCallback.mock.lastCall
+    const lastLocaleLoadCall = extendingLocaleLoadCallback.mock.lastCall
 
     expect(lastLocaleLoadCall).toBeDefined()
 
     if (lastLocaleLoadCall) {
       const event = lastLocaleLoadCall[0]
-      expect(event.locale.code).toBe('uk')
-      expect(event.resources).toHaveProperty('isUkrainian', true)
+
       expect(event.collected).toBe(true)
+      expect(event.locale.code).toBe('uk')
+      expect(event.messages).toHaveProperty('languageName', 'Українська')
+      expect(event.resources).toHaveProperty('isUkrainian', true)
     }
 
-    controller.removeEventListener('localeload', localeLoadCallback)
+    expect(controller.messages).toHaveProperty('languageName', 'Українська')
+    expect(controller.resources).toHaveProperty('isUkrainian', true)
+
+    expect(controller.intl.messages).toHaveProperty(
+      'languageName',
+      'Українська',
+    )
+
+    controller.removeEventListener('localeload', extendingLocaleLoadCallback)
   })
 
   test('once callbacks are called only once', () => {
