@@ -176,19 +176,23 @@ export function useLocalesPartial<ControllerType>(
 
   const $automatic = computed(() => $config.usePreferredLocale)
 
-  const $automaticLocaleCode = ref<string | null>(null)
-
-  const $locale = computed(() => $automaticLocaleCode.value ?? $config.locale)
+  const $locale = computed(() => $config.locale)
 
   let lastLoadedLocale: Locale | null = null
 
+  const $pendingLocale = ref($locale.value)
+
   const $loading = asyncComputed({
     watch() {
-      return getLocaleDescriptor($locale.value)
+      return $pendingLocale.value
     },
-    async get(descriptor) {
+    async get(localeCode) {
+      const descriptor = getLocaleDescriptor(localeCode)
+
       if (descriptor == null) {
-        throw new Error('No locale descriptor exists for the current locale')
+        throw new Error(
+          `No locale descriptor exists for the current locale (${localeCode})`,
+        )
       }
 
       const locale = getLocale(descriptor)
@@ -212,6 +216,8 @@ export function useLocalesPartial<ControllerType>(
       }
 
       Object.assign(locale, event.collect())
+
+      $config.locale = descriptor.code
     },
   })
 
@@ -232,9 +238,7 @@ export function useLocalesPartial<ControllerType>(
 
         if (languageSwitchCanceled) return
 
-        $automaticLocaleCode.value = locale
-      } else if (!isEnabled && wasEnabled) {
-        $automaticLocaleCode.value = null
+        $pendingLocale.value = locale
       }
     },
   )
@@ -309,23 +313,17 @@ export function useLocalesPartial<ControllerType>(
   }
 
   async function changeLocale(localeCode: string) {
-    if ($config.locale === localeCode) {
-      return
-    }
-
     if (localeCode === 'auto') {
       if (!eventTarget.dispatchEvent(new AutomaticStateChangeEvent(true))) {
         throw new Error('Enabling of automatic mode has been cancelled')
       }
     } else if ($automatic.value) {
-      const autoSwitchOffCanceled = eventTarget.dispatchEvent(
-        new AutomaticStateChangeEvent(false),
-      )
-
-      if ($automatic.value && !autoSwitchOffCanceled) {
-        return
+      if (!eventTarget.dispatchEvent(new AutomaticStateChangeEvent(false))) {
+        throw new Error('Disabling of automatic mode has been cancelled')
       }
+    }
 
+    if (localeCode !== 'auto') {
       const localeChangeCanceled = !eventTarget.dispatchEvent(
         new LocaleChangeEvent($config.locale, localeCode, false),
       )
@@ -333,11 +331,13 @@ export function useLocalesPartial<ControllerType>(
       if (localeChangeCanceled) {
         throw new Error(`Locale change to "${localeCode}" was cancelled`)
       }
-
-      $config.locale = localeCode
     }
 
     $config.usePreferredLocale = localeCode === 'auto'
+
+    if (localeCode !== 'auto') {
+      $pendingLocale.value = localeCode
+    }
 
     await $loading.promise
   }
