@@ -198,7 +198,6 @@ describe('controller automation', () => {
 
   test('source can be installed and used immediately', () => {
     controller.addSource(deSource)
-    console.log('source added')
     expect(controller.preferredLocale).toBe('de')
     controller.addSource(ukSource, true)
     expect(controller.preferredLocale).toBe('uk')
