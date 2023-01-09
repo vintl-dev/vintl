@@ -270,13 +270,11 @@ export function useLocalesPartial<ControllerType>(
   function removeLocale(
     descriptor: string | LocaleDescriptor,
   ): LocaleDescriptor | null {
-    let index: number
-
-    if (typeof descriptor === 'string') {
-      index = $config.locales.findIndex((locale) => locale.code === descriptor)
-    } else {
-      index = $config.locales.findIndex((locale) => locale === descriptor)
-    }
+    const index = $config.locales.findIndex(
+      typeof descriptor === 'string'
+        ? (locale) => locale.code === descriptor
+        : (locale) => locale === descriptor,
+    )
 
     return index === -1 ? null : $config.locales.splice(index, 1)[0] ?? null
   }
