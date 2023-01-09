@@ -228,13 +228,13 @@ describe('controller automation', () => {
   test('automation can as well be turned off', async () => {
     const previousPromies = controller.$loading.promise
 
-    await controller.changeLocale('de')
+    await controller.changeLocale('uk')
 
     expect(controller.automatic).toBe(false)
 
     expect(controller.$loading.promise).not.toBe(previousPromies)
 
-    expect(controller.locale).toBe('de')
+    expect(controller.locale).toBe('uk')
   })
 })
 
