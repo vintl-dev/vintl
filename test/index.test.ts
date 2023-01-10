@@ -94,7 +94,7 @@ describe('controller', () => {
       await controller.waitUntilReady()
     }
 
-    expect([...controller.$locales.value.keys()].map((it) => it.code)).toEqual(
+    expect(controller.availableLocales.map((it) => it.code)).toEqual(
       expect.arrayContaining(Object.keys(localesMap)),
     )
   })
