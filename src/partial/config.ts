@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue'
+import { computed, reactive, shallowReadonly } from 'vue'
 import type {
   LocaleDescriptor,
   PreferredLocalesSource,
@@ -61,6 +61,9 @@ export interface ConfigPartial<ControllerType> {
   /** Reactive configuration of the controller. */
   get $config(): ControllerConfiguration<ControllerType>
 
+  /** A read-only array of all available locale descriptors. */
+  get availableLocales(): readonly LocaleDescriptor[]
+
   /** BCP 47 code of the default locale. */
   get defaultLocale(): string
 
@@ -106,6 +109,10 @@ export function useConfigPartial<ControllerType>(
   return mergeDescriptors(
     defineGetters({ $config }),
     {
+      get availableLocales() {
+        return shallowReadonly($config.locales)
+      },
+
       get defaultLocale() {
         return $config.defaultLocale
       },
