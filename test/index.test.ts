@@ -331,8 +331,8 @@ describe('controller events', () => {
 
     if (lastLocaleChangeCall) {
       const event = lastLocaleChangeCall[0]
-      expect(event.locale).toBe('en-US')
-      expect(event.previousLocale).toBe('uk')
+      expect(event.locale.code).toBe('en-US')
+      expect(event.previousLocale?.code).toBe('uk')
     }
 
     controller.removeEventListener('localechange', localeChangeCallback)
