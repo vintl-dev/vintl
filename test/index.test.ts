@@ -18,6 +18,7 @@ import {
   type Event,
   type LocaleChangeEvent,
   type LocaleLoadEvent,
+  type AfterLocaleChangeEvent,
 } from '../dist/events'
 import { createPlugin, type Plugin } from '../dist/plugin'
 import { parseHeaderValue } from '../dist/sources/header'
@@ -393,6 +394,28 @@ describe('controller events', () => {
     )
 
     controller.removeEventListener('localeload', extendingLocaleLoadCallback)
+  })
+
+  test('afterlocalechange callbacks are called properly', async () => {
+    const cb = vi.fn((_e: AfterLocaleChangeEvent) => {})
+
+    controller.addEventListener('afterlocalechange', cb)
+
+    await controller.changeLocale('de')
+
+    controller.removeEventListener('afterlocalechange', cb)
+
+    expect(cb).toHaveBeenCalledOnce()
+
+    const { lastCall } = cb.mock
+
+    expect(lastCall).toBeDefined()
+
+    if (lastCall != null) {
+      const event = lastCall[0]
+      expect(event.locale.code).toBe('de')
+      expect(event.previousLocale?.code).toBe('uk')
+    }
   })
 
   test('once callbacks are called only once', () => {

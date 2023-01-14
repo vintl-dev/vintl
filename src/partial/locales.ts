@@ -1,5 +1,5 @@
 import { asyncComputed, type AsyncComputedRef } from '@braw/async-computed'
-import { computed, ref, type Ref } from 'vue'
+import { computed, shallowRef, type Ref } from 'vue'
 import {
   AutomaticStateChangeEvent,
   LocaleChangeEvent,
@@ -14,6 +14,7 @@ import {
 import { createHashMap } from '../utils/hashmap.js'
 import { observe } from '../utils/vue.js'
 import { find, includes } from '../utils/iterators.js'
+import { AfterLocaleChangeEvent } from '../events/AfterLocaleChangeEvent.js'
 import type { EventTargetPartial } from './events.js'
 import type { ControllerConfiguration } from './config.js'
 import type { AutomationPartial } from './prefers.js'
@@ -115,13 +116,31 @@ export interface LocalesPartial {
   waitUntilReady(): Promise<void>
 }
 
+/**
+ * Represents a pending locale change, which is a triplet where the first
+ * element is a locale object, second is its descriptor, and the third element
+ * is a boolean value indicating whether the change was initiated
+ * automatically.
+ */
+type PendingLocaleChange = readonly [
+  locale: Locale,
+  descriptor: LocaleDescriptor,
+  automated: boolean,
+]
+
+/**
+ * Represents a last applied locale, which is a tuple where the first element is
+ * the locale object and the second element is this locale's descriptor.
+ */
+type LastAppliedLocale = readonly [locale: Locale, descriptor: LocaleDescriptor]
+
 export function useLocalesPartial<ControllerType>(
   initialLocaleData: Map<LocaleDescriptor, Locale> | undefined,
   $config: ControllerConfiguration<ControllerType>,
   eventTarget: EventTargetPartial<ControllerType>,
   prefersPartial: AutomationPartial,
 ): LocalesPartial {
-  const $locales: Ref<Map<LocaleDescriptor, Locale>> = ref(
+  const $locales: Ref<Map<LocaleDescriptor, Locale>> = shallowRef(
     new Map(initialLocaleData),
   )
 
@@ -164,46 +183,77 @@ export function useLocalesPartial<ControllerType>(
     )
   }
 
-  function getLocale(localeDescriptor: LocaleDescriptor) {
-    return $locales.value.get(localeDescriptor)
+  function getLocaleDescriptorAssertive(localeCode: string) {
+    const descriptor = getLocaleDescriptor(localeCode)
+
+    if (descriptor == null) {
+      throw new Error(
+        `Cannot find the locale descriptor for the locale ${localeCode}`,
+      )
+    }
+
+    return descriptor
   }
 
-  function getLocaleByCode(localeCode: string) {
-    const descriptor = getLocaleDescriptor(localeCode)
-    if (descriptor == null) return undefined
-    return getLocale(descriptor)
+  function getLocale(descriptor: LocaleDescriptor) {
+    return $locales.value.get(descriptor)
+  }
+
+  function getLocaleAssertive(descriptor: LocaleDescriptor) {
+    const locale = getLocale(descriptor)
+
+    if (locale == null) {
+      throw new Error(
+        `Locale for the provided descriptor of ${descriptor.code} does not exist`,
+      )
+    }
+
+    return locale
+  }
+
+  function getLocaleByCodeAssertive(localeCode: string) {
+    const descriptor = getLocaleDescriptorAssertive(localeCode)
+    const locale = getLocaleAssertive(descriptor)
+
+    return [locale, descriptor] as const
   }
 
   const $automatic = computed(() => $config.usePreferredLocale)
 
   const $locale = computed(() => $config.locale)
 
-  let lastLoadedLocale: Locale | null = null
+  function computeInitialChange(): PendingLocaleChange {
+    const automatic = $config.usePreferredLocale
 
-  const $pendingLocale = ref($locale.value)
+    const localeCode = automatic
+      ? prefersPartial.preferredLocale
+      : $config.locale
+
+    return [...getLocaleByCodeAssertive(localeCode), automatic]
+  }
+
+  const $pendingLocaleChange = shallowRef<PendingLocaleChange>(
+    computeInitialChange(),
+  )
+
+  observe($locales, () => {
+    $pendingLocaleChange.value = computeInitialChange()
+  })
+
+  let lastAppliedLocale: LastAppliedLocale | null = null
 
   const $loading = asyncComputed({
-    watch() {
-      return $pendingLocale.value
-    },
-    async get(localeCode) {
-      const descriptor = getLocaleDescriptor(localeCode)
-
-      if (descriptor == null) {
-        throw new Error(
-          `No locale descriptor exists for the current locale (${localeCode})`,
-        )
+    watch: () => $pendingLocaleChange.value,
+    async get([locale, descriptor, automated]) {
+      if (
+        lastAppliedLocale != null &&
+        lastAppliedLocale[0] === locale &&
+        lastAppliedLocale[1] === descriptor
+      ) {
+        return
       }
 
-      const locale = getLocale(descriptor)
-
-      if (locale == null) {
-        throw new Error('No locale exists for the active locale descriptor')
-      }
-
-      if (lastLoadedLocale === locale) return
-
-      lastLoadedLocale = locale
+      const previousLocaleDescriptor = lastAppliedLocale?.[1] ?? null
 
       const event = new LocaleLoadEvent(descriptor, locale)
 
@@ -218,28 +268,47 @@ export function useLocalesPartial<ControllerType>(
       Object.assign(locale, event.collect())
 
       $config.locale = descriptor.code
+
+      lastAppliedLocale = [locale, descriptor]
+
+      eventTarget.dispatchEvent(
+        new AfterLocaleChangeEvent(
+          previousLocaleDescriptor,
+          descriptor,
+          automated,
+        ),
+      )
     },
   })
+
+  function canChangeLocale(
+    descriptor: LocaleDescriptor,
+    automatically: boolean,
+  ) {
+    const previousDescriptor = lastAppliedLocale?.[1] ?? null
+
+    return eventTarget.dispatchEvent(
+      new LocaleChangeEvent(
+        previousDescriptor?.code ?? null,
+        descriptor.code,
+        automatically,
+      ),
+    )
+  }
 
   observe(
     () => ({
       isEnabled: $automatic.value,
-      locale: prefersPartial.preferredLocale,
+      localeCode: prefersPartial.preferredLocale,
     }),
-    ({ isEnabled, locale }, previousState) => {
-      const wasEnabled = previousState?.isEnabled
+    ({ isEnabled, localeCode }) => {
+      if (!isEnabled) return
 
-      if (isEnabled && !wasEnabled) {
-        const previousLocale = previousState?.locale ?? $config.locale
+      const [locale, descriptor] = getLocaleByCodeAssertive(localeCode)
 
-        const languageSwitchCanceled = !eventTarget.dispatchEvent(
-          new LocaleChangeEvent(previousLocale, locale, true),
-        )
+      if (!canChangeLocale(descriptor, true)) return
 
-        if (languageSwitchCanceled) return
-
-        $pendingLocale.value = locale
-      }
+      $pendingLocaleChange.value = [locale, descriptor, true]
     },
   )
 
@@ -290,19 +359,9 @@ export function useLocalesPartial<ControllerType>(
     let locale: Locale | undefined
 
     if (typeof descriptor === 'string') {
-      locale = getLocaleByCode(descriptor)
-
-      if (locale == null) {
-        throw new Error(`Locale with code "${descriptor}" does not exist`)
-      }
+      locale = getLocaleByCodeAssertive(descriptor)[0]
     } else {
-      locale = getLocale(descriptor)
-
-      if (locale == null) {
-        throw new Error(
-          `Locale with the provided descriptor (for ${descriptor.code}) does not exist`,
-        )
-      }
+      locale = getLocaleAssertive(descriptor)
     }
 
     if (locale.messages == null) {
@@ -312,32 +371,33 @@ export function useLocalesPartial<ControllerType>(
     Object.assign(locale.messages, messages)
   }
 
+  function canToggleAutomation(state: boolean) {
+    return eventTarget.dispatchEvent(new AutomaticStateChangeEvent(state))
+  }
+
   async function changeLocale(localeCode: string) {
+    let newLocale: readonly [Locale, LocaleDescriptor] | undefined
+
     if (localeCode === 'auto') {
-      if (!eventTarget.dispatchEvent(new AutomaticStateChangeEvent(true))) {
+      if (!canToggleAutomation(true)) {
         throw new Error('Enabling of automatic mode has been cancelled')
       }
-    } else if ($automatic.value) {
-      if (!eventTarget.dispatchEvent(new AutomaticStateChangeEvent(false))) {
+    } else {
+      newLocale = getLocaleByCodeAssertive(localeCode)
+
+      if ($automatic.value && !canToggleAutomation(false)) {
         throw new Error('Disabling of automatic mode has been cancelled')
       }
-    }
 
-    if (localeCode !== 'auto') {
-      const localeChangeCanceled = !eventTarget.dispatchEvent(
-        new LocaleChangeEvent($config.locale, localeCode, false),
-      )
-
-      if (localeChangeCanceled) {
+      // TODO: move before automatic state change event after converted to beforelocalechange
+      if (!canChangeLocale(newLocale[1], false)) {
         throw new Error(`Locale change to "${localeCode}" was cancelled`)
       }
     }
 
-    $config.usePreferredLocale = localeCode === 'auto'
+    $config.usePreferredLocale = newLocale == null
 
-    if (localeCode !== 'auto') {
-      $pendingLocale.value = localeCode
-    }
+    if (newLocale != null) $pendingLocaleChange.value = [...newLocale, false]
 
     await $loading.promise
   }

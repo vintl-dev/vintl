@@ -1,9 +1,10 @@
-import type { AutomaticStateChangeEvent } from '../events/index.js'
 import {
   ErrorEvent,
   isAsyncEvent,
   isCanceled,
+  type AfterLocaleChangeEvent,
   type AsyncEvent,
+  type AutomaticStateChangeEvent,
   type Event,
   type EventListenerOptions,
   type EventObjectFrom,
@@ -18,6 +19,7 @@ export type ControllerEvents =
   | LocaleLoadEvent
   | ErrorEvent
   | AutomaticStateChangeEvent
+  | AfterLocaleChangeEvent
 
 export type EventTargetPartial<T> = EventTarget<
   ControllerEvents,
