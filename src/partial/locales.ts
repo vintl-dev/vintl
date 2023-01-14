@@ -288,11 +288,7 @@ export function useLocalesPartial<ControllerType>(
     const previousDescriptor = lastAppliedLocale?.[1] ?? null
 
     return eventTarget.dispatchEvent(
-      new LocaleChangeEvent(
-        previousDescriptor?.code ?? null,
-        descriptor.code,
-        automatically,
-      ),
+      new LocaleChangeEvent(previousDescriptor, descriptor, automatically),
     )
   }
 

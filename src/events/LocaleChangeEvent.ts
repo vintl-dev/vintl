@@ -1,3 +1,4 @@
+import type { LocaleDescriptor } from '../index.js'
 import {
   type CancelableEvent,
   implementCancelation,
@@ -21,8 +22,8 @@ class LocaleChangeEvent implements Event {
    * @param automatic Whether the locale change was invoked by automation.
    */
   constructor(
-    public readonly previousLocale: string | null,
-    public readonly locale: string,
+    public readonly previousLocale: LocaleDescriptor | null,
+    public readonly locale: LocaleDescriptor,
     public readonly automatic: boolean,
   ) {
     implementCancelation(this)
