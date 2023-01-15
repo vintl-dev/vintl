@@ -6,7 +6,7 @@ import type {
 } from './messages.js'
 
 /**
- * Represents a translation function that accepts either a message ID, or a
+ * Represents a translation function that accepts either a message ID or a
  * descriptor, values for that message, and formatting options.
  *
  * @template ID Identifier of the message.

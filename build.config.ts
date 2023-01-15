@@ -51,6 +51,13 @@ export default defineBuildConfig({
       outDir: './dist',
     },
     {
+      input: './src/translateFunction',
+      name: 'translateFunction',
+      builder: 'rollup',
+      declaration: true,
+      outDir: './dist',
+    },
+    {
       input: './src/components',
       name: 'components',
       builder: 'rollup',

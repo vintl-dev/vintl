@@ -3,9 +3,9 @@ import type { ControllerConfiguration } from './partial/config.js'
 import type { FormatAliases } from './partial/intl.js'
 import { createController } from './IntlController.js'
 import type { IntlController } from './partial/types.js'
-import type { MessageContent, MessageDescriptor } from './types/messages.js'
 import type { TranslateFunction } from './types/translateFunction.js'
 import { createHashMap } from './utils/hashmap.js'
+import { createTranslateFunction } from './translateFunction.js'
 
 /** Represents options for the plugin. */
 export interface PluginOptions<ControllerType> {
@@ -132,46 +132,6 @@ export interface Plugin<ControllerType> extends PluginObject<never> {
   ): IntlController<ControllerType>
   getInjections(): PluginInjections<ControllerType>
   toProperties(): InjectedProperties<ControllerType>
-}
-
-function createTranslateFunction<ControllerType>(
-  controller: IntlController<ControllerType>,
-): TranslateFunction {
-  return function translateAndNormalize(descriptor, values, opts?) {
-    let result: ReturnType<IntlController<ControllerType>['intl']['$t']> = ''
-
-    const normalizedDescriptor: MessageDescriptor =
-      typeof descriptor === 'string'
-        ? {
-            id: descriptor,
-            defaultMessage: controller.defaultMessages[
-              descriptor
-            ] as MessageContent,
-          }
-        : descriptor
-
-    result = controller.intl.formatMessage(
-      normalizedDescriptor,
-      values as Record<string, any>,
-      opts,
-    )
-
-    if (typeof result === 'string') {
-      return result
-    }
-
-    if (Array.isArray(result)) {
-      let normalizedResult = ''
-
-      for (const item of result) {
-        normalizedResult += String(item)
-      }
-
-      return normalizedResult
-    }
-
-    return String(result)
-  }
 }
 
 export function createPlugin<ControllerType = string>(

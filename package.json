@@ -35,6 +35,11 @@
       "import": "./dist/controller.mjs",
       "require": "./dist/controller.cjs"
     },
+    "./translateFunction": {
+      "types": "./dist/translateFunction.d.ts",
+      "import": "./dist/translateFunction.mjs",
+      "require": "./dist/translateFunction.cjs"
+    },
     "./components": {
       "types": "./dist/components.d.ts",
       "import": "./dist/components.mjs",
