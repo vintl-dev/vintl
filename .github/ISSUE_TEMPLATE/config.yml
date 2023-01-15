@@ -2,7 +2,7 @@ blank_issues_enabled: true
 contact_links:
   - name: Idea
     url: https://github.com/Brawaru/vue-intl-controller/discussions/new?category=ideas
-    about: Propose an idea for the project
+    about: Propose an idea for the project.
   - name: Question
     url: https://github.com/Brawaru/vue-intl-controller/discussions/new?category=questions
-    about: Ask a question related to the project
+    about: Ask a question related to the project.
