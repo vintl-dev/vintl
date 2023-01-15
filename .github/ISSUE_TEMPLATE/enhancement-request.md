@@ -1,6 +1,6 @@
 ---
 name: Enhancement request
-about: Suggest a way to improve existing parts of the project
+about: Suggest a way to improve existing parts of the project.
 title: ''
 labels: type/request
 assignees: ''
