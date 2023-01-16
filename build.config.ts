@@ -101,6 +101,9 @@ export default defineBuildConfig({
               options.plugins[i] = babel({
                 babelHelpers: 'bundled',
                 extensions: ['.ts', '.js', '.cjs', '.mjs', '.es', '.es6'],
+                assumptions: {
+                  noDocumentAll: true,
+                },
                 presets: [
                   [
                     '@babel/preset-env',
