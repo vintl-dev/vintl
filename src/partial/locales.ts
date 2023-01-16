@@ -18,6 +18,7 @@ import { AfterLocaleChangeEvent } from '../events/AfterLocaleChangeEvent.js'
 import type { EventTargetPartial } from './events.js'
 import type { ControllerConfiguration } from './config.js'
 import type { AutomationPartial } from './prefers.js'
+import { shallowEqual } from '../utils/shallowEqual.js'
 
 export interface LocalesPartial {
   /** A reference to a map containing locale data. */
@@ -117,22 +118,22 @@ export interface LocalesPartial {
 }
 
 /**
- * Represents a pending locale change, which is a triplet where the first
- * element is a locale object, second is its descriptor, and the third element
- * is a boolean value indicating whether the change was initiated
- * automatically.
+ * Represents a locale change request, which is a tuple where the first element
+ * is a locale object, second is its descriptor, and the third element is a
+ * boolean value indicating whether the change was initiated automatically.
  */
-type PendingLocaleChange = readonly [
+type LocaleChangeRequest = readonly [
   locale: Locale,
   descriptor: LocaleDescriptor,
   automated: boolean,
 ]
 
 /**
- * Represents a last applied locale, which is a tuple where the first element is
- * the locale object and the second element is this locale's descriptor.
+ * Represents a result of querying a locale by its code, which is a tuple where
+ * the first element is the locale object and the second element is this
+ * locale's descriptor.
  */
-type LastAppliedLocale = readonly [locale: Locale, descriptor: LocaleDescriptor]
+type LocaleQueryResult = readonly [locale: Locale, descriptor: LocaleDescriptor]
 
 export function useLocalesPartial<ControllerType>(
   initialLocaleData: Map<LocaleDescriptor, Locale> | undefined,
@@ -211,7 +212,7 @@ export function useLocalesPartial<ControllerType>(
     return locale
   }
 
-  function getLocaleByCodeAssertive(localeCode: string) {
+  function getLocaleByCodeAssertive(localeCode: string): LocaleQueryResult {
     const descriptor = getLocaleDescriptorAssertive(localeCode)
     const locale = getLocaleAssertive(descriptor)
 
@@ -222,7 +223,7 @@ export function useLocalesPartial<ControllerType>(
 
   const $locale = computed(() => $config.locale)
 
-  function computeInitialChange(): PendingLocaleChange {
+  function computeInitialChange(): LocaleChangeRequest {
     const automatic = $config.usePreferredLocale
 
     const localeCode = automatic
@@ -232,52 +233,88 @@ export function useLocalesPartial<ControllerType>(
     return [...getLocaleByCodeAssertive(localeCode), automatic]
   }
 
-  const $pendingLocaleChange = shallowRef<PendingLocaleChange>(
-    computeInitialChange(),
+  const $pendingLocaleChange = shallowRef(computeInitialChange())
+
+  function loadLocale(locale: Locale, descriptor: LocaleDescriptor) {
+    const event = new LocaleLoadEvent(descriptor, locale)
+
+    async function callEventAndGetResult() {
+      if (!(await eventTarget.dispatchEvent(event))) {
+        throw new Error(
+          `Cannot load locale data for the locale "${descriptor.code}": load event is cancelled`,
+        )
+      }
+
+      return event.collect()
+    }
+
+    return [callEventAndGetResult(), event.cancel.bind(null)] as const
+  }
+
+  const $defaultLocale = computed(() =>
+    getLocaleByCodeAssertive($config.defaultLocale),
+  )
+
+  let lastDefaultLocale: LocaleQueryResult | null = null
+
+  const $defaultLocaleLoading = asyncComputed(
+    async function loadDefaultLocale() {
+      const defaultLocale = $defaultLocale.value
+
+      if (shallowEqual(defaultLocale, lastDefaultLocale)) return
+
+      const [locale, descriptor] = $defaultLocale.value
+
+      const [localeData, cancelLoading] = loadLocale(locale, descriptor)
+
+      this.onCancel(cancelLoading)
+
+      Object.assign(locale, await localeData)
+
+      lastDefaultLocale = defaultLocale
+    },
   )
 
   observe($locales, () => {
     $pendingLocaleChange.value = computeInitialChange()
   })
 
-  let lastAppliedLocale: LastAppliedLocale | null = null
+  let lastLocaleChange: LocaleChangeRequest | null = null
 
   const $loading = asyncComputed({
     watch: () => $pendingLocaleChange.value,
-    async get([locale, descriptor, automated]) {
-      if (
-        lastAppliedLocale != null &&
-        lastAppliedLocale[0] === locale &&
-        lastAppliedLocale[1] === descriptor
-      ) {
-        return
+    async get(pendingLocaleChange) {
+      if (shallowEqual(pendingLocaleChange, lastLocaleChange)) return
+
+      const [locale, descriptor, automated] = pendingLocaleChange
+
+      const pendingLocale: LocaleQueryResult = [locale, descriptor]
+
+      if (shallowEqual(pendingLocale, $defaultLocale.value)) {
+        await $defaultLocaleLoading.promise
+      } else {
+        const [lastLocale, lastDescriptor] = lastLocaleChange ?? []
+
+        if (!shallowEqual(pendingLocale, [lastLocale, lastDescriptor])) {
+          const [localeData, cancelLoading] = loadLocale(locale, descriptor)
+
+          this.onCancel(cancelLoading)
+
+          Object.assign(locale, await localeData)
+        }
       }
-
-      const previousLocaleDescriptor = lastAppliedLocale?.[1] ?? null
-
-      const event = new LocaleLoadEvent(descriptor, locale)
-
-      this.onCancel(event.cancel.bind(null))
-
-      if (!(await eventTarget.dispatchEvent(event))) {
-        throw new Error(
-          `Cannot load locale messages for the locale "${descriptor.code}": load event is cancelled`,
-        )
-      }
-
-      Object.assign(locale, event.collect())
 
       $config.locale = descriptor.code
 
-      lastAppliedLocale = [locale, descriptor]
-
       eventTarget.dispatchEvent(
         new AfterLocaleChangeEvent(
-          previousLocaleDescriptor,
+          lastLocaleChange?.[1] ?? null,
           descriptor,
           automated,
         ),
       )
+
+      lastLocaleChange = pendingLocaleChange
     },
   })
 
@@ -285,7 +322,7 @@ export function useLocalesPartial<ControllerType>(
     descriptor: LocaleDescriptor,
     automatically: boolean,
   ) {
-    const previousDescriptor = lastAppliedLocale?.[1] ?? null
+    const previousDescriptor = lastLocaleChange?.[1] ?? null
 
     return eventTarget.dispatchEvent(
       new LocaleChangeEvent(previousDescriptor, descriptor, automatically),
@@ -371,6 +408,11 @@ export function useLocalesPartial<ControllerType>(
     return eventTarget.dispatchEvent(new AutomaticStateChangeEvent(state))
   }
 
+  async function waitUntilReady() {
+    await $defaultLocaleLoading.promise
+    await $loading.promise
+  }
+
   async function changeLocale(localeCode: string) {
     let newLocale: readonly [Locale, LocaleDescriptor] | undefined
 
@@ -395,15 +437,11 @@ export function useLocalesPartial<ControllerType>(
 
     if (newLocale != null) $pendingLocaleChange.value = [...newLocale, false]
 
-    await $loading.promise
-  }
-
-  async function waitUntilReady() {
-    await $loading.promise
+    return waitUntilReady()
   }
 
   return mergeDescriptors(
-    defineGetters({ $loading, $locales }),
+    defineGetters({ $loading, $defaultLocaleLoading, $locales }),
     defineRefGetters({ $automatic, $locale }),
     {
       get ready() {

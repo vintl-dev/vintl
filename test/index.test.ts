@@ -5,7 +5,7 @@ import type {
   PreferredLocalesSource,
   TranslateFunction,
 } from '../dist'
-import type { IntlController } from '../dist/controller'
+import { IntlController, createController } from '../dist/controller'
 import {
   implementCancelation,
   isAsyncEvent,
@@ -537,6 +537,65 @@ describe('controller events', () => {
       'cause',
       faultyListener.mock.results.at(-1)?.value,
     )
+  })
+})
+
+describe('controller (different defaultLocale/locale)', () => {
+  const localeLoadEventListener = vi.fn((_e: LocaleLoadEvent) => {})
+
+  let controller: IntlController<string>
+
+  test('initialises', async () => {
+    controller = createController({
+      defaultLocale: 'en-US',
+      locale: 'uk',
+      locales: [{ code: 'en-US' }, { code: 'uk' }],
+      listen: {
+        localeload: localeLoadEventListener,
+      },
+      usePreferredLocale: false,
+    })
+
+    await controller.waitUntilReady()
+  })
+
+  test('localeload is called correctly for both locales', () => {
+    expect(localeLoadEventListener).toHaveBeenCalledTimes(2)
+
+    const { calls } = localeLoadEventListener.mock
+
+    expect(calls.length > 0 && calls.some(([e]) => e.locale.code === 'en-US'))
+    expect(calls.length > 0 && calls.some(([e]) => e.locale.code === 'uk'))
+  })
+
+  test('re-creating default locale will call localeload for it', async () => {
+    localeLoadEventListener.mockClear()
+
+    controller.addLocale('en-US', true)
+    await controller.waitUntilReady()
+
+    expect(localeLoadEventListener).toHaveBeenCalledOnce()
+
+    expect(localeLoadEventListener.mock.lastCall?.[0].locale.code).toBe('en-US')
+  })
+
+  test('re-creating current locale will call localeload for it', async () => {
+    localeLoadEventListener.mockClear()
+
+    controller.addLocale('uk', true)
+    await controller.waitUntilReady()
+
+    expect(localeLoadEventListener).toHaveBeenCalledOnce()
+
+    expect(localeLoadEventListener.mock.lastCall?.[0].locale.code).toBe('uk')
+  })
+
+  test("changing locale to default won't call localeload", async () => {
+    localeLoadEventListener.mockClear()
+
+    await controller.changeLocale('en-US')
+
+    expect(localeLoadEventListener).not.toHaveBeenCalled()
   })
 })
 
