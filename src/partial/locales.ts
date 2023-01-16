@@ -15,10 +15,10 @@ import { createHashMap } from '../utils/hashmap.js'
 import { observe } from '../utils/vue.js'
 import { find, includes } from '../utils/iterators.js'
 import { AfterLocaleChangeEvent } from '../events/AfterLocaleChangeEvent.js'
+import { shallowEqual } from '../utils/shallowEqual.js'
 import type { EventTargetPartial } from './events.js'
 import type { ControllerConfiguration } from './config.js'
 import type { AutomationPartial } from './prefers.js'
-import { shallowEqual } from '../utils/shallowEqual.js'
 
 export interface LocalesPartial {
   /** A reference to a map containing locale data. */
