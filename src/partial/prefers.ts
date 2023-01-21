@@ -1,5 +1,5 @@
 import { match as matchLocale } from '@formatjs/intl-localematcher'
-import { computed, isRef, shallowRef } from 'vue'
+import { computed, isRef, shallowRef, toRaw } from 'vue'
 import type { PreferredLocalesSource } from '../types/sources.js'
 import { defineRefGetters, mergeDescriptors } from '../utils/definer.js'
 import { observe } from '../utils/vue.js'
@@ -123,7 +123,7 @@ export function usePrefersPartial<ControllerType>(
     let shallUpdate = false
 
     for (const existingSource of $config.preferredLocaleSources) {
-      if (existingSource === source) {
+      if (toRaw(existingSource) === source) {
         shallUpdate = true
       } else {
         filteredSources.push(existingSource)

@@ -1,13 +1,19 @@
-import { type Component, defineComponent, type PropType } from 'vue'
-import type { IntlController } from './partial/types.js'
+import {
+  type Component,
+  h as createElement,
+  type SetupContext,
+  isVNode,
+  createTextVNode,
+} from 'vue'
 import type {
+  CustomMessageValues,
   MessageContent,
   MessageDescriptor,
   MessageID,
   MessageValues,
   MessageValueType,
-} from './types/index.js'
-import { createTextNode, getInstance, isVNode } from './utils/vue.js'
+} from './types/messages.js'
+import { useI18n } from './runtime/useI18n.js'
 
 /** Represents a value that can be either `T` or an array of `T`. */
 type MaybeArray<T> = T | T[]
@@ -16,166 +22,167 @@ function createObject() {
   return Object.create(null)
 }
 
-export const IntlFormatted = defineComponent({
-  functional: true,
-  props: {
-    messageId: {
-      type: [String, Object] as PropType<
-        MessageID | MessageDescriptor<MessageID>
-      >,
-      required: false,
-      default: null,
-    },
-    message: {
-      type: [String, Array] as PropType<MessageContent>,
-      default: null,
-    },
-    values: {
-      type: Object as PropType<MessageValues>,
-      default() {
-        return createObject() as MessageValues
-      },
-    },
-    tags: {
-      type: Array as PropType<string[]>,
-      default() {
-        return []
-      },
-    },
-  },
-  render(createElement, context) {
-    const { props } = context
+interface CommonProps {
+  tags?: string[]
+}
 
-    if (props.messageId == null && props.message == null) {
-      throw new Error(
-        'IntlFormatted cannot be rendered without "message-id" or "message" properties',
-      )
-    }
+interface PropsWithMessageID<I extends MessageID> extends CommonProps {
+  messageId: I | MessageDescriptor<I>
+  values?: CustomMessageValues<I>
+}
 
-    const $i18n = (getInstance() as any).$i18n as
-      | IntlController<MessageValueType>
-      | undefined
+interface PropsWithMessage extends CommonProps {
+  message: MessageContent
+  values?: MessageValues
+}
 
-    if ($i18n == null) {
-      throw new Error(
-        'Cannot access active IntlController, did you initialize the plugin correctly?',
-      )
-    }
+function isObject(value: unknown): value is object {
+  return value != null && typeof value === 'object'
+}
 
-    /** Initial values are passed to the slots. */
-    const initialValues: MessageValues = createObject()
+function isPropsWithMessageID<I extends MessageID>(
+  value: unknown,
+): value is PropsWithMessageID<I> {
+  return isObject(value) && 'messageId' in value
+}
 
-    /**
-     * Provided values are values that were automatically provided by the
-     * IntlFormatted component. They are also used to format the message.
-     *
-     * Initial values are to be merged before assigning provided values.
-     */
-    const values: MessageValues = createObject()
+function isPropsWithMessage(value: unknown): value is PropsWithMessage {
+  return isObject(value) && 'message' in value
+}
 
-    if (props.values != null) {
-      Object.assign(initialValues, props.values)
-      Object.assign(values, initialValues)
-    }
+export function IntlFormatted<I extends MessageID>(
+  props: PropsWithMessageID<I> | PropsWithMessage,
+  context: SetupContext,
+) {
+  if (!isPropsWithMessageID(props) && !isPropsWithMessage(props)) {
+    throw new Error(
+      'IntlFormatted cannot be rendered without "message-id" or "message" properties',
+    )
+  }
 
-    if (Array.isArray(props.tags)) {
-      for (const tag of props.tags) {
-        let key: string
-        let component: Component | string
+  const $i18n = useI18n<any>()
 
-        if (Array.isArray(tag)) {
-          key = tag[0]
-          component = tag[1]
-        } else {
-          if (typeof tag !== 'string') {
-            throw new TypeError(
-              'Custom components must be provided as array of [name, component]',
-            )
-          }
+  /** Initial values are passed to the slots. */
+  const initialValues: MessageValues = createObject()
 
-          key = tag
-          component = tag
+  /**
+   * Provided values are values that were automatically provided by the
+   * IntlFormatted component. They are also used to format the message.
+   *
+   * Initial values are to be merged before assigning provided values.
+   */
+  const values: MessageValues = createObject()
+
+  if (props.values != null) {
+    Object.assign(initialValues, props.values)
+    Object.assign(values, initialValues)
+  }
+
+  if (Array.isArray(props.tags)) {
+    for (const tag of props.tags) {
+      let key: string
+      let component: Component | string
+
+      if (Array.isArray(tag)) {
+        key = tag[0]
+        component = tag[1]
+      } else {
+        if (typeof tag !== 'string') {
+          throw new TypeError(
+            'Custom components must be provided as array of [name, component]',
+          )
         }
 
-        values[key] = (children) => {
-          const newChildren = []
+        key = tag
+        component = tag
+      }
 
-          for (const child of children) {
-            if (Array.isArray(child)) {
-              newChildren.push(...child)
-            } else {
-              newChildren.push(isVNode(child) ? child : createTextNode(child))
-            }
+      values[key] = (children) => {
+        const newChildren = []
+
+        for (const child of children) {
+          if (Array.isArray(child)) {
+            newChildren.push(...child)
+          } else {
+            newChildren.push(
+              isVNode(child) ? child : createTextVNode(String(child)),
+            )
           }
+        }
 
+        if (typeof component === 'string') {
+          return [createElement(component, newChildren)]
+        } else {
           return [createElement(component, newChildren)]
         }
       }
-    } else if (props.tags != null) {
-      throw new Error(
-        'Property "tags" of IntlFormatted needs to be of array type or null / undefined',
-      )
     }
+  } else if (props.tags != null) {
+    throw new Error(
+      'Property "tags" of IntlFormatted needs to be of array type or null / undefined',
+    )
+  }
 
-    for (const [name, slot] of Object.entries(context.scopedSlots)) {
-      if (name.startsWith('~')) {
+  for (const [name, slot] of Object.entries(context.slots)) {
+    if (!slot) continue
+
+    if (name.startsWith('~')) {
+      const res = slot({
+        values: initialValues,
+      })
+
+      if (res != null) {
+        if (res.length > 1) {
+          throw new Error(
+            `Slot argument "${name}" returned more than one child`,
+          )
+        }
+
+        values[name.slice(1)] = res[0]
+      }
+    } else {
+      values[name] = (children) => {
         const res = slot({
+          children,
           values: initialValues,
         })
 
         if (res != null) {
           if (res.length > 1) {
             throw new Error(
-              `Slot argument "${name}" returned more than one child`,
+              `Wrapping slot "${name}" returned more than one child`,
             )
           }
 
-          values[name.slice(1)] = res[0]
+          return res[0]
         }
-      } else {
-        values[name] = (children) => {
-          const res = slot({
-            children,
-            values: initialValues,
-          })
 
-          if (res != null) {
-            if (res.length > 1) {
-              throw new Error(
-                `Wrapping slot "${name}" returned more than one child`,
-              )
-            }
-
-            return res[0]
-          }
-
-          return ''
-        }
+        return ''
       }
     }
+  }
 
-    let formatted: MaybeArray<MessageValueType | string>
+  let formatted: MaybeArray<MessageValueType | string>
 
-    if (props.message != null) {
-      formatted = $i18n.formats.customMessage(props.message, values)
-    } else if (props.messageId != null) {
-      formatted = $i18n.intl.formatMessage(
-        typeof props.messageId === 'string'
-          ? { id: props.messageId }
-          : props.messageId,
-        values,
-      )
-    } else {
-      // Should never end up here, but tell that to TypeScript :\
-      throw new Error(
-        'Illegal state: neither message nor messageId properties provided',
-      )
-    }
-
-    return (Array.isArray(formatted) ? formatted.flat() : [formatted]).map(
-      (child) => {
-        return isVNode(child) ? child : createTextNode(child)
-      },
+  if (isPropsWithMessage(props)) {
+    formatted = $i18n.formats.customMessage(props.message, values)
+  } else if (props.messageId != null) {
+    formatted = $i18n.intl.formatMessage(
+      typeof props.messageId === 'string'
+        ? { id: props.messageId }
+        : props.messageId,
+      values,
     )
-  },
-})
+  } else {
+    // Should never end up here, but tell that to TypeScript :\
+    throw new Error(
+      'Illegal state: neither message nor messageId properties provided',
+    )
+  }
+
+  return (Array.isArray(formatted) ? formatted.flat() : [formatted]).map(
+    (child) => {
+      return isVNode(child) ? child : createTextVNode(String(child))
+    },
+  )
+}

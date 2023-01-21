@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from 'vitest'
-import Vue from 'vue'
-import type {
-  FormatAliases,
-  PreferredLocalesSource,
-  TranslateFunction,
+import { type App, createApp, defineComponent } from 'vue'
+import {
+  type PreferredLocalesSource,
+  useI18n,
+  type LocaleDescriptor,
 } from '../dist'
-import { IntlController, createController } from '../dist/controller'
+import { type IntlController, createController } from '../dist/controller'
 import {
   implementCancelation,
   isAsyncEvent,
@@ -29,9 +29,15 @@ const autoBoundLocaleChangeListener = vi.fn((_e: LocaleChangeEvent) => {})
 
 let plugin: Plugin<string>
 
-let translate: TranslateFunction
-let formats: FormatAliases<string>
 let controller: IntlController<string>
+
+const appComponent = defineComponent({
+  name: 'App',
+  setup() {
+    const i18nResult = useI18n()
+    return { i18nResult }
+  },
+})
 
 describe('plugin', () => {
   test('can be created', () => {
@@ -49,13 +55,38 @@ describe('plugin', () => {
     expect(plugin).toBeDefined()
   })
 
-  test('can be installed', () => {
-    Vue.use(plugin)
+  test('controller can be retrieved', () => {
+    controller = plugin.getOrCreateController()
+    expect(controller).toBeDefined()
+  })
 
-    const instance = new Vue()
-    expect(instance).toHaveProperty('$i18n')
-    expect(instance).toHaveProperty('$t')
-    expect(instance).toHaveProperty('$fmt')
+  test('does not re-create controller', () => {
+    expect(plugin.getOrCreateController()).toBe(controller)
+  })
+
+  let app: App<Element>
+
+  test('can be installed', () => {
+    app = createApp(appComponent)
+    app.use(plugin)
+  })
+
+  test('app mounts', () => {
+    const root = document.createElement('div')
+    root.id = 'app'
+    app.mount(root)
+  })
+
+  test('mixins added', () => {
+    const setupState = (app._instance as any)?.ctx
+    expect(setupState).toHaveProperty('$i18n')
+    expect(setupState).toHaveProperty('$t')
+    expect(setupState).toHaveProperty('$fmt')
+  })
+
+  test('controller provided for useI18n', () => {
+    const result = (app._instance as any)?.setupState?.i18nResult
+    expect(result).toBe(controller)
   })
 
   test('localechange was called during initialisation', () => {
@@ -65,13 +96,10 @@ describe('plugin', () => {
 
   test('returns properties', () => {
     const props = plugin!.toProperties()
-    translate = props.$t
-    formats = props.$fmt
-    controller = props.$i18n
 
-    expect(translate).toBeDefined()
-    expect(formats).toBeDefined()
-    expect(controller).toBeDefined()
+    expect(props.$i18n).toBeDefined()
+    expect(props.$fmt).toBeDefined()
+    expect(props.$t).toBeDefined()
   })
 })
 
@@ -89,15 +117,37 @@ describe('controller', () => {
     },
   } as const
 
+  let spanish: LocaleDescriptor
+  let japanese: LocaleDescriptor
+
   test('locales are added', async () => {
     for (const localeCode of Object.keys(localesMap)) {
       controller.addLocale(localeCode, true)
       await controller.waitUntilReady()
     }
 
+    spanish = controller.addLocale('es')
+    japanese = controller.addLocale('ja')
+
     expect(controller.availableLocales.map((it) => it.code)).toEqual(
       expect.arrayContaining(Object.keys(localesMap)),
     )
+  })
+
+  test('locales are removed', () => {
+    controller.removeLocale(spanish.code) // by code
+    expect(
+      controller.availableLocales.find(
+        (locale) => locale.code === spanish.code,
+      ),
+    ).toBeUndefined()
+
+    controller.removeLocale(japanese) // by descriptor
+    expect(
+      controller.availableLocales.find(
+        (locale) => locale.code === japanese.code,
+      ),
+    ).toBeUndefined()
   })
 
   test('AB localeload event called after locale creation', () => {
@@ -123,19 +173,19 @@ describe('controller', () => {
   })
 
   test('added messages are used', () => {
-    expect(translate('greeting', { username: 'Brawaru' })).toBe(
+    expect(controller.formatMessage('greeting', { username: 'Brawaru' })).toBe(
       'Hello, Brawaru!',
     )
-    expect(translate('goodbye', { username: 'Brawaru' })).toBe(
+    expect(controller.formatMessage('goodbye', { username: 'Brawaru' })).toBe(
       'Goodbye, Brawaru!',
     )
   })
 
   test('formatters work', () => {
-    expect(formats.list(['Oleksandr', 'Andriy', 'Inna'])).toBe(
+    expect(controller.formats.list(['Oleksandr', 'Andriy', 'Inna'])).toBe(
       'Oleksandr, Andriy, and Inna',
     )
-    expect(formats.relativeTime(25, 'days')).toBe('in 25 days')
+    expect(controller.formats.relativeTime(25, 'days')).toBe('in 25 days')
   })
 
   test('locale changes', async () => {
@@ -163,23 +213,23 @@ describe('controller', () => {
   })
 
   test('translate ƒ works after locale change', () => {
-    expect(translate('greeting', { username: 'Brawaru' })).toBe(
+    expect(controller.formatMessage('greeting', { username: 'Brawaru' })).toBe(
       'Привіт, Brawaru!',
     )
   })
 
   test('translate ƒ adds defaultMessage as fallback', () => {
-    expect(translate('goodbye', { username: 'Brawaru' })).toBe(
+    expect(controller.formatMessage('goodbye', { username: 'Brawaru' })).toBe(
       'Goodbye, Brawaru!',
     )
   })
 
   test('formatters update after locale change', () => {
-    expect(formats.list(['Олександр', 'Андрій', 'Інна'])).toBe(
+    expect(controller.formats.list(['Олександр', 'Андрій', 'Інна'])).toBe(
       'Олександр, Андрій і Інна',
     )
 
-    expect(formats.relativeTime(25, 'days')).toBe('через 25 днів')
+    expect(controller.formats.relativeTime(25, 'days')).toBe('через 25 днів')
   })
 })
 
