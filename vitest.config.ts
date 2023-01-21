@@ -6,5 +6,6 @@ export default defineConfig({
     deps: {
       registerNodeLoader: true,
     },
+    environment: 'happy-dom',
   },
 })

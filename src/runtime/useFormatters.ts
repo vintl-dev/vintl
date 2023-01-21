@@ -1,11 +1,15 @@
-import type { MessageValueType } from '../index.js'
 import type { FormatAliases } from '../partial/intl.js'
-import { getInstance } from '../utils/vue.js'
+import type { MessageValueType } from '../types/messages.js'
+import { useI18n } from './useI18n.js'
 
-export function useFormatters(): FormatAliases<MessageValueType> {
-  const fmt = (getInstance() as any).$fmt
-  if (fmt == null) {
-    throw new Error('Cannot retrieve formatter aliases for the current context')
-  }
-  return fmt
+/**
+ * A composable to retrieve the format function aliases from the installed
+ * controller in the current app.
+ *
+ * @deprecated Please use `const { formats } = useI18n()` instead.
+ * @throws If controller cannot be found in the current application or current
+ *   application cannot be determined (called outside of `setup()` call).
+ */
+export function useFormatters<T = MessageValueType>(): FormatAliases<T> {
+  return useI18n().formats
 }

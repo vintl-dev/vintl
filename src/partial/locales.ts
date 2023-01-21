@@ -1,5 +1,5 @@
 import { asyncComputed, type AsyncComputedRef } from '@braw/async-computed'
-import { computed, shallowRef, type Ref } from 'vue'
+import { computed, shallowRef, toRaw, type Ref } from 'vue'
 import {
   AutomaticStateChangeEvent,
   LocaleChangeEvent,
@@ -379,7 +379,7 @@ export function useLocalesPartial<ControllerType>(
     const index = $config.locales.findIndex(
       typeof descriptor === 'string'
         ? (locale) => locale.code === descriptor
-        : (locale) => locale === descriptor,
+        : (locale) => toRaw(locale) === descriptor,
     )
 
     return index === -1 ? null : $config.locales.splice(index, 1)[0] ?? null

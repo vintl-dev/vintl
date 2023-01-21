@@ -1,17 +1,11 @@
-import _Vue, {
+import {
   getCurrentInstance,
-  type VNode as _VNode,
   watch,
   type WatchSource,
   type WatchCallback,
   type WatchStopHandle,
+  type WatchOptions,
 } from 'vue'
-import type { WatchOptions } from 'vue/types/v3-generated.js'
-
-const Vue = (() => {
-  const v = _Vue as any // ????
-  return 'default' in v ? v.default : v
-})()
 
 type NonNully<T> = T extends null | undefined ? never : T
 
@@ -27,35 +21,6 @@ export function getInstance(): NonNully<
     throw new Error('Vue instance is not available in this context')
   }
   return instance.proxy
-}
-
-const VNode = Object.getPrototypeOf(Vue.prototype._e())?.constructor ?? null
-
-if (VNode == null) {
-  throw new Error(
-    'Something went terribly wrong because constructor for VNode cannot be found anymore',
-  )
-}
-
-/**
- * Checks whether the provided value is an instance of VNode.
- *
- * @param value Value to check.
- * @returns `true` if value is a VNode, otherwise `false`.
- */
-export function isVNode(value: unknown): value is _VNode {
-  return value instanceof VNode
-}
-
-/**
- * Creates VNode specifically for text.
- *
- * @param value Text inside the node, any passed value will be converted to
- *   string using `String(value)`.
- * @returns VNode or text.
- */
-export function createTextNode(value: unknown): _VNode {
-  return Vue.prototype._v(value)
 }
 
 /**

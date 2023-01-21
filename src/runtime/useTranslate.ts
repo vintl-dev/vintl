@@ -1,14 +1,14 @@
 import type { TranslateFunction } from '../types/translateFunction.js'
-import { getInstance } from '../utils/vue.js'
+import { useI18n } from './useI18n.js'
 
+/**
+ * A composable to retrieve function to format a message from the installed
+ * controller in the current app.
+ *
+ * @deprecated Please use `const { formatMessage } = useI18n()` instead.
+ * @throws If controller cannot be found in the current application or current
+ *   application cannot be determined (called outside of `setup()` call).
+ */
 export function useTranslate(): TranslateFunction {
-  const t = (getInstance() as any).$t as TranslateFunction
-
-  if (t === null) {
-    throw new Error(
-      'Cannot retrieve translate function for the current context',
-    )
-  }
-
-  return t
+  return useI18n().formatMessage
 }
