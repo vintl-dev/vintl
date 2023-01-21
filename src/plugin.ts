@@ -1,11 +1,11 @@
-import type { PluginObject } from 'vue'
+import type { App } from 'vue'
 import type { ControllerConfiguration } from './partial/config.js'
 import type { FormatAliases } from './partial/intl.js'
 import { createController } from './IntlController.js'
 import type { IntlController } from './partial/types.js'
 import type { TranslateFunction } from './types/translateFunction.js'
 import { createHashMap } from './utils/hashmap.js'
-import { createTranslateFunction } from './translateFunction.js'
+import { controllerKey } from './consts.js'
 
 /** Represents options for the plugin. */
 export interface PluginOptions<ControllerType> {
@@ -25,9 +25,9 @@ export interface PluginOptions<ControllerType> {
    * Whether the plugin's properties will be automatically injected to all
    * instances of Vue.
    *
-   * Set this to `false` if you want to utilise composables instead.
+   * Set this to `false` if you want to utilise only composables instead.
    *
-   * @default true // $t, $i18n, $fmt can be accessed via Vue
+   * @default true // $t, $i18n, $fmt are automatically created in components.
    */
   globalMixin?: boolean
 
@@ -58,13 +58,13 @@ type GetterOf<T> = Omit<
     set(value: T): void
   } */
 
-type ValueOf<T> = Omit<
-  PropertyDescriptor,
-  'value' | keyof DefaultDescriptorOverrides
-> &
-  DefaultDescriptorOverrides & {
-    value: T
-  }
+// type ValueOf<T> = Omit<
+//   PropertyDescriptor,
+//   'value' | keyof DefaultDescriptorOverrides
+// > &
+//   DefaultDescriptorOverrides & {
+//     value: T
+//   }
 
 /** Represents global properties that are injected in `Vue.prototype`. */
 export interface PluginInjections<ControllerType>
@@ -76,7 +76,7 @@ export interface PluginInjections<ControllerType>
   $i18n: GetterOf<IntlController<ControllerType>>
 
   /** Injection for the translate function. */
-  $t: ValueOf<TranslateFunction>
+  $t: GetterOf<TranslateFunction>
 }
 
 type InjectedValues<Injections> = {
@@ -126,12 +126,37 @@ export type InjectedProperties<
   InjectedGetters<Injections> &
   InjectedGettersAndSetters<Injections>
 
-export interface Plugin<ControllerType> extends PluginObject<never> {
-  getOrCreateController(
-    config?: Partial<ControllerConfiguration<ControllerType>>,
-  ): IntlController<ControllerType>
+export interface Plugin<ControllerType> {
+  /**
+   * @returns Either previously created or newly instantiated controller
+   *   instance.
+   */
+  getOrCreateController(): IntlController<ControllerType>
+
+  /** @returns A map of property descriptors that can be used for injecting. */
   getInjections(): PluginInjections<ControllerType>
+
+  /**
+   * Creates a new object with `null` prototype and defines injections on it.
+   *
+   * @deprecated This will be removed in one of the next major releases.
+   *
+   *   Please access properties ({@link IntlController.formats},
+   *   {@link IntlController.formatMessage}) directly on the controller instance
+   *   that can be retrieved using {@link getOrCreateController}, or use:
+   *
+   *   ```ts
+   *   Object.defineProperties(Object.create(null), plugin.getInjections())
+   *   ```
+   */
   toProperties(): InjectedProperties<ControllerType>
+
+  /**
+   * Installs plugin in the provided Vue App in accordance to plugin options.
+   *
+   * @param app Vue App on which to install this plugin.
+   */
+  install(app: App): void
 }
 
 export function createPlugin<ControllerType = string>(
@@ -139,69 +164,65 @@ export function createPlugin<ControllerType = string>(
 ): Plugin<ControllerType> {
   let controllerInstance: IntlController<ControllerType> | null = null
 
-  function retrieveController() {
+  function getOrCreateController() {
     if (controllerInstance == null) {
-      throw new Error('Controller is not initialised')
+      controllerInstance = createController(opts?.controllerOpts)
     }
 
     return controllerInstance
   }
 
-  let translateFunction: TranslateFunction | null = null
+  function getInjections(): PluginInjections<ControllerType> {
+    const controller = getOrCreateController()
+
+    return {
+      $fmt: {
+        configurable: true,
+        get() {
+          return controller.formats
+        },
+      },
+      $t: {
+        configurable: true,
+        get() {
+          return controller.formatMessage
+        },
+      },
+      $i18n: {
+        configurable: true,
+        get() {
+          return controller
+        },
+      },
+    }
+  }
 
   return {
-    getOrCreateController() {
-      if (controllerInstance == null) {
-        controllerInstance = createController(opts?.controllerOpts)
-      }
-
-      return controllerInstance
-    },
-    getInjections() {
-      const controller = this.getOrCreateController()
-
-      if (translateFunction == null) {
-        translateFunction = createTranslateFunction(controller)
-      }
-
-      return {
-        $fmt: {
-          configurable: true,
-          get() {
-            return retrieveController().formats
-          },
-        },
-        $t: {
-          configurable: true,
-          value: translateFunction,
-        },
-        $i18n: {
-          configurable: true,
-          get: retrieveController,
-        },
-      }
-    },
+    getOrCreateController,
+    getInjections,
     toProperties() {
-      return Object.defineProperties(
-        createHashMap() as any,
-        this.getInjections(),
-      )
+      return Object.defineProperties(createHashMap() as any, getInjections())
     },
-    install(vue) {
-      const injections = this.getInjections()
+    install(app) {
+      app.provide(controllerKey, getOrCreateController())
 
       if (opts?.globalMixin ?? true) {
-        Object.defineProperties(vue.prototype, injections)
+        app.mixin({
+          beforeCreate() {
+            Object.defineProperties(this, getInjections())
+          },
+        })
       }
 
       if (opts?.injectInto != null) {
+        const injections = getInjections()
         for (const injectionSite of opts.injectInto) {
           Object.defineProperties(injectionSite, injections)
         }
       }
 
       if (opts?.globalComponent ?? true) {
-        vue.component(
+        app.component(
           'IntlFormatted',
           import('./IntlFormatted.js').then((module) => module.IntlFormatted),
         )

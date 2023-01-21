@@ -42,7 +42,7 @@ export function createController<ControllerType>(
 
   const intlPartial = useIntlPartial<ControllerType>(
     configPartial.$config,
-    dataPartial.$messages,
+    dataPartial,
   )
 
   controllerBox.value = mergeDescriptors(

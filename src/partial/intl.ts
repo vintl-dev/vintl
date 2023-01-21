@@ -3,13 +3,23 @@ import {
   createIntlCache,
   type IntlShape,
 } from '@braw/extended-intl'
-import { computed, type ComputedRef, ref } from 'vue'
-import type { MessagesMap } from '../types/messages.js'
-import { defineRefGetters } from '../utils/definer.js'
+import { computed, ref } from 'vue'
+import type { TranslateFunction } from '../types/index.js'
+import type {
+  MessageContent,
+  MessageDescriptor,
+  MessagesMap,
+} from '../types/messages.js'
+import {
+  defineGetters,
+  defineRefGetters,
+  mergeDescriptors,
+} from '../utils/definer.js'
 import { createHashMap as createHashmap } from '../utils/hashmap.js'
 import type { ReverseMap } from '../utils/types.js'
 import { observe } from '../utils/vue.js'
 import type { ControllerConfiguration } from './config.js'
+import type { LocaleDataPartial } from './data.js'
 
 const formatAliases = {
   formatCompactNumber: 'compactNumber',
@@ -55,11 +65,20 @@ export interface IntlPartial<T> {
 
   /** Active {@link IntlShape} instance. */
   get intl(): IntlShape<T>
+
+  /**
+   * Improved variant of {@link IntlShape.formatMessage} function that uses
+   * {@link LocaleDataPartial.defaultMessages} as fallback if string is missing
+   * from the messages of the current locale.
+   *
+   * @see {@link TranslateFunction} For information about parameters and return values.
+   */
+  get formatMessage(): TranslateFunction
 }
 
 export function useIntlPartial<ControllerType>(
   $config: ControllerConfiguration<ControllerType>,
-  $messages: ComputedRef<Partial<MessagesMap>>,
+  localeDataPartial: LocaleDataPartial,
 ): IntlPartial<ControllerType> {
   const $formats = ref(createHashmap() as FormatAliases<ControllerType>)
 
@@ -70,7 +89,7 @@ export function useIntlPartial<ControllerType>(
       {
         locale: $config.locale,
         defaultLocale: $config.defaultLocale,
-        messages: $messages.value as MessagesMap,
+        messages: localeDataPartial.messages as MessagesMap,
       },
       intlCache,
     ),
@@ -83,5 +102,48 @@ export function useIntlPartial<ControllerType>(
     }
   })
 
-  return defineRefGetters({ $formats, $intl })
+  const formatMessage: TranslateFunction = function formatMessage(
+    descriptor,
+    values,
+    opts?,
+  ) {
+    let result: ReturnType<IntlPartial<ControllerType>['intl']['$t']> = ''
+
+    const normalizedDescriptor: MessageDescriptor =
+      typeof descriptor === 'string'
+        ? {
+            id: descriptor,
+            defaultMessage: localeDataPartial.defaultMessages[
+              descriptor
+            ] as MessageContent,
+          }
+        : descriptor
+
+    result = $intl.value.formatMessage(
+      normalizedDescriptor,
+      values as Record<string, any>,
+      opts,
+    )
+
+    if (typeof result === 'string') {
+      return result
+    }
+
+    if (Array.isArray(result)) {
+      let normalizedResult = ''
+
+      for (const item of result) {
+        normalizedResult += String(item)
+      }
+
+      return normalizedResult
+    }
+
+    return String(result)
+  }
+
+  return mergeDescriptors(
+    defineRefGetters({ $formats, $intl }),
+    defineGetters({ formatMessage }),
+  )
 }
