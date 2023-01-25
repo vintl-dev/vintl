@@ -85,7 +85,7 @@
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.1",
-    "@braw/extended-intl": "^1.0.1",
+    "@braw/extended-intl": "^2.0.0",
     "@formatjs/intl": "^2.6.3",
     "@formatjs/intl-localematcher": "^0.2.32",
     "intl-messageformat": "^10.2.5",
