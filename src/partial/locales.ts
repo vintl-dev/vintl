@@ -152,7 +152,9 @@ export function useLocalesPartial<ControllerType>(
 
       for (const locale of newLocales) {
         if (tags.has(locale.tag)) {
-          throw new Error(`Duplicate locale ${locale.tag} has been detected`)
+          throw new Error(
+            `Locale descriptor with tag "${locale.tag}" has already been added`,
+          )
         }
 
         tags.add(locale.tag)
@@ -187,7 +189,7 @@ export function useLocalesPartial<ControllerType>(
 
     if (descriptor == null) {
       throw new Error(
-        `Cannot find the locale descriptor for the locale ${localeTag}`,
+        `Cannot find the locale descriptor for the locale "${localeTag}"`,
       )
     }
 
@@ -203,7 +205,7 @@ export function useLocalesPartial<ControllerType>(
 
     if (locale == null) {
       throw new Error(
-        `Locale for the provided descriptor of ${descriptor.tag} does not exist`,
+        `Locale for the provided descriptor of "${descriptor.tag}" does not exist`,
       )
     }
 
