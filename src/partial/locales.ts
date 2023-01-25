@@ -36,30 +36,30 @@ export interface LocalesPartial {
   /** @returns Whether the current locale is loaded. */
   get ready(): boolean
 
-  /** BCP 47 code of the currently used locale. */
+  /** BCP 47 language tag of the currently used locale. */
   get locale(): string
 
   /**
    * Finds a descriptor for one of the existing locales. Descriptor objects may
    * contain useful information regarding the presentation of locale.
    *
-   * @param localeCode BCP 47 locale code to search for descriptor.
+   * @param localeTag BCP 47 language tag of the locale.
    * @returns Descriptor for the locale or `undefined`, if none exists.
    */
-  getLocaleDescriptor(localeCode: string): LocaleDescriptor | undefined
+  getLocaleDescriptor(localeTag: string): LocaleDescriptor | undefined
 
   /**
    * Adds the provided descriptor to the configuration.
    *
-   * If locale for the provided locale code or descriptor already exists, that
+   * If locale for the provided language tag or descriptor already exists, that
    * locale will be replaced, causing all associated with it data to be
    * deleted.
    *
-   * @param descriptor Descriptor or a BCP 47 locale code for which the
+   * @param descriptor Descriptor or a BCP 47 language tag for which the
    *   descriptor is created.
    * @param force Whether to override any existing locale.
    * @returns Descriptor that was added.
-   * @throws Error if locale with the same locale code exists but `force` is not
+   * @throws Error if locale with the same locale tag exists but `force` is not
    *   provided or is set to `false`.
    */
   addLocale(
@@ -70,7 +70,7 @@ export interface LocalesPartial {
   /**
    * Removes the locale from the configuration.
    *
-   * @param descriptor Descriptor or BCP 47 locale code of any existing locale.
+   * @param descriptor Descriptor or BCP 47 language tag of any existing locale.
    * @returns Removed locale descriptor or `null` if no locale was removed.
    */
   removeLocale(descriptor: string | LocaleDescriptor): LocaleDescriptor | null
@@ -84,7 +84,7 @@ export interface LocalesPartial {
    * @param messages A map of messages for the locale for adding. This is
    *   partial, therefore any message keys that were assigned to `undefined`
    *   value will be removed.
-   * @throws Error if locale with such code or descriptor does not exist.
+   * @throws Error if locale with such tag or descriptor does not exist.
    */
   addMessages(
     descriptor: string | LocaleDescriptor,
@@ -92,27 +92,25 @@ export interface LocalesPartial {
   ): void
 
   /**
-   * Changes the current locale to one of defined locales based on the provided
-   * code, or switches to one of the preferred locales and switches automatic
-   * one, if `'auto'` is passed as a locale code.
+   * Changes the current locale to one of defined locales based on its language
+   * tag. Alternatively, if `'auto'` is passed as a language tag, switches to
+   * one of the preferred locales and toggles automatic mode on.
    *
-   * If passed locale code is not `'auto'`, proceeds to fire an event about the
-   * locale change. If that event is cancelled, throws an exception. proceeds by
-   * firing another event about locale load, any defined event handlers will
-   * proceed to define locale messages in asynchronous manner, if any of them
-   * throws an exception, than the whole.
-   *
-   * @param localeCode BCP 47 code of the locale to use.
-   * @returns Promise that will resolve when the locale is loaded.
+   * @param localeTag BCP 47 language tag of the locale to use.
+   * @returns Promise that will resolve when the locale is loaded, or rejected
+   *   if locale change is cancelled or any of the locale load event handlers
+   *   rejects.
    */
   changeLocale(
-    localeCode: 'auto' | (string & Record<never, never>),
+    localeTag: 'auto' | (string & Record<never, never>),
   ): Promise<void>
 
   /**
    * Waits until the locale loading is complete and controller is ready for use.
    *
-   * @throws If error occurs during the locale loading.
+   * @returns A promise that will be resolved after the default and current
+   *   locales finish loading, otherwise it will be rejected with the reason of
+   *   unsuccessful load.
    */
   waitUntilReady(): Promise<void>
 }
@@ -129,9 +127,9 @@ type LocaleChangeRequest = readonly [
 ]
 
 /**
- * Represents a result of querying a locale by its code, which is a tuple where
- * the first element is the locale object and the second element is this
- * locale's descriptor.
+ * Represents a result of querying a locale by its language tag, which is a
+ * tuple where the first element is the locale object and the second element is
+ * this locale's descriptor.
  */
 type LocaleQueryResult = readonly [locale: Locale, descriptor: LocaleDescriptor]
 
@@ -150,14 +148,14 @@ export function useLocalesPartial<ControllerType>(
     (newLocales) => {
       const knownLocales = new Map($locales.value)
 
-      const knownLocaleCodes = new Set<string>()
+      const tags = new Set<string>()
 
       for (const locale of newLocales) {
-        if (knownLocaleCodes.has(locale.code)) {
-          throw new Error(`Duplicate locale ${locale.code} has been detected`)
+        if (tags.has(locale.tag)) {
+          throw new Error(`Duplicate locale ${locale.tag} has been detected`)
         }
 
-        knownLocaleCodes.add(locale.code)
+        tags.add(locale.tag)
 
         if (includes(knownLocales.keys(), locale)) continue
 
@@ -177,19 +175,19 @@ export function useLocalesPartial<ControllerType>(
     },
   )
 
-  function getLocaleDescriptor(localeCode: string) {
+  function getLocaleDescriptor(localeTag: string) {
     return find(
       $locales.value.keys(),
-      (descriptor) => descriptor.code === localeCode,
+      (descriptor) => descriptor.tag === localeTag,
     )
   }
 
-  function getLocaleDescriptorAssertive(localeCode: string) {
-    const descriptor = getLocaleDescriptor(localeCode)
+  function getLocaleDescriptorAssertive(localeTag: string) {
+    const descriptor = getLocaleDescriptor(localeTag)
 
     if (descriptor == null) {
       throw new Error(
-        `Cannot find the locale descriptor for the locale ${localeCode}`,
+        `Cannot find the locale descriptor for the locale ${localeTag}`,
       )
     }
 
@@ -205,15 +203,15 @@ export function useLocalesPartial<ControllerType>(
 
     if (locale == null) {
       throw new Error(
-        `Locale for the provided descriptor of ${descriptor.code} does not exist`,
+        `Locale for the provided descriptor of ${descriptor.tag} does not exist`,
       )
     }
 
     return locale
   }
 
-  function getLocaleByCodeAssertive(localeCode: string): LocaleQueryResult {
-    const descriptor = getLocaleDescriptorAssertive(localeCode)
+  function getLocaleByTagAssertive(localeTag: string): LocaleQueryResult {
+    const descriptor = getLocaleDescriptorAssertive(localeTag)
     const locale = getLocaleAssertive(descriptor)
 
     return [locale, descriptor] as const
@@ -226,11 +224,11 @@ export function useLocalesPartial<ControllerType>(
   function computeInitialChange(): LocaleChangeRequest {
     const automatic = $config.usePreferredLocale
 
-    const localeCode = automatic
+    const localeTag = automatic
       ? prefersPartial.preferredLocale
       : $config.locale
 
-    return [...getLocaleByCodeAssertive(localeCode), automatic]
+    return [...getLocaleByTagAssertive(localeTag), automatic]
   }
 
   const $pendingLocaleChange = shallowRef(computeInitialChange())
@@ -241,7 +239,7 @@ export function useLocalesPartial<ControllerType>(
     async function callEventAndGetResult() {
       if (!(await eventTarget.dispatchEvent(event))) {
         throw new Error(
-          `Cannot load locale data for the locale "${descriptor.code}": load event is cancelled`,
+          `Cannot load locale data for the locale "${descriptor.tag}": load event is cancelled`,
         )
       }
 
@@ -252,7 +250,7 @@ export function useLocalesPartial<ControllerType>(
   }
 
   const $defaultLocale = computed(() =>
-    getLocaleByCodeAssertive($config.defaultLocale),
+    getLocaleByTagAssertive($config.defaultLocale),
   )
 
   let lastDefaultLocale: LocaleQueryResult | null = null
@@ -304,7 +302,7 @@ export function useLocalesPartial<ControllerType>(
         }
       }
 
-      $config.locale = descriptor.code
+      $config.locale = descriptor.tag
 
       eventTarget.dispatchEvent(
         new AfterLocaleChangeEvent(
@@ -332,12 +330,12 @@ export function useLocalesPartial<ControllerType>(
   observe(
     () => ({
       isEnabled: $automatic.value,
-      localeCode: prefersPartial.preferredLocale,
+      localeTag: prefersPartial.preferredLocale,
     }),
-    ({ isEnabled, localeCode }) => {
+    ({ isEnabled, localeTag }) => {
       if (!isEnabled) return
 
-      const [locale, descriptor] = getLocaleByCodeAssertive(localeCode)
+      const [locale, descriptor] = getLocaleByTagAssertive(localeTag)
 
       if (!canChangeLocale(descriptor, true)) return
 
@@ -350,16 +348,14 @@ export function useLocalesPartial<ControllerType>(
     force?: boolean,
   ): LocaleDescriptor {
     const normalizedDescriptor: LocaleDescriptor =
-      typeof descriptor === 'string' ? { code: descriptor } : descriptor
+      typeof descriptor === 'string' ? { tag: descriptor } : descriptor
 
     const newLocales: LocaleDescriptor[] = []
 
     for (const locale of $config.locales) {
-      if (locale.code === normalizedDescriptor.code) {
+      if (locale.tag === normalizedDescriptor.tag) {
         if (!force) {
-          throw new Error(
-            `Locale "${normalizedDescriptor.code}" already exists`,
-          )
+          throw new Error(`Locale "${normalizedDescriptor.tag}" already exists`)
         }
       } else {
         newLocales.push(locale)
@@ -378,7 +374,7 @@ export function useLocalesPartial<ControllerType>(
   ): LocaleDescriptor | null {
     const index = $config.locales.findIndex(
       typeof descriptor === 'string'
-        ? (locale) => locale.code === descriptor
+        ? (locale) => locale.tag === descriptor
         : (locale) => toRaw(locale) === descriptor,
     )
 
@@ -392,7 +388,7 @@ export function useLocalesPartial<ControllerType>(
     let locale: Locale | undefined
 
     if (typeof descriptor === 'string') {
-      locale = getLocaleByCodeAssertive(descriptor)[0]
+      locale = getLocaleByTagAssertive(descriptor)[0]
     } else {
       locale = getLocaleAssertive(descriptor)
     }
@@ -413,15 +409,15 @@ export function useLocalesPartial<ControllerType>(
     await $loading.promise
   }
 
-  async function changeLocale(localeCode: string) {
+  async function changeLocale(localeTag: string) {
     let newLocale: readonly [Locale, LocaleDescriptor] | undefined
 
-    if (localeCode === 'auto') {
+    if (localeTag === 'auto') {
       if (!canToggleAutomation(true)) {
         throw new Error('Enabling of automatic mode has been cancelled')
       }
     } else {
-      newLocale = getLocaleByCodeAssertive(localeCode)
+      newLocale = getLocaleByTagAssertive(localeTag)
 
       if ($automatic.value && !canToggleAutomation(false)) {
         throw new Error('Disabling of automatic mode has been cancelled')
@@ -429,7 +425,7 @@ export function useLocalesPartial<ControllerType>(
 
       // TODO: move before automatic state change event after converted to beforelocalechange
       if (!canChangeLocale(newLocale[1], false)) {
-        throw new Error(`Locale change to "${localeCode}" was cancelled`)
+        throw new Error(`Locale change to "${localeTag}" was cancelled`)
       }
     }
 

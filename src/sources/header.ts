@@ -21,9 +21,9 @@ export function parseHeaderValue(value: string): AcceptedLanguage[] {
   for (let part of value.split(',')) {
     part = part.trim()
 
-    const [code, ...valueParts] = part.split(';')
+    const [tag, ...valueParts] = part.split(';')
 
-    const language: AcceptedLanguage = [code, 1]
+    const language: AcceptedLanguage = [tag, 1]
 
     for (const valuePart of valueParts) {
       const [key, value, invalid] = valuePart.split('=')

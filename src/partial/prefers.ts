@@ -14,7 +14,10 @@ interface SourceEntry {
 }
 
 export interface AutomationPartial {
-  /** BCP 47 code of the locale preferred by one of the automatic sources. */
+  /**
+   * BCP 47 language tag of the locale preferred by one of the automatic
+   * sources.
+   */
   get preferredLocale(): string
 
   /**
@@ -91,7 +94,7 @@ export function usePrefersPartial<ControllerType>(
 
       return matchLocale(
         value,
-        $config.locales.map((it) => it.code),
+        $config.locales.map((it) => it.tag),
         $config.defaultLocale,
       )
     }
