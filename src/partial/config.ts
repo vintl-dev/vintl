@@ -32,7 +32,7 @@ export interface ControllerConfiguration<ControllerType> {
    * Defaults to newly meta-less generated descriptors for the default and
    * current locales.
    *
-   * @default [{ code: 'en-US' }]
+   * @default [{ tag: 'en-US' }]
    */
   locales: LocaleDescriptor[]
 
@@ -64,7 +64,7 @@ export interface ConfigPartial<ControllerType> {
   /** A read-only array of all available locale descriptors. */
   get availableLocales(): readonly LocaleDescriptor[]
 
-  /** BCP 47 code of the default locale. */
+  /** BCP 47 language tag of the default locale. */
   get defaultLocale(): string
 
   /** {@link Intl.Locale} for the current locale. */
@@ -82,10 +82,10 @@ function createConfig<ControllerType>(
   if (locales == null) {
     locales = []
 
-    locales.push({ code: defaultLocale })
+    locales.push({ tag: defaultLocale })
 
     if (locale !== defaultLocale) {
-      locales.push({ code: locale })
+      locales.push({ tag: locale })
     }
   }
 
