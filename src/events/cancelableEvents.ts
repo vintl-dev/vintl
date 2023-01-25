@@ -58,6 +58,7 @@ export function isCancelable(event: Event): event is Event & CancelableEvent {
  * Checks whether the provided event has been cancelled.
  *
  * There are two reasons you may prefer this utility function to using
+ * {@link CancelableEvent.canceled}.
  *
  * - {@link CancelableEvent.canceled} method is marked as configurable and can be
  *   overridden by bad code.
