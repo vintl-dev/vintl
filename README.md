@@ -4,19 +4,17 @@
 
 ## ⚠ Caution!
 
-This project was not thoughtfully tested, it is a port of [code](https://github.com/modrinth/knossos/pull/738) to support internationalisation of [Modrinth](https://modrinth.com/) front-end. It is published early because its author could not figure out monorepos...
-
-That is also the reason why this project targets Vue 2.7 even though Vue 3 is out for quite some time and is recommended to use. It will support Vue 3 in future, it already uses a lot of Vue 3 features that were ported in 2.7.
+This project was not thoughtfully tested, it is a port of [code](https://github.com/modrinth/knossos/pull/738) to support internationalisation of [Modrinth](https://modrinth.com/) front-end. It is published early for development reasons.
 
 ## Summary
 
 [`@braw/extended-intl`](https://npm.im/@braw/extended-intl), being a wrapper for [`@formatjs/intl`](https://formatjs.io/docs/intl), allows to easily implement access to localisation using ICU MessageFormat messages.
 
-However, using it in Vue in dynamic manner is not an easy task if you want to preserve most of its functionality and more. That's why this package was created, it allows to reactively control `Intl` instance, as well supplies it to all Vue components, including helpful methods like `$t` or `$fmt`.
+However, using it in Vue in dynamic manner is not an easy task if you want to preserve most of its functionality and more. This package was created to solve that.
 
 It is created with extensibility in mind, so you can extend upon it and add support for it in other frameworks, like Nuxt (module for Nuxt is being worked on). On your disposal events, asynchronous loading mechanism and even some of the internals exposed.
 
-As a consumer, you also get to use runtime functions allowing you to rename `$t` and `$fmt` helpers through setup functions. There's also `<IntlFormatted>` component, which allows to use components while formatting the messages.
+As a consumer, there's a mixing that adds helpers like `$t`, `$fmt` and `$i18n` to your components (can be turned off), as well as `useI18n()` composable. There's also `<IntlFormatted>` component, which allows to use components while formatting the messages.
 
 Written in TypeScript, ambient type extension is possible for better type checking to the point where entire arguments used in messages can be type checked!
 
@@ -24,7 +22,7 @@ Written in TypeScript, ambient type extension is possible for better type checki
 
 ### Installation
 
-Install using your package manager:
+Install using your package manager of choice:
 
 **npm**
 
@@ -58,19 +56,19 @@ Create a plugin instance (you can do that inline, without variable):
 const plugin = createPlugin({
   // Options for the controller instance.
   controllerOpts: {
-    // All locale codes must be valid BCP 47 codes.
+    // All locale tags must be valid BCP 47 language tags.
 
-    // Code for the default locale. Must be one of the defined locales' code.
+    // Tag for the default locale. Must be one of the defined locales' tags.
     defaultLocale: 'en-US',
 
-    // Code for the currently used locale. Must also be defined in locales.
+    // Tag for the currently used locale. Must also be defined in locales.
     locale: 'en-US',
 
     // All defined locales.
     locales: [
       {
-        // BCP 47 code for the locale.
-        code: 'en-US',
+        // BCP 47 tag for the locale.
+        tag: 'en-US',
 
         // Any meta information that is available even if locale is not loaded.
         // Must be JSON encode-able.
@@ -81,46 +79,72 @@ const plugin = createPlugin({
     ],
   },
 
-  // Whether you want to automatically install <IntlFormatted> component
+  // Whether you want to automatically install <IntlFormatted> component.
   globalComponent: true,
 
-  // Whether to inject $t, $fmt and $i18n properties globally
+  // Whether to inject $t, $fmt and $i18n properties on components' creation.
   globalMixin: true,
 
-  // Additional injection sites like Vuex store or Nuxt app
+  // Additional injection sites like Vuex store or Nuxt app.
   injectInto: [],
 })
 ```
 
-Those are example options, in fact you can completely skip most of them, because they're already like that by default (except for `meta` for `en-US` locale).
+Those are example options, in fact you can completely skip most of them, because they're already like that by default (except for `meta` of `en-US` locale).
 
-If you need, you can already access the properties using:
-
-```ts
-const { $fmt, $i18n, $t } = plugin.toProperties()
-```
-
-Install plugin into your Vue instance using `Vue.use`:
+If you need, you can access properties by injecting them into a temporary object:
 
 ```ts
-Vue.use(plugin)
+const { $fmt, $i18n, $t } = Object.defineProperties({}, plugin.getInjections())
 ```
 
-You can now all of the controller features.
+Install plugin into your Vue app:
+
+```ts
+// ...
+const app = createApp(App)
+
+app.use(plugin)
+```
+
+You can now use all of the plugin's features:
 
 ```vue
 <script setup>
+import { useI18n } from '@braw/vue-intl-controller'
 import { defineMessages } from '@formatjs/intl'
 
 const messages = defineMessages({
+  today: {
+    id: 'today',
+    defaultMessage: 'Today is {date}'
+  }
+  motd: {
+    id: 'motd',
+    defaultMessage: 'Message of the day',
+  },
   greeting: {
     id: 'greeting',
     defaultMessage: 'Hello, {name}!',
   },
 })
+
+const { formatMessage: translate, formats: fmt } = $(useI18n())
 </script>
 
 <template>
+  <h2>
+    {{
+      translate(messages.today, {
+        date: fmt.date(Date.now(), {
+          dateStyle: 'long',
+          timeStyle: 'medium',
+        }),
+      })
+    }}
+  </h2>
+  <h3>{{ translate(messages.motd) }}</h3>
+
   <IntlFormatted :message-id="messages.greeting">
     <template #~name>
       <strong>World</strong>
@@ -131,12 +155,12 @@ const messages = defineMessages({
 
 ## Messages loading
 
-`IntlController` uses event-based approach to handling loading of messages. Whenever locale change is confirmed and inbound, the controller fires a `LocaleLoadEvent`. It is asynchronous, so your listener function may return a promise and it will prompt controller to wait before calling any other listeners.
+`IntlController` uses event-based approach to handling loading of messages. Whenever locale change is accepted, the controller fires a `LocaleLoadEvent`. It is asynchronous, so your listener function may return a promise and it will prompt controller to wait before calling any other listeners.
 
 > **Note**
 > There is approach to add messages that does not involve events, keep reading to learn more.
 
-If you created plugin, you can access controller using `getOrCreateController` function. As name implies, the controller is initialised lazily, whenever you try to install the plugin to Vue or call any of the getters like `toProperties` or `getOrCreateController`.
+If you created plugin, you can access controller using `getOrCreateController` function. As name implies, the controller is initialised lazily, whenever you try to install the plugin to Vue or call any of the getters like `getInjections` or `getOrCreateController`.
 
 ```ts
 const controller = plugin.getOrCreateController()
@@ -189,7 +213,8 @@ controller.addEventListener('localeload', async (e) => {
 There are two more events that you may want to know about:
 
 - `error` is called when any error occurs in controller's event target. If there are no listeners to that event then all listener errors are logged to console.
-- `localechange` is called when locale is about to change. It can be cancelled, then locale will remain as it is now and the initiator of locale change will receive an error.
+- `localechange` is called when locale is about to change. It can be cancelled, then locale will remain as it is and the initiator of locale change will receive an error.
+- `afterlocalechange` is called after the locale has been applied.
 
 Event listeners can have a priority, in case you need to load messages or data in certain order, it is specified in an object passed as third argument to `addEventListener`. They also can be called only once, and regardless of whether the event has been cancelled or not.
 
@@ -228,7 +253,7 @@ controller.addEventListener(
 
 ## Controller
 
-The controller is an object returned by `createController` function. It is not the class, but an object that combines all the reactive partials together. This object is typed as `IntlController<T>` and all of the properties and methods are thoughtfully documented. Most important ones are highlighted below.
+The controller is an object returned by `createController` function. It is not the class, but an object that combines all the reactive partials together. This object is typed as `IntlController<T>` and all of the properties and methods are thoroughly documented. Most important ones are highlighted below.
 
 ### Imperative management
 
@@ -248,7 +273,7 @@ const removedLocale = controller.removeLocale('en-GB')
 console.assert(britishEnglish === removedLocale)
 ```
 
-To add messages to the locales use `addMessages`, it accepts both code and descriptor. Under the hood it assigns messages, so you can also remove messages with it by providing `undefined` as a value for some key.
+To add messages to the locales use `addMessages`, it accepts both locale tag and descriptor. Under the hood it assigns messages, so you can also remove messages with it by providing `undefined` as a value for any key.
 
 ```ts
 const pirateEnglish = controller.addLocale('en-x-pirate')
