@@ -43,7 +43,7 @@ export function useLocaleDataPartial<ControllerType>(
     const descriptor = locales.getLocaleDescriptor(localeTag)
 
     if (descriptor == null) {
-      throw new Error(`Unknown locale "${localeTag}"`)
+      throw new Error(`No descriptor exists for locale with tag "${localeTag}"`)
     }
 
     return locales.$locales.value.get(descriptor)
