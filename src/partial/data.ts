@@ -39,11 +39,11 @@ export function useLocaleDataPartial<ControllerType>(
   $config: ControllerConfiguration<ControllerType>,
   locales: LocalesPartial,
 ): LocaleDataPartial {
-  function getLocale(localeCode: string) {
-    const descriptor = locales.getLocaleDescriptor(localeCode)
+  function getLocale(localeTag: string) {
+    const descriptor = locales.getLocaleDescriptor(localeTag)
 
     if (descriptor == null) {
-      throw new Error(`Unknown locale "${localeCode}"`)
+      throw new Error(`Unknown locale "${localeTag}"`)
     }
 
     return locales.$locales.value.get(descriptor)

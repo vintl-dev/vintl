@@ -121,32 +121,28 @@ describe('controller', () => {
   let japanese: LocaleDescriptor
 
   test('locales are added', async () => {
-    for (const localeCode of Object.keys(localesMap)) {
-      controller.addLocale(localeCode, true)
+    for (const localeTag of Object.keys(localesMap)) {
+      controller.addLocale(localeTag, true)
       await controller.waitUntilReady()
     }
 
     spanish = controller.addLocale('es')
     japanese = controller.addLocale('ja')
 
-    expect(controller.availableLocales.map((it) => it.code)).toEqual(
+    expect(controller.availableLocales.map((it) => it.tag)).toEqual(
       expect.arrayContaining(Object.keys(localesMap)),
     )
   })
 
   test('locales are removed', () => {
-    controller.removeLocale(spanish.code) // by code
+    controller.removeLocale(spanish.tag) // by tag
     expect(
-      controller.availableLocales.find(
-        (locale) => locale.code === spanish.code,
-      ),
+      controller.availableLocales.find((locale) => locale.tag === spanish.tag),
     ).toBeUndefined()
 
     controller.removeLocale(japanese) // by descriptor
     expect(
-      controller.availableLocales.find(
-        (locale) => locale.code === japanese.code,
-      ),
+      controller.availableLocales.find((locale) => locale.tag === japanese.tag),
     ).toBeUndefined()
   })
 
@@ -381,8 +377,8 @@ describe('controller events', () => {
 
     if (lastLocaleChangeCall) {
       const event = lastLocaleChangeCall[0]
-      expect(event.locale.code).toBe('en-US')
-      expect(event.previousLocale?.code).toBe('uk')
+      expect(event.locale.tag).toBe('en-US')
+      expect(event.previousLocale?.tag).toBe('uk')
     }
 
     controller.removeEventListener('localechange', localeChangeCallback)
@@ -394,7 +390,7 @@ describe('controller events', () => {
 
       let languageName: string
 
-      switch (e.locale.code) {
+      switch (e.locale.tag) {
         case 'de':
           languageName = 'Deutsch'
           break
@@ -412,7 +408,7 @@ describe('controller events', () => {
       e.addMessages({ languageName })
 
       e.addResources({
-        isUkrainian: e.locale.code === 'uk',
+        isUkrainian: e.locale.tag === 'uk',
       })
     })
 
@@ -430,7 +426,7 @@ describe('controller events', () => {
       const event = lastLocaleLoadCall[0]
 
       expect(event.collected).toBe(true)
-      expect(event.locale.code).toBe('uk')
+      expect(event.locale.tag).toBe('uk')
       expect(event.messages).toHaveProperty('languageName', 'Українська')
       expect(event.resources).toHaveProperty('isUkrainian', true)
     }
@@ -463,8 +459,8 @@ describe('controller events', () => {
 
     if (lastCall != null) {
       const event = lastCall[0]
-      expect(event.locale.code).toBe('de')
-      expect(event.previousLocale?.code).toBe('uk')
+      expect(event.locale.tag).toBe('de')
+      expect(event.previousLocale?.tag).toBe('uk')
     }
   })
 
@@ -599,7 +595,7 @@ describe('controller (different defaultLocale/locale)', () => {
     controller = createController({
       defaultLocale: 'en-US',
       locale: 'uk',
-      locales: [{ code: 'en-US' }, { code: 'uk' }],
+      locales: [{ tag: 'en-US' }, { tag: 'uk' }],
       listen: {
         localeload: localeLoadEventListener,
       },
@@ -614,8 +610,8 @@ describe('controller (different defaultLocale/locale)', () => {
 
     const { calls } = localeLoadEventListener.mock
 
-    expect(calls.length > 0 && calls.some(([e]) => e.locale.code === 'en-US'))
-    expect(calls.length > 0 && calls.some(([e]) => e.locale.code === 'uk'))
+    expect(calls.length > 0 && calls.some(([e]) => e.locale.tag === 'en-US'))
+    expect(calls.length > 0 && calls.some(([e]) => e.locale.tag === 'uk'))
   })
 
   test('re-creating default locale will call localeload for it', async () => {
@@ -626,7 +622,7 @@ describe('controller (different defaultLocale/locale)', () => {
 
     expect(localeLoadEventListener).toHaveBeenCalledOnce()
 
-    expect(localeLoadEventListener.mock.lastCall?.[0].locale.code).toBe('en-US')
+    expect(localeLoadEventListener.mock.lastCall?.[0].locale.tag).toBe('en-US')
   })
 
   test('re-creating current locale will call localeload for it', async () => {
@@ -637,7 +633,7 @@ describe('controller (different defaultLocale/locale)', () => {
 
     expect(localeLoadEventListener).toHaveBeenCalledOnce()
 
-    expect(localeLoadEventListener.mock.lastCall?.[0].locale.code).toBe('uk')
+    expect(localeLoadEventListener.mock.lastCall?.[0].locale.tag).toBe('uk')
   })
 
   test("changing locale to default won't call localeload", async () => {

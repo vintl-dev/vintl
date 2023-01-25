@@ -30,8 +30,8 @@ declare global {
  * internal type {@link JSONMap}.
  */
 export interface LocaleDescriptor {
-  /** BCP 47 of the locale code. */
-  code: string
+  /** BCP 47 language tag of the locale. */
+  tag: string
 
   /**
    * Meta data associated with the locale.
