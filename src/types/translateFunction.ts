@@ -21,6 +21,6 @@ import type {
 export type TranslateFunction = <ID extends MessageID>(
   this: void,
   descriptor: ID | MessageDescriptor<ID>,
-  values: CustomMessageValues<ID>,
+  values?: CustomMessageValues<ID>,
   opts?: Options,
 ) => string
