@@ -27,20 +27,24 @@ Install using your package manager of choice:
 **npm**
 
 ```sh
-npm i @braw/vue-intl-controller
+npm i @braw/extended-intl @braw/vue-intl-controller
 ```
 
 **pnpm**
 
 ```sh
-pnpm i @braw/vue-intl-controller
+pnpm i @braw/extended-intl @braw/vue-intl-controller
 ```
 
 **yarn**
 
 ```sh
-yarn add @braw/vue-intl-controller
+yarn add @braw/extended-intl @braw/vue-intl-controller
 ```
+
+> **Note**
+>
+> `@braw/extended-intl` is required to be installed separately because you are most likely want import locale data for it, so instead rely on hoisting, it makes sense to require all consumers of `vue-intl-controller` to install it.
 
 ### Usage
 
