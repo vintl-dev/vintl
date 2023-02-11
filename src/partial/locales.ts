@@ -93,16 +93,16 @@ export interface LocalesPartial {
 
   /**
    * Changes the current locale to one of defined locales based on its language
-   * tag. Alternatively, if `'auto'` is passed as a language tag, switches to
-   * one of the preferred locales and toggles automatic mode on.
+   * tag or descriptor. Alternatively, if `'auto'` is passed as a language tag,
+   * switches to one of the preferred locales and toggles automatic mode on.
    *
-   * @param localeTag BCP 47 language tag of the locale to use.
+   * @param descriptor BCP 47 language tag or descriptor of the locale to use.
    * @returns Promise that will resolve when the locale is loaded, or rejected
    *   if locale change is cancelled or any of the locale load event handlers
    *   rejects.
    */
   changeLocale(
-    localeTag: 'auto' | (string & Record<never, never>),
+    descriptor: 'auto' | (string & Record<never, never>) | LocaleDescriptor,
   ): Promise<void>
 
   /**
@@ -411,15 +411,19 @@ export function useLocalesPartial<ControllerType>(
     await $loading.promise
   }
 
-  async function changeLocale(localeTag: string) {
+  async function changeLocale(descriptor: string | LocaleDescriptor) {
     let newLocale: readonly [Locale, LocaleDescriptor] | undefined
 
-    if (localeTag === 'auto') {
+    if (descriptor === 'auto') {
       if (!canToggleAutomation(true)) {
         throw new Error('Enabling of automatic mode has been cancelled')
       }
     } else {
-      newLocale = getLocaleByTagAssertive(localeTag)
+      if (typeof descriptor === 'string') {
+        newLocale = getLocaleByTagAssertive(descriptor)
+      } else {
+        newLocale = [getLocaleAssertive(descriptor), descriptor]
+      }
 
       if ($automatic.value && !canToggleAutomation(false)) {
         throw new Error('Disabling of automatic mode has been cancelled')
@@ -427,7 +431,7 @@ export function useLocalesPartial<ControllerType>(
 
       // TODO: move before automatic state change event after converted to beforelocalechange
       if (!canChangeLocale(newLocale[1], false)) {
-        throw new Error(`Locale change to "${localeTag}" was cancelled`)
+        throw new Error(`Locale change to "${newLocale[1].tag}" was cancelled`)
       }
     }
 
