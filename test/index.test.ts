@@ -227,6 +227,16 @@ describe('controller', () => {
 
     expect(controller.formats.relativeTime(25, 'days')).toBe('через 25 днів')
   })
+
+  test('locale can be changed with descriptor', async () => {
+    await controller.changeLocale(controller.getLocaleDescriptor('en-US')!)
+
+    expect(controller.locale).toBe('en-US')
+
+    await controller.changeLocale(controller.getLocaleDescriptor('uk')!)
+
+    expect(controller.locale).toBe('uk')
+  })
 })
 
 describe('controller automation', () => {
