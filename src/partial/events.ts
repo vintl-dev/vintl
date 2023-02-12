@@ -143,7 +143,7 @@ export function useEventTargetPartial<T>(controllerBox: {
             )
 
             dispatchEvent(
-              new ErrorEvent(wrappedError, err, eventType, entry.listener),
+              new ErrorEvent(wrappedError, err, event, entry.listener),
             )
           }
         }
