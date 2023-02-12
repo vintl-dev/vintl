@@ -13,8 +13,8 @@ export class ErrorEvent implements Event {
     public readonly error: unknown,
     /** Cause of error, if any. */
     public readonly cause: unknown,
-    /** Event type which listener is listening to. */
-    public readonly eventType: string,
+    /** Event which listener failed to process. */
+    public readonly event: Event,
     /** The faulty listener. */
     public readonly listener: (e: Event) => any,
   ) {}
