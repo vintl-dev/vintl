@@ -24,6 +24,8 @@ export interface CollectableEvent<T> {
   /**
    * Calls collector, returns the collection result and marks the event as
    * collected.
+   *
+   * @internal
    */
   [CollectPropertyKey](): T
 }
