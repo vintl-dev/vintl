@@ -593,10 +593,21 @@ describe('controller events', () => {
 
     expect(faultyListener.mock.results.at(-1)?.type).toBe('throw')
 
-    expect(errorListener.mock.lastCall?.[0].error).toHaveProperty(
-      'cause',
-      faultyListener.mock.results.at(-1)?.value,
-    )
+    const errorEv = errorListener.mock.lastCall?.[0]
+
+    expect(errorEv).toBeDefined()
+
+    if (errorEv != null) {
+      const err = faultyListener.mock.results.at(-1)?.value
+
+      expect(errorEv.error).toHaveProperty('cause', err)
+
+      expect(errorEv.cause).toBe(err)
+
+      expect(errorEv.eventType).toBe(CustomEvent.type)
+
+      expect(errorEv.listener).toBe(faultyListener)
+    }
   })
 })
 

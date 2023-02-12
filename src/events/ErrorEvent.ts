@@ -11,5 +11,11 @@ export class ErrorEvent implements Event {
   constructor(
     /** Error that occurred. */
     public readonly error: unknown,
+    /** Cause of error, if any. */
+    public readonly cause: unknown,
+    /** Event type which listener is listening to. */
+    public readonly eventType: string,
+    /** The faulty listener. */
+    public readonly listener: (e: Event) => any,
   ) {}
 }
