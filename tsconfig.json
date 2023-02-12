@@ -12,7 +12,8 @@
     "importsNotUsedAsValues": "error",
     "rootDir": "src",
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": true,
+    "stripInternal": true
   },
   "exclude": ["test/**/*", "dist/**/*", "typings", "./*.ts"]
 }
