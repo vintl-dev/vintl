@@ -609,6 +609,38 @@ describe('controller events', () => {
       expect(errorEv.listener).toBe(faultyListener)
     }
   })
+
+  test(
+    'throwing error in error listener does not cause infinite loop',
+    () => {
+      let calls = 0
+
+      const faultyListener = vi.fn((e: ErrorEvent) => {
+        calls++
+
+        throw new Error(`This is a test error for error: ${String(e.error)}`)
+      })
+
+      controller.addEventListener('error', faultyListener)
+
+      controller.addEventListener(
+        CustomEvent.type,
+        () => {
+          throw new Error('This is a test error that should cause a disaster')
+        },
+        { once: true },
+      )
+
+      controller.dispatchEvent(new CustomEvent())
+
+      expect(calls).toBeLessThan(2)
+
+      controller.removeEventListener('error', faultyListener)
+    },
+    {
+      timeout: 1000,
+    },
+  )
 })
 
 describe('controller (different defaultLocale/locale)', () => {
