@@ -566,7 +566,7 @@ describe('controller events', () => {
   })
 
   test('dispatches error event properly', () => {
-    const faultyListener = vi.fn(() => {
+    const faultyListener = vi.fn((_e: CustomEvent) => {
       throw new Error('Unlucky!')
     })
 
@@ -604,7 +604,7 @@ describe('controller events', () => {
 
       expect(errorEv.cause).toBe(err)
 
-      expect(errorEv.eventType).toBe(CustomEvent.type)
+      expect(errorEv.event).toBe(faultyListener.mock.lastCall[0])
 
       expect(errorEv.listener).toBe(faultyListener)
     }
