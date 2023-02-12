@@ -130,7 +130,10 @@ export function useEventTargetPartial<T>(controllerBox: {
 
           if (allowAsync) await ret
         } catch (err) {
-          if ((eventRegister.get('error')?.size ?? 0) < 1) {
+          if (
+            eventType === 'error' ||
+            (eventRegister.get('error')?.size ?? 0) < 1
+          ) {
             // eslint-disable-next-line no-console
             console.error('Uncaught', err)
           } else {
