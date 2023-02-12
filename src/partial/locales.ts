@@ -113,21 +113,6 @@ export interface LocalesPartial {
    *   unsuccessful load.
    */
   waitUntilReady(): Promise<void>
-
-  /**
-   * Calls {@link waitUntilReady} and sets up callbacks for fulfillment and
-   * rejection. This makes it possible to use `await` expression on the
-   * controller itself.
-   *
-   * @param onFulfilled Callback to call after controller becomes ready to use.
-   * @param onRejected Callback to call if there is an error preparing the
-   *   controller.
-   * @unstable This API is experimental and may be removed at any time.
-   */
-  then(
-    onFulfilled: (value: void) => void,
-    onRejected: (reason: unknown) => void,
-  ): Promise<void>
 }
 
 /**
@@ -457,13 +442,6 @@ export function useLocalesPartial<ControllerType>(
     return waitUntilReady()
   }
 
-  function then(
-    onFulfilled: (value: void) => void,
-    onRejected: (reason: unknown) => void,
-  ): Promise<void> {
-    return waitUntilReady().then(onFulfilled, onRejected)
-  }
-
   return mergeDescriptors(
     defineGetters({ $loading, $defaultLocaleLoading, $locales }),
     defineRefGetters({ $automatic, $locale }),
@@ -477,7 +455,6 @@ export function useLocalesPartial<ControllerType>(
       addMessages,
       changeLocale,
       waitUntilReady,
-      then,
     },
   )
 }

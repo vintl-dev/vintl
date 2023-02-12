@@ -241,22 +241,6 @@ describe('controller', () => {
 
     expect(controller.locale).toBe('uk')
   })
-
-  test('can await for the controller (experiment)', async () => {
-    controller.changeLocale('en-US')
-    expect(controller.ready).toBe(false)
-
-    await controller
-    expect(controller.ready).toBe(true)
-    expect(controller.locale).toBe('en-US')
-
-    controller.changeLocale('uk')
-    expect(controller.ready).toBe(false)
-
-    await controller
-    expect(controller.ready).toBe(true)
-    expect(controller.locale)
-  })
 })
 
 describe('controller automation', () => {
