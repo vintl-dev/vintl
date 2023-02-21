@@ -1,4 +1,3 @@
-import type { CompactNumber } from '@braw/extended-intl'
 import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 import type { MessageValueType } from './messages.js'
 
@@ -31,7 +30,7 @@ export type RichArgument = FormatXMLElementFn<MessageValueType>
  *
  * Example of argument: `{value, number}`.
  */
-export type NumberArgument = string | number | bigint | CompactNumber
+export type NumberArgument = string | number | bigint
 
 /**
  * Represents a value for a date or time argument.

@@ -23,10 +23,6 @@ import {
 import { createPlugin, type Plugin } from '../dist/plugin'
 import { parseHeaderValue } from '../dist/sources/header'
 
-import '@braw/extended-intl/locale-data/en'
-import '@braw/extended-intl/locale-data/uk'
-import '@braw/extended-intl/locale-data/de'
-
 const autoBoundLocaleLoadListener = vi.fn((_e: LocaleLoadEvent) => {})
 
 const autoBoundLocaleChangeListener = vi.fn((_e: LocaleChangeEvent) => {})

@@ -1,13 +1,15 @@
-import type { MessageDescriptor as RawMessageDescriptor } from '@formatjs/intl'
+import type {
+  MessageDescriptor as RawMessageDescriptor,
+  IntlFormatters,
+} from '@formatjs/intl'
 import type { MessageFormatElement } from '@formatjs/icu-messageformat-parser'
 import type { VNode } from 'vue'
-import type { CompactNumber, IntlFormatters } from '@braw/extended-intl'
 
 declare global {
   namespace VueIntlController {
     /** Represents any value that controller accepts by default. */
     interface MessageValueTypes {
-      __defaults: VNode | CompactNumber
+      __defaults: VNode
     }
 
     /**
