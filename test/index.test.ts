@@ -1,3 +1,4 @@
+import { defineMessage } from '@formatjs/intl'
 import { describe, expect, test, vi } from 'vitest'
 import { type App, createApp, defineComponent } from 'vue'
 import {
@@ -211,12 +212,6 @@ describe('controller', () => {
   test('translate ƒ works after locale change', () => {
     expect(controller.formatMessage('greeting', { username: 'Brawaru' })).toBe(
       'Привіт, Brawaru!',
-    )
-  })
-
-  test('translate ƒ adds defaultMessage as fallback', () => {
-    expect(controller.formatMessage('goodbye', { username: 'Brawaru' })).toBe(
-      'Goodbye, Brawaru!',
     )
   })
 
@@ -562,7 +557,7 @@ describe('controller events', () => {
   })
 
   test('dispatches error event properly', () => {
-    const faultyListener = vi.fn((_e: CustomEvent) => {
+    const faultyListener = vi.fn((_e: Event) => {
       throw new Error('Unlucky!')
     })
 
@@ -600,7 +595,7 @@ describe('controller events', () => {
 
       expect(errorEv.cause).toBe(err)
 
-      expect(errorEv.event).toBe(faultyListener.mock.lastCall[0])
+      expect(errorEv.event).toBe(faultyListener.mock.lastCall?.[0])
 
       expect(errorEv.listener).toBe(faultyListener)
     }
@@ -695,6 +690,117 @@ describe('controller (different defaultLocale/locale)', () => {
     await controller.changeLocale('en-US')
 
     expect(localeLoadEventListener).not.toHaveBeenCalled()
+  })
+})
+
+describe('controller descriptor normalisation', () => {
+  const testMessage = defineMessage({
+    id: 'fallback-test-id',
+    defaultMessage: 'Default message coming from descriptor',
+  })
+
+  const strippedTestMessage = defineMessage({
+    id: 'no-default-fallback-test-id',
+  })
+
+  const nonLoadedTestMessage = defineMessage({
+    id: 'non-loaded-default-fallback-test-id',
+    defaultMessage:
+      'Default message for the non-loaded message coming from the descriptor',
+  })
+
+  const defaultMessages = {
+    [testMessage.id]: 'Default message coming from the locale messages',
+    [strippedTestMessage.id]:
+      'Default message for the stripped descriptor coming from the locale messages',
+  }
+
+  test('gets ready for testing', async () => {
+    await controller.changeLocale('uk')
+
+    controller.addMessages(controller.defaultLocale, defaultMessages)
+
+    await controller.waitUntilReady()
+
+    expect(controller.defaultMessages).toMatchObject(defaultMessages)
+  })
+
+  test('uses only ID as fallback', () => {
+    controller.$config.defaultMessageOrder = []
+
+    expect(controller.formatMessage(testMessage)).toBe(testMessage.id)
+
+    expect(controller.formatMessage(strippedTestMessage)).toBe(
+      strippedTestMessage.id,
+    )
+
+    expect(controller.formatMessage(nonLoadedTestMessage)).toBe(
+      nonLoadedTestMessage.id,
+    )
+  })
+
+  test('uses messages from default locale as fallback', () => {
+    controller.$config.defaultMessageOrder = ['locale']
+
+    expect(controller.formatMessage(testMessage)).toBe(
+      defaultMessages[testMessage.id],
+    )
+
+    expect(controller.formatMessage(strippedTestMessage)).toBe(
+      defaultMessages[strippedTestMessage.id],
+    )
+
+    expect(controller.formatMessage(nonLoadedTestMessage)).toBe(
+      nonLoadedTestMessage.id,
+    )
+  })
+
+  test('uses messages only from descriptor as fallback', () => {
+    controller.$config.defaultMessageOrder = ['descriptor']
+
+    expect(controller.formatMessage(testMessage)).toBe(
+      testMessage.defaultMessage,
+    )
+
+    expect(controller.formatMessage(strippedTestMessage)).toBe(
+      strippedTestMessage.id,
+    )
+
+    expect(controller.formatMessage(nonLoadedTestMessage)).toBe(
+      nonLoadedTestMessage.defaultMessage,
+    )
+  })
+
+  test('uses messages from descriptor, then from default locale', () => {
+    controller.$config.defaultMessageOrder = ['descriptor', 'locale']
+
+    expect(controller.formatMessage(testMessage)).toBe(
+      testMessage.defaultMessage,
+    )
+
+    expect(controller.formatMessage(strippedTestMessage)).toBe(
+      defaultMessages[strippedTestMessage.id],
+    )
+
+    expect(controller.formatMessage(nonLoadedTestMessage)).toBe(
+      nonLoadedTestMessage.defaultMessage,
+    )
+  })
+
+  test('uses messages from default locale, then from descriptor', () => {
+    controller.$config.defaultMessageOrder = ['locale', 'descriptor']
+
+    expect(controller.formatMessage(testMessage)).toBe(
+      defaultMessages[testMessage.id],
+    )
+
+    expect(controller.formatMessage(strippedTestMessage)).toBe(
+      defaultMessages[strippedTestMessage.id],
+    )
+
+    expect(controller.formatMessage(nonLoadedTestMessage)).toBe(
+      nonLoadedTestMessage.defaultMessage,
+    )
   })
 })
 
