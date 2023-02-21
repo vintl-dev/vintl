@@ -55,6 +55,24 @@ export interface ControllerConfiguration<ControllerType> {
 
   /** Defines a map of event listeners to auto-bind. */
   listen: ControllerEventsMap<ControllerType>
+
+  /**
+   * Order in which default message is applied during the descriptor
+   * normalization.
+   *
+   * Setting this to `['locale']` will only use the default message from the
+   * loaded default locale and never the descriptor.
+   *
+   * Setting this to `['locale', 'descriptor']` will try to use the default
+   * message from the loaded default locale, and if it does not exist, then the
+   * default message from the message descriptor will be used.
+   *
+   * Settings this to `[]` will not use any of the default messages, so if
+   * translation for that message is missing, it's ID will be returned.
+   *
+   * @default ['descriptor'] // Uses default message from descriptor as fallback.
+   */
+  defaultMessageOrder: ('descriptor' | 'locale')[]
 }
 
 export interface ConfigPartial<ControllerType> {
@@ -96,6 +114,9 @@ function createConfig<ControllerType>(
     usePreferredLocale: initialConfiguration?.usePreferredLocale ?? false,
     preferredLocaleSources: initialConfiguration?.preferredLocaleSources ?? [],
     listen: initialConfiguration?.listen ?? {},
+    defaultMessageOrder: initialConfiguration?.defaultMessageOrder ?? [
+      'descriptor',
+    ],
   }
 }
 

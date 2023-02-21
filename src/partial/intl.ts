@@ -5,6 +5,7 @@ import type { TranslateFunction } from '../types/index.js'
 import type {
   MessageContent,
   MessageDescriptor,
+  MessageID,
   MessagesMap,
   MessageValues,
 } from '../types/messages.js'
@@ -129,6 +130,54 @@ export function useIntlPartial<ControllerType>(
     return String(output)
   }
 
+  function normalizeDescriptor<ID extends MessageID>(
+    inputDescriptor: MessageDescriptor<ID> | ID,
+  ) {
+    let descriptor: MessageDescriptor<ID>
+
+    if (typeof inputDescriptor === 'string') {
+      descriptor = { id: inputDescriptor }
+
+      if ($config.defaultMessageOrder.includes('locale')) {
+        descriptor.defaultMessage =
+          localeDataPartial.defaultMessages[inputDescriptor]
+      }
+
+      return descriptor
+    }
+
+    for (const source of $config.defaultMessageOrder) {
+      if (source === 'descriptor') {
+        if (inputDescriptor.defaultMessage == null) continue
+
+        return inputDescriptor
+      }
+
+      if (source === 'locale') {
+        const defaultMessage =
+          localeDataPartial.defaultMessages[inputDescriptor.id]
+
+        if (defaultMessage == null) continue
+
+        descriptor = {
+          ...inputDescriptor,
+          defaultMessage,
+        }
+
+        return descriptor
+      }
+    }
+
+    if (inputDescriptor.defaultMessage == null) {
+      return inputDescriptor
+    }
+
+    return (descriptor = {
+      ...inputDescriptor,
+      defaultMessage: undefined,
+    })
+  }
+
   const formatMessage: TranslateFunction = function formatMessage(
     descriptor,
     values,
@@ -136,18 +185,8 @@ export function useIntlPartial<ControllerType>(
   ) {
     let result: ReturnType<IntlPartial<ControllerType>['intl']['$t']> = ''
 
-    const normalizedDescriptor: MessageDescriptor =
-      typeof descriptor === 'string'
-        ? {
-            id: descriptor,
-            defaultMessage: localeDataPartial.defaultMessages[
-              descriptor
-            ] as MessageContent,
-          }
-        : descriptor
-
     result = $intl.value.formatMessage(
-      normalizedDescriptor,
+      normalizeDescriptor(descriptor),
       values as Record<string, any>,
       opts,
     )
