@@ -1,14 +1,12 @@
-import {
-  createIntl,
-  createIntlCache,
-  type IntlShape,
-} from '@braw/extended-intl'
+import { createIntl, createIntlCache, type IntlShape } from '@formatjs/intl'
 import { computed, ref } from 'vue'
+import type { Options as MessageFormattingOptions } from 'intl-messageformat'
 import type { TranslateFunction } from '../types/index.js'
 import type {
   MessageContent,
   MessageDescriptor,
   MessagesMap,
+  MessageValues,
 } from '../types/messages.js'
 import {
   defineGetters,
@@ -22,8 +20,6 @@ import type { ControllerConfiguration } from './config.js'
 import type { LocaleDataPartial } from './data.js'
 
 const formatAliases = {
-  formatCompactNumber: 'compactNumber',
-  formatCustomMessage: 'customMessage',
   formatDate: 'date',
   formatDateTimeRange: 'dateTimeRange',
   formatDateToParts: 'dateToParts',
@@ -37,8 +33,6 @@ const formatAliases = {
   formatRelativeTime: 'relativeTime',
   formatTime: 'time',
   formatTimeToParts: 'timeToParts',
-  $ago: '$ago',
-  formatTimeDifference: 'timeDifference',
 } as const satisfies Partial<Record<keyof IntlShape, string>>
 // ~~~~~~~
 // NOTE: You might need to remove as const so auto-complete works, also you can't place it after satisfier, that's not supported :(
@@ -74,6 +68,21 @@ export interface IntlPartial<T> {
    * @see {@link TranslateFunction} For information about parameters and return values.
    */
   get formatMessage(): TranslateFunction
+
+  /**
+   * Formats a custom message using the provided values.
+   *
+   * @param message ICU MessageFormat message or its AST.
+   * @param values Values to format {@link message} with.
+   * @param opts Optional parser options.
+   * @returns Normalized formatted message.
+   */
+  get formatCustomMessage(): (
+    this: void,
+    message: MessageContent,
+    values?: MessageValues,
+    opts?: MessageFormattingOptions,
+  ) => string
 }
 
 export function useIntlPartial<ControllerType>(
@@ -102,6 +111,24 @@ export function useIntlPartial<ControllerType>(
     }
   })
 
+  function normalizeOutput(
+    output: string | ControllerType | (string | ControllerType)[],
+  ) {
+    if (typeof output === 'string') return output
+
+    if (Array.isArray(output)) {
+      let normalized = ''
+
+      for (const item of output) {
+        normalized += String(item)
+      }
+
+      return normalized
+    }
+
+    return String(output)
+  }
+
   const formatMessage: TranslateFunction = function formatMessage(
     descriptor,
     values,
@@ -125,25 +152,25 @@ export function useIntlPartial<ControllerType>(
       opts,
     )
 
-    if (typeof result === 'string') {
-      return result
-    }
+    return normalizeOutput(result)
+  }
 
-    if (Array.isArray(result)) {
-      let normalizedResult = ''
+  function formatCustomMessage(
+    message: MessageContent,
+    values?: MessageValues,
+    opts?: MessageFormattingOptions,
+  ) {
+    const intl = $intl.value
 
-      for (const item of result) {
-        normalizedResult += String(item)
-      }
-
-      return normalizedResult
-    }
-
-    return String(result)
+    return normalizeOutput(
+      intl.formatters
+        .getMessageFormat(message, intl.locale, intl.formats, opts)
+        .format(values as Record<string, any>),
+    )
   }
 
   return mergeDescriptors(
     defineRefGetters({ $formats, $intl }),
-    defineGetters({ formatMessage }),
+    defineGetters({ formatMessage, formatCustomMessage }),
   )
 }

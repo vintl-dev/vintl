@@ -60,7 +60,7 @@ export function IntlFormatted<I extends MessageID>(
     )
   }
 
-  const $i18n = useI18n<any>()
+  const { intl } = useI18n<any>()
 
   /** Initial values are passed to the slots. */
   const initialValues: MessageValues = createObject()
@@ -165,9 +165,11 @@ export function IntlFormatted<I extends MessageID>(
   let formatted: MaybeArray<MessageValueType | string>
 
   if (isPropsWithMessage(props)) {
-    formatted = $i18n.formats.customMessage(props.message, values)
+    formatted = intl.formatters
+      .getMessageFormat(props.message, intl.locale, intl.formats)
+      .format(values)
   } else if (props.messageId != null) {
-    formatted = $i18n.intl.formatMessage(
+    formatted = intl.formatMessage(
       typeof props.messageId === 'string'
         ? { id: props.messageId }
         : props.messageId,
