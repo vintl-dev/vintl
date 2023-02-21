@@ -1,16 +1,12 @@
 # vue-intl-controller
 
-> A plugin for Vue 2.7+ to dynamically control [`@braw/extended-intl`](https://npm.im/@braw/extended-intl).
-
-## ⚠ Caution!
-
-This project was not thoughtfully tested, it is a port of [code](https://github.com/modrinth/knossos/pull/738) to support internationalisation of [Modrinth](https://modrinth.com/) front-end. It is published early for development reasons.
+> A plugin for Vue 3 to dynamically control [`@formatjs/intl`](https://npm.im/@formatjs/intl).
 
 ## Summary
 
-[`@braw/extended-intl`](https://npm.im/@braw/extended-intl), being a wrapper for [`@formatjs/intl`](https://formatjs.io/docs/intl), allows to easily implement access to localisation using ICU MessageFormat messages.
+[`@formatjs/intl`](https://npm.im/@formatjs/intl) allows to easily implement localisation using ICU MessageFormat messages.
 
-However, using it in Vue in dynamic manner is not an easy task if you want to preserve most of its functionality and more. This package was created to solve that.
+However, using it in Vue in dynamic manner is not an easy task if you want to preserve most of its functionality and more. This package was created to solve this.
 
 It is created with extensibility in mind, so you can extend upon it and add support for it in other frameworks, like Nuxt (module for Nuxt is being worked on). On your disposal events, asynchronous loading mechanism and even some of the internals exposed.
 
@@ -27,24 +23,20 @@ Install using your package manager of choice:
 **npm**
 
 ```sh
-npm i @braw/extended-intl @braw/vue-intl-controller
+npm i @braw/vue-intl-controller
 ```
 
 **pnpm**
 
 ```sh
-pnpm i @braw/extended-intl @braw/vue-intl-controller
+pnpm i @braw/vue-intl-controller
 ```
 
 **yarn**
 
 ```sh
-yarn add @braw/extended-intl @braw/vue-intl-controller
+yarn add @braw/vue-intl-controller
 ```
-
-> **Note**
->
-> `@braw/extended-intl` is required to be installed separately because you are most likely want import locale data for it, so instead rely on hoisting, it makes sense to require all consumers of `vue-intl-controller` to install it.
 
 ### Usage
 
@@ -367,8 +359,6 @@ You can declare your messages by creating an ambient declaration file where you 
 - `interface` `MessageValueTypes`
 
   A map of all usable objects within translation functions and components.
-
-  You can use it if you have something like `CompactNumber` object from `@braw/extended-intl`.
 
 - `interface` `CustomMessages`
 
