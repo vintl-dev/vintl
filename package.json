@@ -63,7 +63,8 @@
     "dev": "vitest dev",
     "prepack": "pnpm run build",
     "test": "vitest run",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "bt": "pnpm build && pnpm test"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
