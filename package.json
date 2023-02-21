@@ -85,14 +85,11 @@
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.1",
+    "@formatjs/icu-messageformat-parser": "^2.1.14",
     "@formatjs/intl": "^2.6.3",
     "@formatjs/intl-localematcher": "^0.2.32",
     "intl-messageformat": "^10.2.5",
-    "vue": "^3.2.45",
-    "@formatjs/icu-messageformat-parser": "^2.1.14"
-  },
-  "peerDependencies": {
-    "@braw/extended-intl": "^2.0.0"
+    "vue": "^3.2.45"
   },
   "publishConfig": {
     "access": "public"
