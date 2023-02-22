@@ -75,9 +75,6 @@ const plugin = createPlugin({
     ],
   },
 
-  // Whether you want to automatically install <IntlFormatted> component.
-  globalComponent: true,
-
   // Whether to inject $t, $fmt and $i18n properties on components' creation.
   globalMixin: true,
 
@@ -109,6 +106,7 @@ You can now use all of the plugin's features:
 <script setup>
 import { useI18n } from '@braw/vue-intl-controller'
 import { defineMessages } from '@formatjs/intl'
+import { IntlFormatted } from '@braw/vue-intl-controller/components'
 
 const messages = defineMessages({
   today: {
