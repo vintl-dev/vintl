@@ -26,10 +26,19 @@ interface CommonProps {
   tags?: string[]
 }
 
-interface PropsWithMessageID<I extends MessageID> extends CommonProps {
+interface PropsWithMessageIDNormal<I extends MessageID> extends CommonProps {
   messageId: I | MessageDescriptor<I>
   values?: CustomMessageValues<I>
 }
+
+interface PropsWithMessageIDSlashed<I extends MessageID> extends CommonProps {
+  'message-id': I | MessageDescriptor<I>
+  values?: CustomMessageValues<I>
+}
+
+type PropsWithMessageID<I extends MessageID> =
+  | PropsWithMessageIDNormal<I>
+  | PropsWithMessageIDSlashed<I>
 
 interface PropsWithMessage extends CommonProps {
   message: MessageContent
@@ -43,11 +52,21 @@ function isObject(value: unknown): value is object {
 function isPropsWithMessageID<I extends MessageID>(
   value: unknown,
 ): value is PropsWithMessageID<I> {
-  return isObject(value) && 'messageId' in value
+  return isObject(value) && ('messageId' in value || 'message-id' in value)
 }
 
 function isPropsWithMessage(value: unknown): value is PropsWithMessage {
   return isObject(value) && 'message' in value
+}
+
+function getMessageID<I extends MessageID>(
+  props: PropsWithMessageID<I>,
+): I | MessageDescriptor<I> {
+  if ('message-id' in props) {
+    return props['message-id']
+  }
+
+  return props.messageId
 }
 
 export function IntlFormatted<I extends MessageID>(
@@ -168,18 +187,20 @@ export function IntlFormatted<I extends MessageID>(
     formatted = intl.formatters
       .getMessageFormat(props.message, intl.locale, intl.formats)
       .format(values)
-  } else if (props.messageId != null) {
-    formatted = intl.formatMessage(
-      typeof props.messageId === 'string'
-        ? { id: props.messageId }
-        : props.messageId,
-      values,
-    )
   } else {
-    // Should never end up here, but tell that to TypeScript :\
-    throw new Error(
-      'Illegal state: neither message nor messageId properties provided',
-    )
+    const messageId = getMessageID(props)
+
+    if (messageId != null) {
+      formatted = intl.formatMessage(
+        typeof messageId === 'string' ? { id: messageId } : messageId,
+        values,
+      )
+    } else {
+      // Should never end up here, but tell that to TypeScript :\
+      throw new Error(
+        'Illegal state: neither message nor messageId properties provided',
+      )
+    }
   }
 
   return (Array.isArray(formatted) ? formatted.flat() : [formatted]).map(
