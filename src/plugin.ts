@@ -13,15 +13,6 @@ export interface PluginOptions<ControllerType> {
   controllerOpts?: Partial<ControllerConfiguration<ControllerType>>
 
   /**
-   * Whether the `IntlFormatted` will be registered as a global component.
-   *
-   * Set this to `false` if you want to import the component manually.
-   *
-   * @default true // <IntlFormatted /> can be used without import
-   */
-  globalComponent?: boolean
-
-  /**
    * Whether the plugin's properties will be automatically injected to all
    * instances of Vue.
    *
@@ -219,13 +210,6 @@ export function createPlugin<ControllerType = string>(
         for (const injectionSite of opts.injectInto) {
           Object.defineProperties(injectionSite, injections)
         }
-      }
-
-      if (opts?.globalComponent ?? true) {
-        app.component(
-          'IntlFormatted',
-          import('./IntlFormatted.js').then((module) => module.IntlFormatted),
-        )
       }
     },
   }
