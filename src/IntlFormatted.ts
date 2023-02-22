@@ -79,7 +79,7 @@ export function IntlFormatted<I extends MessageID>(
     )
   }
 
-  const { intl } = useI18n<any>()
+  const { intl, normalizeMessageDescriptor: getDescriptor } = useI18n<any>()
 
   /** Initial values are passed to the slots. */
   const initialValues: MessageValues = createObject()
@@ -191,10 +191,7 @@ export function IntlFormatted<I extends MessageID>(
     const messageId = getMessageID(props)
 
     if (messageId != null) {
-      formatted = intl.formatMessage(
-        typeof messageId === 'string' ? { id: messageId } : messageId,
-        values,
-      )
+      formatted = intl.formatMessage(getDescriptor(messageId), values)
     } else {
       // Should never end up here, but tell that to TypeScript :\
       throw new Error(
