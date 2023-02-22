@@ -84,6 +84,18 @@ export interface IntlPartial<T> {
     values?: MessageValues,
     opts?: MessageFormattingOptions,
   ) => string
+
+  /**
+   * Given message descriptor or its ID, normalizes the descriptor according to
+   * configuration.
+   *
+   * @param inputDescriptor Descriptor to normalize.
+   * @returns Input descriptor if it conforms to configuration, otherwise a
+   *   newly created descriptor.
+   */
+  normalizeMessageDescriptor<ID extends MessageID>(
+    inputDescriptor: MessageDescriptor<ID> | ID,
+  ): MessageDescriptor<ID>
 }
 
 export function useIntlPartial<ControllerType>(
@@ -130,7 +142,7 @@ export function useIntlPartial<ControllerType>(
     return String(output)
   }
 
-  function normalizeDescriptor<ID extends MessageID>(
+  function normalizeMessageDescriptor<ID extends MessageID>(
     inputDescriptor: MessageDescriptor<ID> | ID,
   ) {
     let descriptor: MessageDescriptor<ID>
@@ -186,7 +198,7 @@ export function useIntlPartial<ControllerType>(
     let result: ReturnType<IntlPartial<ControllerType>['intl']['$t']> = ''
 
     result = $intl.value.formatMessage(
-      normalizeDescriptor(descriptor),
+      normalizeMessageDescriptor(descriptor),
       values as Record<string, any>,
       opts,
     )
@@ -210,6 +222,10 @@ export function useIntlPartial<ControllerType>(
 
   return mergeDescriptors(
     defineRefGetters({ $formats, $intl }),
-    defineGetters({ formatMessage, formatCustomMessage }),
+    defineGetters({
+      formatMessage,
+      formatCustomMessage,
+      normalizeMessageDescriptor,
+    }),
   )
 }
