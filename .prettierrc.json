@@ -2,5 +2,13 @@
   "trailingComma": "all",
   "singleQuote": true,
   "semi": false,
-  "plugins": ["prettier-plugin-jsdoc"]
+  "plugins": ["prettier-plugin-jsdoc"],
+  "overrides": [
+    {
+      "files": ["docs/**/*.md"],
+      "options": {
+        "proseWrap": "always"
+      }
+    }
+  ]
 }
