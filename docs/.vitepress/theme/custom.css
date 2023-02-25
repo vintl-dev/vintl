@@ -1,0 +1,78 @@
+/* May someone help me fix these colors. I just want pretty purple cuz I love it T_T */
+
+:root {
+  --vp-c-purple: #8c00ff;
+  --vp-c-purple-light: #bb48ff;
+  --vp-c-purple-lighter: #b455ff;
+  --vp-c-purple-dark: #7d30c6;
+  --vp-c-purple-darker: #6a3f90;
+  --vp-c-purple-dimm-1: #8c00ff0d;
+  --vp-c-purple-dimm-2: #8c00ff33;
+  --vp-c-purple-dimm-3: #8c00ff80;
+}
+
+:not(html.dark):root {
+  --vp-code-block-bg: var(--vp-c-bg-soft);
+  --vp-code-line-highlight-color: var(--vp-c-purple-dimm-1);
+  --vp-code-tab-bg: var(--vp-c-bg-soft-down);
+  --vp-code-tab-text-color: var(--vp-c-text-light-2);
+  --vp-code-tab-active-text-color: var(--vp-c-black);
+  --vp-code-tab-hover-text-color: var(--vp-c-black);
+  --vp-code-tab-divider: var(--vp-c-bg-soft-down);
+  --vp-code-copy-code-active-text: var(--vp-c-text-color);
+}
+
+.vp-code-group .tabs label::after {
+  height: 3px;
+  border-radius: 100px;
+}
+
+html.dark:root {
+  --vp-c-purple: #b985e4;
+  --vp-c-purple-light: #cd98f9;
+  --vp-c-purple-lighter: #e2acff;
+  --vp-c-purple-dark: #a572d0;
+  --vp-c-purple-darker: #9160bb;
+  --vp-c-purple-dimm-1: #b985e40d;
+  --vp-c-purple-dimm-2: #b985e433;
+  --vp-c-purple-dimm-3: #b985e480;
+  --vp-code-line-highlight-color: var(--vp-c-mute);
+}
+
+html:not(.dark) .vp-doc a:hover,
+html:not(.dark) .vp-doc a:hover > code {
+  color: var(--vp-c-brand-lighter);
+}
+
+html:not(.dark) .vp-doc .custom-block.info a:hover {
+  color: var(--vp-custom-block-info-text);
+}
+
+html:not(.dark) .vp-doc .custom-block.tip a:hover {
+  color: var(--vp-custom-block-tip-text);
+}
+
+html:not(.dark) .vp-doc .custom-block.warning a:hover {
+  color: var(--vp-custom-block-warning-text);
+}
+
+html:not(.dark) .vp-doc .custom-block.danger a:hover {
+  color: var(--vp-custom-block-danger-text);
+}
+
+html:not(.dark) .vp-doc .custom-block div[class*='language-'] {
+  --vp-code-block-bg: var(--vp-c-bg-soft-up);
+  border: 1px solid var(--vp-c-bg-soft-down);
+}
+
+html:not(.dark) .vp-doc [class*='language-'] > span.lang {
+  color: var(--vp-c-gray);
+}
+
+:root {
+  --vp-c-brand: var(--vp-c-purple);
+  --vp-c-brand-light: var(--vp-c-purple-light);
+  --vp-c-brand-lighter: var(--vp-c-purple-lighter);
+  --vp-c-brand-dark: var(--vp-c-purple-dark);
+  --vp-c-brand-darker: var(--vp-c-purple-darker);
+}
