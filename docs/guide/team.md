@@ -28,7 +28,7 @@ const coreMembers = [{
 }]
 
 const acknowledgements = [{
-  avatar: avatar('https://www.github.com/modrinth.png'),
+  avatar: avatar('https://www.github.com/modrinth.png', true),
   name: 'Modrinth',
   desc: 'This project was created specifically for Modrinth.',
   links: [{
@@ -42,7 +42,7 @@ const acknowledgements = [{
     link: 'https://discord.gg/EUHuJHt'
   }]
 }, {
-  avatar: avatar('https://www.github.com/formatjs.png'),
+  avatar: avatar('https://www.github.com/formatjs.png', true),
   name: 'FormatJS',
   desc: 'Creators of @formatjs/intl and other projects that this project uses.',
   links: [{
@@ -76,7 +76,7 @@ const acknowledgements = [{
     <template #title>Acknowledgements</template>
     <template #lead>These collectives helped making this project possible.</template>
     <template #members>
-      <VPTeamMembers size="small" :members="acknowledgements.slice(0,2)" />
+      <VPTeamMembers size="medium" :members="acknowledgements.slice(0,2)" />
       <br/>
       <VPTeamMembers size="small" :members="acknowledgements.slice(2)" />
     </template>
