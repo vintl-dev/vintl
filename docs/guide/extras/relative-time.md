@@ -86,3 +86,28 @@ app.use(relativeTimePlugin, controller) // [!code ++]
 
 // …
 ```
+
+### Using the composable
+
+You can now use `useRelativeTime` composable that we created in setup functions
+to retrieve the formatting function:
+
+```vue
+<script setup>
+import { useRelativeTime } from '../plugins/how-ago.js'
+
+const formatRelativeTime = useRelativeTime()
+
+const day = 86_400_000 // ms
+
+const today = day * Math.floor(Date.now() / day)
+const tomorrow = today + day
+</script>
+
+<template>
+  <p>Today has began {{ formatRelativeTime(today) }}</p>
+  <!--                  ⮩ "16 hours ago"            -->
+  <p>Day ends {{ formatRelativeTime(tomorrow) }}</p>
+  <!--           ⮩ "in 8 hours"                 -->
+</template>
+```
