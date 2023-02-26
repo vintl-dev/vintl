@@ -1,3 +1,12 @@
+<script setup>
+  const ok = '\u2611' // ballot_box_with_check
+  const great = '\u2705' // white_check_mark
+  const bad = '\ud83d\udc4e' // thumbsdown
+  const some = '\ud83d\udc4d' // thumbsup
+  const maybe = '\ud83e\udd14' // thinking
+  const soon = '\ud83d\udc40' // eyes
+</script>
+
 # What is Vue Intl Controller
 
 Vue Intl Controller is a plugin for Vue that attempts to tightly integrate the
@@ -14,21 +23,34 @@ its scope is to just bring the Intl and nothing else.
 This plugin has a much broader scope — not only to provide Intl, but also to
 allow it to be managed during runtime.
 
-|           Feature            | `vue-intl`                                                                                                              | `vue-intl-controller`                    |
-| :--------------------------: | :---------------------------------------------------------------------------------------------------------------------- | :--------------------------------------- |
-|     Access Intl globally     | :white_check_mark: [Yes](https://formatjs.io/docs/vue-intl#inject)                                                      | :white_check_mark: Yes                   |
-|       Helper functions       | :white_check_mark: [Yes](https://formatjs.io/docs/vue-intl#methods)                                                     | :white_check_mark: Yes                   |
-|         Composables          | :white_check_mark: [Yes](https://formatjs.io/docs/vue-intl#composition-api)                                             | :white_check_mark: Yes                   |
-| Changing language in runtime | :thumbsdown: [Not supported](https://github.com/formatjs/formatjs/discussions/2464#discussioncomment-256012)            | :white_check_mark: Supported             |
-|      Loading languages       | :ballot_box_with_check: Out of scope                                                                                    | :white_check_mark: Supported             |
-|            Events            | :ballot_box_with_check: Out of scope                                                                                    | :white_check_mark: Yes                   |
-|     Formatting component     | :thinking: [Maybe comes in the future](https://github.com/formatjs/formatjs/discussions/3961#discussioncomment-4660391) | :white_check_mark: Supported             |
-|   Translations extraction    | :white_check_mark: Using `@formatjs/cli`                                                                                | :white_check_mark: Using `@formatjs/cli` |
-|        No parser mode        | :white_check_mark: Supported                                                                                            | :white_check_mark: Supported             |
-|   TypeScript extensibility   | :thumbsup: [Some](https://formatjs.io/docs/react-intl/#typing-message-ids-and-locale)                                   | :white_check_mark: Enhanced              |
-|       Nuxt integration       | :ballot_box_with_check: Manual                                                                                          | :eyes: Coming soon™                      |
+|           Feature            | `vue-intl`                                     | `vue-intl-controller`           |
+| :--------------------------: | :--------------------------------------------- | :------------------------------ |
+|     Access Intl globally     | {{great}} [Yes][fvi-p-1]                       | {{great}} Yes                   |
+|       Helper functions       | {{great}} [Yes][fvi-p-2]                       | {{great}} Yes                   |
+|         Composables          | {{great}} [Yes][fvi-p-3]                       | {{great}} Yes                   |
+| Changing language in runtime | {{bad}} [Not supported][fvi-p-4]               | {{great}} Supported             |
+|      Loading languages       | {{ok}} Out of scope                            | {{great}} Supported             |
+|            Events            | {{ok}} Out of scope                            | {{great}} Yes                   |
+|     Formatting component     | {{maybe}} [Maybe comes in the future][fvi-p-5] | {{great}} Supported             |
+|   Translations extraction    | {{great}} Using `@formatjs/cli`                | {{great}} Using `@formatjs/cli` |
+|        No parser mode        | {{great}} Supported                            | {{great}} Supported             |
+|   TypeScript extensibility   | {{some}} [Some][fvi-p-6]                       | {{great}} Enhanced              |
+|       Nuxt integration       | {{ok}} Manual                                  | {{soon}} Coming soon™           |
 
-Please note that this comparison table is not meant to be taken as ‘this project
-is better’: it's perfectly fine for Vue Intl to set the scope of their project
-and how much they want to commit to it. It's merely meant to show the
-differences in scope between the two projects.
+[fvi-p-1]: https://formatjs.io/docs/vue-intl#inject
+[fvi-p-2]: https://formatjs.io/docs/vue-intl#methods
+[fvi-p-3]: https://formatjs.io/docs/vue-intl#composition-api
+[fvi-p-4]:
+  https://github.com/formatjs/formatjs/discussions/2464#discussioncomment-256012
+[fvi-p-5]:
+  https://github.com/formatjs/formatjs/discussions/3961#discussioncomment-4660391
+[fvi-p-6]: https://formatjs.io/docs/react-intl/#typing-message-ids-and-locale
+
+:::info NOTE
+
+This comparison table is not meant to be taken as ‘this project is better’: it's
+perfectly fine for FormatJS to set the scope of their project and how much they
+want to commit to it! It's here merely meant to show the differences in scope
+between the two projects.
+
+:::
