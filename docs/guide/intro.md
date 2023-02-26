@@ -14,6 +14,19 @@ Vue Intl Controller is a plugin for Vue that attempts to tightly integrate the
 with lots of sweet stuff like real-time locale loading and switching, helper
 functions, mixins, and much more.
 
+<br/>
+
+:::warning DISCLAIMER
+
+This documentation is still work in progress and will continue to improve in the
+future.
+
+You can help make it better [by contributing on GitHub →][github]
+
+[github]: https://github.com/Brawaru/vue-intl-controller/
+
+:::
+
 ## Comparison with Vue Intl
 
 The [official Vue Intl plugin](https://formatjs.io/docs/vue-intl) from the
