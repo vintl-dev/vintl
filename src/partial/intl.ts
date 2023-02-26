@@ -1,5 +1,5 @@
 import { createIntl, createIntlCache, type IntlShape } from '@formatjs/intl'
-import { computed, ref } from 'vue'
+import { computed, type ComputedRef, ref } from 'vue'
 import type { Options as MessageFormattingOptions } from 'intl-messageformat'
 import type { TranslateFunction } from '../types/index.js'
 import type {
@@ -51,6 +51,9 @@ export type FormatAliases<T> = {
 }
 
 export interface IntlPartial<T> {
+  /** Reactive reference to an active {@link IntlShape} instance. */
+  get $intl(): ComputedRef<IntlShape<T>>
+
   /**
    * Read-only map of formatting functions taken from {@link IntlShape}.
    *
@@ -223,6 +226,7 @@ export function useIntlPartial<ControllerType>(
   return mergeDescriptors(
     defineRefGetters({ $formats, $intl }),
     defineGetters({
+      $intl,
       formatMessage,
       formatCustomMessage,
       normalizeMessageDescriptor,
