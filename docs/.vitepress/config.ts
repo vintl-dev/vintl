@@ -3,6 +3,13 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: 'Vue Intl Controller',
 
+  description:
+    'Vue Intl Controller is a plugin for Vue 3 that integrates FormatJS Intl into your Vue applications for easier internationalisation.',
+
+  lang: 'en-GB',
+
+  cleanUrls: true,
+
   themeConfig: {
     siteTitle: 'Vue Intl Controller',
     nav: [
