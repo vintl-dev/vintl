@@ -54,3 +54,21 @@ want to commit to it! It's here merely meant to show the differences in scope
 between the two projects.
 
 :::
+
+## Comparison with Vue I18n
+
+[Vue I18n] is a much more mature and popular framework for Vue that has been
+around for a while. It's usually a good choice for people who want stability and
+familiarity.
+
+There are certain things you may not like in Vue I18n, such as a custom
+interpolation syntax instead of standard syntax like Fluent or ICU
+MessageFormat, or a slightly more complicated and manual API — it does not try
+to do things for you, which can be its advantage.
+
+There's not much to compare! Vue I18n has almost everything the Vue Intl
+Controller has and more. It's all about choice: Vue Intl Controller tries to
+bring FormatJS Intl into the Vue world, Vue I18n does things its own way and
+does it nicely.
+
+[Vue I18n]: https://vue-i18n.intlify.dev/
