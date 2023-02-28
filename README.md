@@ -2,6 +2,8 @@
 
 > A plugin for Vue 3 to dynamically control [`@formatjs/intl`](https://npm.im/@formatjs/intl).
 
+[![Supports: ESM only](https://img.shields.io/static/v1?label=Format&message=ESM%20only&color=blue&style=flat-square)](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c)
+
 ## Summary
 
 [`@formatjs/intl`](https://npm.im/@formatjs/intl) allows to easily implement localisation using ICU MessageFormat messages.
