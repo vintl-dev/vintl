@@ -84,6 +84,15 @@ export default defineConfig({
             },
           ],
         },
+        {
+          text: 'Migrating',
+          items: [
+            {
+              link: '/guide/migrating/to-v4.md',
+              text: 'Migrating to v4',
+            },
+          ],
+        },
       ],
       '/api': [
         {
