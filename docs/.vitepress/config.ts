@@ -8,8 +8,6 @@ export default defineConfig({
 
   lang: 'en-GB',
 
-  cleanUrls: true,
-
   themeConfig: {
     siteTitle: 'Vue Intl Controller',
     nav: [
