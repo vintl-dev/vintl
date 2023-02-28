@@ -62,25 +62,25 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.14.2",
     "del-cli": "^5.0.0",
-    "eslint": "^8.31.0",
-    "happy-dom": "^8.1.5",
-    "prettier": "^2.8.3",
+    "eslint": "^8.35.0",
+    "happy-dom": "^8.9.0",
+    "prettier": "^2.8.4",
     "prettier-plugin-jsdoc": "^0.4.2",
-    "semantic-release": "^20.0.2",
-    "typescript": "^4.9.4",
-    "unbuild": "^1.1.1",
-    "vitepress": "1.0.0-alpha.47",
-    "vitest": "^0.27.2"
+    "semantic-release": "^20.1.1",
+    "typescript": "^4.9.5",
+    "unbuild": "^1.1.2",
+    "vitepress": "1.0.0-alpha.49",
+    "vitest": "^0.29.2"
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.1",
-    "@formatjs/icu-messageformat-parser": "^2.1.14",
-    "@formatjs/intl": "^2.6.3",
+    "@formatjs/icu-messageformat-parser": "^2.3.0",
+    "@formatjs/intl": "^2.6.7",
     "@formatjs/intl-localematcher": "^0.2.32",
-    "intl-messageformat": "^10.2.5",
-    "vue": "^3.2.45"
+    "intl-messageformat": "^10.3.1",
+    "vue": "^3.2.47"
   },
   "publishConfig": {
     "access": "public"
