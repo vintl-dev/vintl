@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@braw/async-computed': ^5.0.1
+  '@braw/async-computed': ^5.0.2
   '@formatjs/icu-messageformat-parser': ^2.3.0
   '@formatjs/intl': ^2.6.7
   '@formatjs/intl-localematcher': ^0.2.32
@@ -21,7 +21,7 @@ specifiers:
   vue: ^3.2.47
 
 dependencies:
-  '@braw/async-computed': 5.0.1_vue@3.2.47
+  '@braw/async-computed': 5.0.2_vue@3.2.47
   '@formatjs/icu-messageformat-parser': 2.3.0
   '@formatjs/intl': 2.6.7_typescript@4.9.5
   '@formatjs/intl-localematcher': 0.2.32
@@ -358,8 +358,8 @@ packages:
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
 
-  /@braw/async-computed/5.0.1_vue@3.2.47:
-    resolution: {integrity: sha512-oK1j8VLI2DKlgDMAaix9E89U/xgd/1c8T34sBzeoxAVrGVTYqtC8AAJBfxP9HFZVmp4ZnOrZ+qDlu8+wZKlbLA==}
+  /@braw/async-computed/5.0.2_vue@3.2.47:
+    resolution: {integrity: sha512-fThqjZBTPvWtbD90Nkd4IldN7dpCkxfvthuk12ZBjkPPjh+wuRGi3HYiUqUSAOOVS0NHSxpsQFfg+qO275FtYA==}
     peerDependencies:
       vue: ^2.7 || ^3.2.45
     dependencies:

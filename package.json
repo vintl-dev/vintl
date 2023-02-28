@@ -75,7 +75,7 @@
     "vitest": "^0.29.2"
   },
   "dependencies": {
-    "@braw/async-computed": "^5.0.1",
+    "@braw/async-computed": "^5.0.2",
     "@formatjs/icu-messageformat-parser": "^2.3.0",
     "@formatjs/intl": "^2.6.7",
     "@formatjs/intl-localematcher": "^0.2.32",
