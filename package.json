@@ -12,46 +12,37 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.mjs"
     },
     "./types/arguments": {
       "types": "./dist/types/arguments.d.ts",
-      "import": "./dist/types/arguments.mjs",
-      "require": "./dist/types/arguments.cjs"
+      "import": "./dist/types/arguments.mjs"
     },
     "./events": {
       "types": "./dist/events/index.d.ts",
-      "import": "./dist/events/index.mjs",
-      "require": "./dist/events/index.cjs"
+      "import": "./dist/events/index.mjs"
     },
     "./plugin": {
       "types": "./dist/plugin.d.ts",
-      "import": "./dist/plugin.mjs",
-      "require": "./dist/plugin.cjs"
+      "import": "./dist/plugin.mjs"
     },
     "./controller": {
       "types": "./dist/controller.d.ts",
-      "import": "./dist/controller.mjs",
-      "require": "./dist/controller.cjs"
+      "import": "./dist/controller.mjs"
     },
     "./translateFunction": {
       "types": "./dist/translateFunction.d.ts",
-      "import": "./dist/translateFunction.mjs",
-      "require": "./dist/translateFunction.cjs"
+      "import": "./dist/translateFunction.mjs"
     },
     "./components": {
       "types": "./dist/components.d.ts",
-      "import": "./dist/components.mjs",
-      "require": "./dist/components.cjs"
+      "import": "./dist/components.mjs"
     },
     "./sources/*": {
       "types": "./dist/sources/*.d.ts",
-      "require": "./dist/sources/*.cjs",
       "import": "./dist/sources/*.mjs"
     }
   },
-  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
