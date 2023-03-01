@@ -8,9 +8,30 @@ Here's what changed in this version and how you can migrate:
 
 ## Moving to VIntl name
 
-Previously this package was distributed under the name Vue Intl Controller,
-however in v4 its name has been changed to VIntl, so it is less verbose and
-shorter.
+Previously this package was distributed under the name
+`@braw/vue-intl-controller`, however in v4 its name has been changed to
+`@vintl/vintl`, so it is less verbose and shorter.
+
+To continue receiving updates, please re-install the package:
+
+:::code-group
+
+```sh [npm]
+npm rm @braw/vue-intl-controller
+npm install @vintl/vintl
+```
+
+```sh [pnpm]
+pnpm rm @braw/vue-intl-controller
+pnpm add @vintl/vintl
+```
+
+```sh [yarn]
+yarn remove @braw/vue-intl-controller
+yarn add @vintl/vintl
+```
+
+:::
 
 ## Switch to Vue 3
 
