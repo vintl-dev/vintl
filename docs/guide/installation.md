@@ -2,20 +2,20 @@
 
 ## Adding the package
 
-The package is distributed as `@braw/vue-intl-controller` on npm.
+The package is distributed as `@braw/vintl` on npm.
 
 :::code-group
 
 ```sh [npm]
-npm install @braw/vue-intl-controller
+npm install @braw/vintl
 ```
 
 ```sh [pnpm]
-pnpm add @braw/vue-intl-controller
+pnpm add @braw/vintl
 ```
 
 ```sh [yarn]
-yarn add @braw/vue-intl-controller
+yarn add @braw/vintl
 ```
 
 :::

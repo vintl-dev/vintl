@@ -1,8 +1,8 @@
-import '@braw/vue-intl-controller/dist/types/messages.js'
+import '@braw/vintl/dist/types/messages.js'
 // @ts-expect-error - self-import
-import { InjectedProperties } from '@braw/vue-intl-controller'
+import { InjectedProperties } from '@braw/vintl'
 // @ts-expect-error - self-import
-import { MessageValueType } from '@braw/vue-intl-controller/plugin'
+import { MessageValueType } from '@braw/vintl/plugin'
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties
@@ -10,6 +10,6 @@ declare module '@vue/runtime-core' {
 
   interface GlobalComponents {
     // @ts-expect-error -self-import
-    IntlFormatted: typeof import('@braw/vue-intl-controller/components').IntlFormatted
+    IntlFormatted: typeof import('@braw/vintl/components').IntlFormatted
   }
 }

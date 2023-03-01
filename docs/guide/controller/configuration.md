@@ -1,7 +1,7 @@
 # Configuring the controller
 
-Vue Intl Controller can be configured to use a different locale by default, or
-even use automatic sources to set the active locale.
+VIntl can be configured to use a different locale by default, or even use
+automatic sources to set the active locale.
 
 There are two ways of configuring the controller — declarative and imperative:
 the first applies to the instantiation of the controller, the second can be used
@@ -93,7 +93,7 @@ For now, you can use the `preferredLocaleSources` option, which takes an array
 of all sources, to specify all sources for the preferred locale.
 
 ```ts
-import { useNavigatorLanguage } from '@braw/vue-intl-controller/source/navigator'
+import { useNavigatorLanguage } from '@braw/vintl/source/navigator'
 
 createController({
   // …

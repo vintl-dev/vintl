@@ -36,7 +36,7 @@ relatively big (bigger than the interpreter and everything else).
 
 [`@braw/rollup-plugin-icu-messages`](https://npm.im/@braw/rollup-plugin-icu-messages)
 is a plugin for Rollup that allows to transform files containing messages into
-JS code with compiled AST. It works great with Vue Intl Controller.
+JS code with compiled AST. It works great with VIntl.
 
 ### Configuring `rollup-plugin-icu-messages`
 

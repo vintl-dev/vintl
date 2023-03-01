@@ -2,8 +2,8 @@
 
 [`@braw/compact-number`](https://npm.im/@braw/compact-number) is a package that
 allows to properly choose a plural when displaying numbers in compact notation.
-Previously it was a part of Vue Intl Controller, however it was removed in v4.
-This guide will explain how to add it back.
+Previously it was a part of VIntl, however it was removed in v4. This guide will
+explain how to add it back.
 
 ## Adding the package
 
@@ -93,7 +93,7 @@ getter `controller.intl`.
 ```ts
 // src/plugins/compact-numbers.ts
 import { createFormatter, Formatter } from '@braw/compact-number'
-import { IntlController } from '@braw/vue-intl-controller/controller'
+import { IntlController } from '@braw/vintl/controller'
 import { inject, computed, InjectionKey, ComputedRef, Plugin } from 'vue'
 
 const key: InjectionKey<ComputedRef<Formatter>> = Symbol('compactNumber')
@@ -151,7 +151,7 @@ its return value to format any number:
 <script setup lang="ts">
 import { ref } from 'vue'
 import { defineMessage } from '@formatjs/intl'
-import { useI18n } from '@braw/vue-intl-controller'
+import { useI18n } from '@braw/vintl'
 import { useCompactNumbers } from '../plugins/compact-numbers.js' // [!code hl]
 
 const count = ref(0)

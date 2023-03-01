@@ -7,9 +7,9 @@
   const soon = '\ud83d\udc40' // eyes
 </script>
 
-# What is Vue Intl Controller
+# What is VIntl
 
-Vue Intl Controller is a plugin for Vue that attempts to tightly integrate the
+VIntl is a plugin for Vue that attempts to tightly integrate the
 [FormatJS Intl](https://formatjs.io/docs/intl) library into Vue applications,
 with lots of sweet stuff like real-time locale loading and switching, helper
 functions, mixins, and much more.
@@ -23,7 +23,7 @@ future.
 
 You can help make it better [by contributing on GitHub →][github]
 
-[github]: https://github.com/Brawaru/vue-intl-controller/
+[github]: https://github.com/vintl-dev/vintl/
 
 :::
 
@@ -36,7 +36,7 @@ its scope is to just bring the Intl and nothing else.
 This plugin has a much broader scope — not only to provide Intl, but also to
 allow it to be managed during runtime.
 
-|           Feature            | `vue-intl`                                     | `vue-intl-controller`           |
+|           Feature            | `vue-intl`                                     | `vintl`                         |
 | :--------------------------: | :--------------------------------------------- | :------------------------------ |
 |     Access Intl globally     | {{great}} [Yes][fvi-p-1]                       | {{great}} Yes                   |
 |       Helper functions       | {{great}} [Yes][fvi-p-2]                       | {{great}} Yes                   |
@@ -79,9 +79,8 @@ interpolation syntax instead of standard syntax like Fluent or ICU
 MessageFormat, or a slightly more complicated and manual API — it does not try
 to do things for you, which can be its advantage.
 
-There's not much to compare! Vue I18n has almost everything the Vue Intl
-Controller has and more. It's all about choice: Vue Intl Controller tries to
-bring FormatJS Intl into the Vue world, Vue I18n does things its own way and
-does it nicely.
+There's not much to compare! Vue I18n has almost everything the VIntl has and
+more. It's all about choice: VIntl tries to bring FormatJS Intl into the Vue
+world, Vue I18n does things its own way and does it nicely.
 
 [Vue I18n]: https://vue-i18n.intlify.dev/

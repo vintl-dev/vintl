@@ -42,7 +42,7 @@ app.
 ```ts
 // src/plugins/how-ago.ts
 import { createFormatter, Formatter } from '@braw/how-ago'
-import { IntlController } from '@braw/vue-intl-controller/controller'
+import { IntlController } from '@braw/vintl/controller'
 import { inject, computed, InjectionKey, ComputedRef, Plugin } from 'vue'
 
 const key: InjectionKey<ComputedRef<Formatter>> = Symbol('relativeTime')
