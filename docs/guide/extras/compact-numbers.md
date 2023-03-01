@@ -1,9 +1,9 @@
 # Compact numbers
 
-[`@braw/compact-number`](https://npm.im/@braw/compact-number) is a package that
-allows to properly choose a plural when displaying numbers in compact notation.
-Previously it was a part of VIntl, however it was removed in v4. This guide will
-explain how to add it back.
+[`@vintl/compact-number`](https://npm.im/@vintl/compact-number) is a package
+that allows to properly choose a plural when displaying numbers in compact
+notation. Previously it was a part of VIntl, however it was removed in v4. This
+guide will explain how to add it back.
 
 ## Adding the package
 
@@ -12,23 +12,23 @@ Add the package using package manager of your choice:
 :::code-group
 
 ```sh [npm]
-npm install @braw/compact-number
+npm install @vintl/compact-number
 ```
 
 ```sh [pnpm]
-pnpm add @braw/compact-number
+pnpm add @vintl/compact-number
 ```
 
 ```sh [yarn]
-yarn add @braw/compact-number
+yarn add @vintl/compact-number
 ```
 
 :::
 
 ## Loading locale data
 
-To work, `@braw/compact-number` requires certain CLDR data. This data can be
-added by simply importing `@braw/compact-number/locale-data/[locale]`.
+To work, `@vintl/compact-number` requires certain CLDR data. This data can be
+added by simply importing `@vintl/compact-number/locale-data/[locale]`.
 
 Loading data for all locales at the same time will not be size efficient.
 Instead we can use `localeload` event specifically designed to load locale data:
@@ -44,13 +44,13 @@ const plugin = createPlugin({
       switch (e.locale.tag) {
         case 'en-US':
         case 'en-GB':
-          await import('@braw/compact-number/locale-data/en')
+          await import('@vintl/compact-number/locale-data/en')
           break
         case 'uk':
-          await import('@braw/compact-number/locale-data/uk')
+          await import('@vintl/compact-number/locale-data/uk')
           break
         case 'de':
-          await import('@braw/compact-number/locale-data/de')
+          await import('@vintl/compact-number/locale-data/de')
           break
       }
 
@@ -68,7 +68,7 @@ const plugin = createPlugin({
     async localeload(e) {
       const locale = new Intl.Locale(e.locale.tag).minimize().toString()
       await import(
-        `../node_modules/@braw/compact-number/dist/locale-data/${locale}.mjs`
+        `../node_modules/@vintl/compact-number/dist/locale-data/${locale}.mjs`
       )
 
       // …
@@ -92,7 +92,7 @@ getter `controller.intl`.
 
 ```ts
 // src/plugins/compact-numbers.ts
-import { createFormatter, Formatter } from '@braw/compact-number'
+import { createFormatter, Formatter } from '@vintl/compact-number'
 import { IntlController } from '@vintl/vintl/controller'
 import { inject, computed, InjectionKey, ComputedRef, Plugin } from 'vue'
 

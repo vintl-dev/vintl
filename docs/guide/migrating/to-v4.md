@@ -50,10 +50,10 @@ that will be supported going further.
 `@braw/extended-intl` has been deprecated and its dependency was removed, VIntl
 now does not ship compact number and relative time difference formatting
 functionality. These are provided via separate packages —
-[`@braw/compact-number`] and [`@braw/how-ago`] and must be set up manually.
+[`@vintl/compact-number`] and [`@vintl/how-ago`] and must be set up manually.
 
-[`@braw/compact-number`]: ../extras/compact-numbers.md
-[`@braw/how-ago`]: ../extras/relative-time.md
+[`@vintl/compact-number`]: ../extras/compact-numbers.md
+[`@vintl/how-ago`]: ../extras/relative-time.md
 
 ## Distribution changes
 
