@@ -47,9 +47,9 @@ that will be supported going further.
 
 ## Removal of `@braw/extended-intl`
 
-`@braw/extended-intl` has been deprecated and its dependency was removed, Vue
-Intl Controller now does not ship compact number and relative time difference
-formatting functionality. These are provided via separate packages —
+`@braw/extended-intl` has been deprecated and its dependency was removed, VIntl
+now does not ship compact number and relative time difference formatting
+functionality. These are provided via separate packages —
 [`@braw/compact-number`] and [`@braw/how-ago`] and must be set up manually.
 
 [`@braw/compact-number`]: ../extras/compact-numbers.md
