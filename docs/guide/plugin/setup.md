@@ -1,8 +1,8 @@
 # Setting up the plugin
 
-The Vue Intl Controller can be used on its own, but is most useful when used as
-a plugin. The plugin automatically sets up the controller and wires it to a
-specific Vue application.
+VIntl can be used on its own, but is most useful when used as a plugin. The
+plugin automatically sets up the controller and wires it to a specific Vue
+application.
 
 ## Creating a plugin object
 
@@ -11,7 +11,7 @@ To install this plugin in Vue, we first need to create and configure our plugin.
 In your Vue app entry point import `createPlugin` function.
 
 ```ts
-import { createPlugin } from '@braw/vue-intl-controller/plugin'
+import { createPlugin } from '@braw/vintl/plugin'
 ```
 
 Create a plugin instance using that function:

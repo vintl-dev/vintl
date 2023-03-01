@@ -1,15 +1,15 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'Vue Intl Controller',
+  title: 'VIntl',
 
   description:
-    'Vue Intl Controller is a plugin for Vue 3 that integrates FormatJS Intl into your Vue applications for easier internationalisation.',
+    'VIntl is a plugin for Vue 3 that integrates FormatJS Intl into your Vue applications for easier internationalisation.',
 
   lang: 'en-GB',
 
   themeConfig: {
-    siteTitle: 'Vue Intl Controller',
+    siteTitle: 'VIntl',
     nav: [
       { text: 'Docs', link: '/guide/intro' },
       { text: 'API', link: '/api/' },
@@ -21,7 +21,7 @@ export default defineConfig({
           items: [
             {
               link: '/guide/intro',
-              text: 'What is Vue Intl Controller?',
+              text: 'What is VIntl?',
             },
             {
               link: '/guide/installation',
@@ -120,8 +120,7 @@ export default defineConfig({
       ],
     },
     editLink: {
-      pattern:
-        'https://github.com/brawaru/vue-intl-controller/edit/main/docs/:path',
+      pattern: 'https://github.com/vintl-dev/vintl/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
     footer: {
@@ -131,7 +130,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/brawaru/vue-intl-controller',
+        link: 'https://github.com/vintl-dev/vintl',
       },
     ],
   },

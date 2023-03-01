@@ -1,4 +1,4 @@
-# vue-intl-controller
+# VIntl
 
 > A plugin for Vue 3 to dynamically control [`@formatjs/intl`](https://npm.im/@formatjs/intl).
 
@@ -25,19 +25,19 @@ Install using your package manager of choice:
 **npm**
 
 ```sh
-npm i @braw/vue-intl-controller
+npm i @braw/vintl
 ```
 
 **pnpm**
 
 ```sh
-pnpm i @braw/vue-intl-controller
+pnpm i @braw/vintl
 ```
 
 **yarn**
 
 ```sh
-yarn add @braw/vue-intl-controller
+yarn add @braw/vintl
 ```
 
 ### Usage
@@ -45,7 +45,7 @@ yarn add @braw/vue-intl-controller
 In your Vue app entry point import `createPlugin` function.
 
 ```ts
-import { createPlugin } from '@braw/vue-intl-controller/plugin'
+import { createPlugin } from '@braw/vintl/plugin'
 ```
 
 Create a plugin instance (you can do that inline, without variable):
@@ -106,9 +106,9 @@ You can now use all of the plugin's features:
 
 ```vue
 <script setup>
-import { useI18n } from '@braw/vue-intl-controller'
+import { useI18n } from '@braw/vintl'
 import { defineMessages } from '@formatjs/intl'
-import { IntlFormatted } from '@braw/vue-intl-controller/components'
+import { IntlFormatted } from '@braw/vintl/components'
 
 const messages = defineMessages({
   today: {
@@ -306,7 +306,7 @@ By default there are no sources, but the package is shipped with two sources tha
 On server:
 
 ```ts
-import { useAcceptLanguageHeader } from '@braw/vue-intl-controller/source/header'
+import { useAcceptLanguageHeader } from '@braw/vintl/source/header'
 
 const headerSource = useAcceptLanguageHeader(req.headers['Accept-Language'])
 
@@ -316,7 +316,7 @@ controller.addSource(headerSource)
 On client:
 
 ```ts
-import { useNavigatorLanguage } from '@braw/vue-intl-controller/source/navigator'
+import { useNavigatorLanguage } from '@braw/vintl/source/navigator'
 
 controller.addSource(useNavigatorLanguage())
 ```
@@ -354,7 +354,7 @@ function createCustomSource(locales: string[]) {
 
 > **Warning** This is an experimental feature.
 
-You can declare your messages by creating an ambient declaration file where you need to import `@braw/vue-intl-controller`, so that you can extend global namespace `VueIntlController` containing the following declarations:
+You can declare your messages by creating an ambient declaration file where you need to import `@braw/vintl`, so that you can extend global namespace `VueIntlController` containing the following declarations:
 
 - `interface` `MessageValueTypes`
 
@@ -364,7 +364,7 @@ You can declare your messages by creating an ambient declaration file where you 
 
   A map of custom messages mapped to arguments within those messages.
 
-  Declaring this map will enable strict type-checking across all usage of Vue Intl Controller functions. Partial message declaration is not supported yet, alas.
+  Declaring this map will enable strict type-checking across all usage of VIntl functions. Partial message declaration is not supported yet, alas.
 
 - `interface` `LocaleMeta`
 
@@ -381,13 +381,10 @@ Create a file called along the lines of `i18n.d.ts`, and inside of it write:
 
 ```ts
 // Makes sure TypeScript knows what we extend:
-import '@braw/vue-intl-controller'
+import '@braw/vintl'
 
 // Helper types:
-import type {
-  SelectArgument,
-  ValueArgument,
-} from '@braw/vue-intl-controller/types/arguments'
+import type { SelectArgument, ValueArgument } from '@braw/vintl/types/arguments'
 
 // Example piece of 'your' code:
 import type { ExampleObject } from '~/utils/convertibleObject.ts'

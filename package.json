@@ -1,11 +1,24 @@
 {
-  "name": "@braw/vue-intl-controller",
+  "name": "@braw/vintl",
   "version": "1.0.0",
   "description": "Integrate @formatjs/intl into your Vue apps for easier internationalisation",
   "keywords": [
     "i18n",
     "vue3"
   ],
+  "homepage": "https://github.com/vintl-dev/vintl",
+  "bugs": {
+    "url": "https://github.com/vintl-dev/vintl"
+  },
+  "author": {
+    "name": "Alexander 'Brawaru' Sorokin",
+    "url": "https://github.com/Brawaru/Brawaru"
+  },
+  "funding": "https://github.com/Brawaru/Brawaru/blob/main/SUPPORT.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vintl-dev/vintl.git"
+  },
   "license": "MIT",
   "sideEffects": false,
   "type": "module",

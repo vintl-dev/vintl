@@ -1,10 +1,16 @@
 # Migrating to v4
 
-Version 4 of Vue Intl Controller brings a lot of big and small changes, but
-overall attempts to maintain the familiar API. We except major changes in API to
-happen in the next versions.
+Version 4 of VIntl brings a lot of big and small changes, but overall attempts
+to maintain the familiar API. We except major changes in API to happen in the
+next versions.
 
 Here's what changed in this version and how you can migrate:
+
+## Moving to VIntl name
+
+Previously this package was distributed under the name Vue Intl Controller,
+however in v4 its name has been changed to VIntl, so it is less verbose and
+shorter.
 
 ## Switch to Vue 3
 
@@ -85,14 +91,14 @@ To keep it globally you can manually import it and set as component on your Vue
 instance:
 
 ```js
-import { IntlFormatted } from '@braw/vue-intl-controller/components'
+import { IntlFormatted } from '@braw/vintl/components'
 app.component('IntlFormatted', IntlFormatted)
 ```
 
 Fragment can be globally registered as well:
 
 ```js
-import { Fragment } from '@braw/vue-intl-controller/components'
+import { Fragment } from '@braw/vintl/components'
 app.component('Fragment', Fragment)
 ```
 
