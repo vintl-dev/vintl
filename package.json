@@ -1,5 +1,5 @@
 {
-  "name": "@braw/vintl",
+  "name": "@vintl/vintl",
   "version": "1.0.0",
   "description": "Integrate @formatjs/intl into your Vue apps for easier internationalisation",
   "keywords": [

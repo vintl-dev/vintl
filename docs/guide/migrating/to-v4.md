@@ -91,14 +91,14 @@ To keep it globally you can manually import it and set as component on your Vue
 instance:
 
 ```js
-import { IntlFormatted } from '@braw/vintl/components'
+import { IntlFormatted } from '@vintl/vintl/components'
 app.component('IntlFormatted', IntlFormatted)
 ```
 
 Fragment can be globally registered as well:
 
 ```js
-import { Fragment } from '@braw/vintl/components'
+import { Fragment } from '@vintl/vintl/components'
 app.component('Fragment', Fragment)
 ```
 

@@ -25,19 +25,19 @@ Install using your package manager of choice:
 **npm**
 
 ```sh
-npm i @braw/vintl
+npm i @vintl/vintl
 ```
 
 **pnpm**
 
 ```sh
-pnpm i @braw/vintl
+pnpm i @vintl/vintl
 ```
 
 **yarn**
 
 ```sh
-yarn add @braw/vintl
+yarn add @vintl/vintl
 ```
 
 ### Usage
@@ -45,7 +45,7 @@ yarn add @braw/vintl
 In your Vue app entry point import `createPlugin` function.
 
 ```ts
-import { createPlugin } from '@braw/vintl/plugin'
+import { createPlugin } from '@vintl/vintl/plugin'
 ```
 
 Create a plugin instance (you can do that inline, without variable):
@@ -106,9 +106,9 @@ You can now use all of the plugin's features:
 
 ```vue
 <script setup>
-import { useI18n } from '@braw/vintl'
+import { useI18n } from '@vintl/vintl'
 import { defineMessages } from '@formatjs/intl'
-import { IntlFormatted } from '@braw/vintl/components'
+import { IntlFormatted } from '@vintl/vintl/components'
 
 const messages = defineMessages({
   today: {
@@ -306,7 +306,7 @@ By default there are no sources, but the package is shipped with two sources tha
 On server:
 
 ```ts
-import { useAcceptLanguageHeader } from '@braw/vintl/source/header'
+import { useAcceptLanguageHeader } from '@vintl/vintl/source/header'
 
 const headerSource = useAcceptLanguageHeader(req.headers['Accept-Language'])
 
@@ -316,7 +316,7 @@ controller.addSource(headerSource)
 On client:
 
 ```ts
-import { useNavigatorLanguage } from '@braw/vintl/source/navigator'
+import { useNavigatorLanguage } from '@vintl/vintl/source/navigator'
 
 controller.addSource(useNavigatorLanguage())
 ```
@@ -354,7 +354,7 @@ function createCustomSource(locales: string[]) {
 
 > **Warning** This is an experimental feature.
 
-You can declare your messages by creating an ambient declaration file where you need to import `@braw/vintl`, so that you can extend global namespace `VueIntlController` containing the following declarations:
+You can declare your messages by creating an ambient declaration file where you need to import `@vintl/vintl`, so that you can extend global namespace `VueIntlController` containing the following declarations:
 
 - `interface` `MessageValueTypes`
 
@@ -381,10 +381,13 @@ Create a file called along the lines of `i18n.d.ts`, and inside of it write:
 
 ```ts
 // Makes sure TypeScript knows what we extend:
-import '@braw/vintl'
+import '@vintl/vintl'
 
 // Helper types:
-import type { SelectArgument, ValueArgument } from '@braw/vintl/types/arguments'
+import type {
+  SelectArgument,
+  ValueArgument,
+} from '@vintl/vintl/types/arguments'
 
 // Example piece of 'your' code:
 import type { ExampleObject } from '~/utils/convertibleObject.ts'

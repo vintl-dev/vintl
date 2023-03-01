@@ -2,20 +2,20 @@
 
 ## Adding the package
 
-The package is distributed as `@braw/vintl` on npm.
+The package is distributed as `@vintl/vintl` on npm.
 
 :::code-group
 
 ```sh [npm]
-npm install @braw/vintl
+npm install @vintl/vintl
 ```
 
 ```sh [pnpm]
-pnpm add @braw/vintl
+pnpm add @vintl/vintl
 ```
 
 ```sh [yarn]
-yarn add @braw/vintl
+yarn add @vintl/vintl
 ```
 
 :::

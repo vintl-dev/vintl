@@ -11,7 +11,7 @@ To install this plugin in Vue, we first need to create and configure our plugin.
 In your Vue app entry point import `createPlugin` function.
 
 ```ts
-import { createPlugin } from '@braw/vintl/plugin'
+import { createPlugin } from '@vintl/vintl/plugin'
 ```
 
 Create a plugin instance using that function:
