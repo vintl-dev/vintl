@@ -17,7 +17,7 @@ Which is equivalent to:
 
 ```vue
 <script setup>
-import { useI18n } from '@braw/vintl'
+import { useI18n } from '@vintl/vintl'
 
 const controller = useI18n()
 </script>
@@ -38,7 +38,7 @@ Which is equivalent to:
 
 ```vue
 <script setup>
-import { useTranslate } from '@braw/vintl'
+import { useTranslate } from '@vintl/vintl'
 
 const translate = useTranslate()
 </script>
@@ -60,7 +60,7 @@ Which is equivalent to:
 
 ```vue
 <script setup>
-import { useFormatters } from '@braw/vintl'
+import { useFormatters } from '@vintl/vintl'
 
 const formats = useFormatters()
 </script>

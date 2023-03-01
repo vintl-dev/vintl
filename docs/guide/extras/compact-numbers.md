@@ -93,7 +93,7 @@ getter `controller.intl`.
 ```ts
 // src/plugins/compact-numbers.ts
 import { createFormatter, Formatter } from '@braw/compact-number'
-import { IntlController } from '@braw/vintl/controller'
+import { IntlController } from '@vintl/vintl/controller'
 import { inject, computed, InjectionKey, ComputedRef, Plugin } from 'vue'
 
 const key: InjectionKey<ComputedRef<Formatter>> = Symbol('compactNumber')
@@ -151,7 +151,7 @@ its return value to format any number:
 <script setup lang="ts">
 import { ref } from 'vue'
 import { defineMessage } from '@formatjs/intl'
-import { useI18n } from '@braw/vintl'
+import { useI18n } from '@vintl/vintl'
 import { useCompactNumbers } from '../plugins/compact-numbers.js' // [!code hl]
 
 const count = ref(0)

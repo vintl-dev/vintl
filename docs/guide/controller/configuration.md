@@ -93,7 +93,7 @@ For now, you can use the `preferredLocaleSources` option, which takes an array
 of all sources, to specify all sources for the preferred locale.
 
 ```ts
-import { useNavigatorLanguage } from '@braw/vintl/source/navigator'
+import { useNavigatorLanguage } from '@vintl/vintl/source/navigator'
 
 createController({
   // …
