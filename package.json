@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
-    "@types/node": "^18.14.4",
+    "@types/node": "^18.14.5",
     "del-cli": "^5.0.0",
     "eslint": "^8.35.0",
     "happy-dom": "^8.9.0",
