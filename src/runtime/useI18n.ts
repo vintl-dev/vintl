@@ -9,7 +9,7 @@ import type { IntlController } from '../controller.js'
  * @throws If controller cannot be found in the current application or current
  *   application cannot be determined (called outside of `setup()` call).
  */
-export function useI18n<ControllerType = MessageValueType>() {
+export function useVIntl<ControllerType = MessageValueType>() {
   const controller = inject(controllerKey)
 
   if (controller == null) {
@@ -19,4 +19,14 @@ export function useI18n<ControllerType = MessageValueType>() {
   }
 
   return controller as IntlController<ControllerType>
+}
+
+/**
+ * Alias for {@link useVIntl}.
+ *
+ * @deprecated This composable name is deprecated and will be removed in next
+ *   major version. Please use {@link useVIntl} instead.
+ */
+export function useI18n<ControllerType = MessageValueType>() {
+  return useVIntl<ControllerType>()
 }
