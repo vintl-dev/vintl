@@ -11,5 +11,16 @@
   "rangeStrategy": "bump",
   "npm": {
     "commitMessageTopic": "{{prettyDepType}} {{depName}}"
-  }
+  },
+  "schedule": ["before 2am on monday"],
+  "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "stabilityDays": 3
+    },
+    {
+      "matchDepTypes": ["engines", "peerDependencies"],
+      "rangeStrategy": "replace"
+    }
+  ]
 }
