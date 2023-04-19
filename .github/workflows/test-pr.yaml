@@ -23,12 +23,11 @@ jobs:
         with:
           node-version: 18.x
 
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
+      - name: Install pnpm via corepack
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare --activate
 
       - name: Get pnpm store directory
         id: pnpm-cache
