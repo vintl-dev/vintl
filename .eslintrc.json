@@ -32,6 +32,16 @@
     "@typescript-eslint/no-useless-constructor": "warn"
   },
   "parserOptions": {
-    "project": "./tsconfig.eslint.json"
-  }
+    "project": "./tsconfig.json"
+  },
+  "overrides": [
+    {
+      "files": ["./build.config.ts", "./build/*.ts"],
+      "parserOptions": { "project": "./tsconfig.build.json" }
+    },
+    {
+      "files": ["./vitest.config.ts", "./test/*.test.ts"],
+      "parserOptions": { "project": "./tsconfig.tests.json" }
+    }
+  ]
 }
