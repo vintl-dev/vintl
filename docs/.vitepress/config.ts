@@ -10,6 +10,9 @@ export default defineConfig({
 
   themeConfig: {
     siteTitle: 'VIntl',
+    search: {
+      provider: 'local',
+    },
     nav: [
       { text: 'Docs', link: '/guide/intro' },
       { text: 'API', link: '/api/' },
