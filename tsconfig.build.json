@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+
+    "module": "ESNext",
+
+    "moduleResolution": "node",
+
+    "esModuleInterop": true,
+
+    "types": ["node"]
+  },
+  "include": ["./build.config.ts", "./tsconfig.build.json"]
+}

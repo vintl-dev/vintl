@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+
+    "rootDir": ".",
+
+    "strict": true,
+    "strictBindCallApply": true,
+
+    "verbatimModuleSyntax": true,
+
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+
+    "skipLibCheck": true,
+
+    "lib": ["ES2022"]
+  }
+}

@@ -1,19 +1,22 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "target": "ES2022",
-    "moduleResolution": "NodeNext",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "strict": true,
-    "strictBindCallApply": true,
-    "importsNotUsedAsValues": "error",
-    "rootDir": "src",
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "stripInternal": true
+    "module": "ESNext",
+    "moduleResolution": "nodenext",
+
+    "types": [],
+
+    "outDir": "./dist",
+
+    "noEmit": true
   },
-  "exclude": ["test/**/*", "dist/**/*", "typings", "./*.ts"]
+  "include": ["./src/**/*.ts"],
+  "references": [
+    {
+      "path": "./tsconfig.build.json"
+    },
+    {
+      "path": "./tsconfig.tests.json"
+    }
+  ]
 }
