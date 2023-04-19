@@ -12,6 +12,7 @@ import {
   type LocaleChangeEvent,
   type LocaleLoadEvent,
 } from '../events/index.js'
+import { cReportError } from '../utils/compat.js'
 import type { IntlController } from './types.js'
 
 export type ControllerEvents =
@@ -134,8 +135,7 @@ export function useEventTargetPartial<T>(controllerBox: {
             eventType === 'error' ||
             (eventRegister.get('error')?.size ?? 0) < 1
           ) {
-            // eslint-disable-next-line no-console
-            console.error('Uncaught', err)
+            cReportError(err)
           } else {
             const wrappedError = new Error(
               `An error occurred while calling the event listener for "${eventType}"`,
