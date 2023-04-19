@@ -1,3 +1,4 @@
+/// <reference lib="DOM" />
 import { ref } from 'vue'
 import type { PreferredLocalesSource } from '../types/index.js'
 
