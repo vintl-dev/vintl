@@ -11,17 +11,6 @@
   --vp-c-purple-dimm-3: #8c00ff80;
 }
 
-:not(html.dark):root {
-  --vp-code-block-bg: var(--vp-c-bg-soft);
-  --vp-code-line-highlight-color: var(--vp-c-purple-dimm-1);
-  --vp-code-tab-bg: var(--vp-c-bg-soft-down);
-  --vp-code-tab-text-color: var(--vp-c-text-light-2);
-  --vp-code-tab-active-text-color: var(--vp-c-black);
-  --vp-code-tab-hover-text-color: var(--vp-c-black);
-  --vp-code-tab-divider: var(--vp-c-bg-soft-down);
-  --vp-code-copy-code-active-text: var(--vp-c-text-color);
-}
-
 .vp-code-group .tabs label::after {
   height: 3px;
   border-radius: 100px;
@@ -63,10 +52,6 @@ html:not(.dark) .vp-doc .custom-block.danger a:hover {
 html:not(.dark) .vp-doc .custom-block div[class*='language-'] {
   --vp-code-block-bg: var(--vp-c-bg-soft-up);
   border: 1px solid var(--vp-c-bg-soft-down);
-}
-
-html:not(.dark) .vp-doc [class*='language-'] > span.lang {
-  color: var(--vp-c-gray);
 }
 
 :root {
