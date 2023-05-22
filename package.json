@@ -92,7 +92,9 @@
     "@formatjs/icu-messageformat-parser": "^2.4.0",
     "@formatjs/intl": "^2.7.2",
     "@formatjs/intl-localematcher": "^0.2.32",
-    "intl-messageformat": "^10.3.5",
+    "intl-messageformat": "^10.3.5"
+  },
+  "peerDependencies": {
     "vue": "^3.2.47"
   },
   "publishConfig": {
