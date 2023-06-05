@@ -4,11 +4,16 @@ on:
   push:
     branches: [main, next, alpha, beta, rc]
 
-permissions: write-all
-
 jobs:
   release:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+      packages: write
+      pull-requests: write
+      issues: read
 
     if: >-
       !contains(github.event.head_commit.message, '[skip ci]')
@@ -53,9 +58,12 @@ jobs:
       - name: Test
         run: pnpm run test
 
-      - name: Release
+      - name: Create release PR or publish to npm
         if: github.repository_owner == 'vintl-dev'
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm exec semantic-release
