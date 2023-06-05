@@ -79,4 +79,10 @@ export default defineBuildConfig({
     },
   ],
   declaration: true,
+  rollup: {
+    esbuild: {
+      jsx: 'automatic',
+      jsxImportSource: 'vue',
+    },
+  },
 })
