@@ -4,6 +4,9 @@ dependencies:
   '@braw/async-computed':
     specifier: ^5.0.2
     version: 5.0.2(vue@3.3.4)
+  '@formatjs/ecma402-abstract':
+    specifier: ^1.15.0
+    version: 1.15.0
   '@formatjs/icu-messageformat-parser':
     specifier: ^2.4.0
     version: 2.4.0

@@ -29,7 +29,8 @@
     "@typescript-eslint/no-extra-semi": "off",
     "indent": "off",
     "no-useless-constructor": "off",
-    "@typescript-eslint/no-useless-constructor": "warn"
+    "@typescript-eslint/no-useless-constructor": "warn",
+    "vue/one-component-per-file": "off"
   },
   "parserOptions": {
     "project": "./tsconfig.json"

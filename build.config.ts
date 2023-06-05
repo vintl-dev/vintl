@@ -57,7 +57,7 @@ export default defineBuildConfig({
       outDir: './dist',
     },
     {
-      input: './src/components',
+      input: './src/components/index',
       name: 'components',
       builder: 'rollup',
       declaration: true,

@@ -1,9 +1,9 @@
 import type { VNode } from 'vue'
 
-interface Props {
+interface FragmentProps {
   of: VNode[] | VNode
 }
 
-export function Fragment(props: Props) {
+export function Fragment(props: FragmentProps) {
   return Array.isArray(props.of) ? props.of : [props.of]
 }

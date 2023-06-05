@@ -89,6 +89,7 @@
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
+    "@formatjs/ecma402-abstract": "^1.15.0",
     "@formatjs/icu-messageformat-parser": "^2.4.0",
     "@formatjs/intl": "^2.7.2",
     "@formatjs/intl-localematcher": "^0.2.32",

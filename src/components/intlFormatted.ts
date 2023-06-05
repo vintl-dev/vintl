@@ -12,15 +12,12 @@ import type {
   MessageID,
   MessageValues,
   MessageValueType,
-} from './types/messages.js'
-import { useI18n } from './runtime/useI18n.js'
+} from '../types/messages.ts'
+import { useVIntl } from '../runtime/index.ts'
+import { createRecord } from './utils/index.ts'
 
 /** Represents a value that can be either `T` or an array of `T`. */
 type MaybeArray<T> = T | T[]
-
-function createObject() {
-  return Object.create(null)
-}
 
 interface CommonProps {
   tags?: string[]
@@ -79,10 +76,10 @@ export function IntlFormatted<I extends MessageID>(
     )
   }
 
-  const { intl, normalizeMessageDescriptor: getDescriptor } = useI18n<any>()
+  const { intl, normalizeMessageDescriptor: getDescriptor } = useVIntl<any>()
 
   /** Initial values are passed to the slots. */
-  const initialValues: MessageValues = createObject()
+  const initialValues: MessageValues = createRecord()
 
   /**
    * Provided values are values that were automatically provided by the
@@ -90,7 +87,7 @@ export function IntlFormatted<I extends MessageID>(
    *
    * Initial values are to be merged before assigning provided values.
    */
-  const values: MessageValues = createObject()
+  const values: MessageValues = createRecord()
 
   if (props.values != null) {
     Object.assign(initialValues, props.values)
