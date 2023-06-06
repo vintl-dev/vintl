@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "next",
+  "initialVersions": {
+    "@vintl/vintl": "4.2.0"
+  },
+  "changesets": []
+}
