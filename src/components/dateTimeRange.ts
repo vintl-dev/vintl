@@ -1,5 +1,6 @@
 import type { FormatDateOptions } from '@formatjs/intl'
 import {
+  computed,
   createTextVNode,
   defineComponent,
   type PropType,
@@ -7,6 +8,7 @@ import {
   type SlotsType,
 } from 'vue'
 import { useVIntl } from '../runtime/index.ts'
+import { normalizeAttrs } from './utils/index.ts'
 
 interface FormattedDateTimeRangeDefinedProps {
   from: Date | number
@@ -28,10 +30,18 @@ export const FormattedDateTimeRange = defineComponent(
   ) => {
     const vintl = useVIntl()
 
-    return () => {
-      const { from, to, ...options } = props
+    const $options = computed(
+      () => normalizeAttrs(ctx.attrs) as FormatDateOptions,
+    )
 
-      const formattedValue = vintl.intl.formatDateTimeRange(from, to, options)
+    return () => {
+      const { from, to } = props as FormattedDateTimeRangeDefinedProps
+
+      const formattedValue = vintl.intl.formatDateTimeRange(
+        from,
+        to,
+        $options.value,
+      )
 
       return (
         ctx.slots.default?.({ formattedValue }) ??
