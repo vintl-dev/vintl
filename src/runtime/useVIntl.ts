@@ -20,13 +20,3 @@ export function useVIntl<ControllerType = MessageValueType>() {
 
   return controller as IntlController<ControllerType>
 }
-
-/**
- * Alias for {@link useVIntl}.
- *
- * @deprecated This composable name is deprecated and will be removed in next
- *   major version. Please use {@link useVIntl} instead.
- */
-export function useI18n<ControllerType = MessageValueType>() {
-  return useVIntl<ControllerType>()
-}
