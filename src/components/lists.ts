@@ -14,11 +14,12 @@ interface FormattedListDefinedProps<Item extends string | VNode> {
   items: readonly Item[]
 }
 
-export interface FormattedListProps<Item extends string | VNode>
-  extends FormattedListDefinedProps<Item>,
-    FormatListOptions {}
+export type FormattedListProps<Item extends string | VNode> =
+  FormattedListDefinedProps<Item> & FormatListOptions
 
-export interface FormattedListSlots<Item extends string | VNode> {
+export interface FormattedListSlots<
+  Item extends string | VNode = string | VNode,
+> {
   default(props: {
     children: Item extends string ? string : string | Item | (string | Item)[]
   }): any
@@ -56,4 +57,5 @@ export const FormattedList = defineComponent(
       },
     },
   },
-)
+) as <Item extends string | VNode>(props: FormattedListProps<Item>) => any
+// override because typescript is stupid
