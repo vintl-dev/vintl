@@ -1,9 +1,9 @@
-import type { VNode } from 'vue'
+import { defineComponent, type VNode } from 'vue'
 
 interface FragmentProps {
   of: VNode[] | VNode
 }
 
-export function Fragment(props: FragmentProps) {
-  return Array.isArray(props.of) ? props.of : [props.of]
-}
+export const Fragment = defineComponent(
+  (props: FragmentProps) => () => props.of,
+)
