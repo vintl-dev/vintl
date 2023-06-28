@@ -12,7 +12,7 @@ import { normalizeAttrs } from './utils/index.ts'
 
 interface RealProps {
   value: number
-  unit: Intl.RelativeTimeFormatUnitSingular
+  unit: Intl.RelativeTimeFormatUnit
 }
 
 export interface FormattedRelativeTimeProps
@@ -53,9 +53,9 @@ export const FormattedRelativeTime = defineComponent(
     inheritAttrs: false,
     props: {
       unit: {
-        type: String as PropType<Intl.RelativeTimeFormatUnitSingular>,
+        type: String as PropType<Intl.RelativeTimeFormatUnit>,
         required: false,
-        default: 'second',
+        default: 'seconds',
       },
       value: {
         type: Number,
