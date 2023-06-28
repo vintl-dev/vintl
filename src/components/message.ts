@@ -1,34 +1,42 @@
 import {
   computed,
   defineComponent,
-  type VNode,
   type SlotsType,
   type SetupContext,
 } from 'vue'
+import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 import { useVIntl } from '../runtime/index.ts'
-import { type MessageContent, type MessageValues } from '../types/index.ts'
+import { type MessageContent, type MessageValueType } from '../types/index.ts'
 import { createRecord, normalizeDynamicOutput } from './utils/index.ts'
 
 function isValueSlotName(slotName: string): slotName is `~${string}` {
   return slotName.startsWith('~')
 }
 
-interface FormattedMessageProps<Values extends MessageValues> {
+type ValuesRecord<T = string> = Record<
+  string,
+  PrimitiveType | T | FormatXMLElementFn<T>
+>
+
+export interface FormattedMessageProps<T> {
   id: string
   description?: string | object
   defaultMessage?: MessageContent
-  values?: Values
+  values?: ValuesRecord<T>
 }
 
-interface FormattedMessageSlots<Values extends MessageValues> {
-  [key: string]: (ctx: { children: (VNode | string)[]; values: Values }) => any
-  [key: `~${string}`]: (ctx: { values: Values }) => any
+export interface FormattedMessageSlots<T> {
+  [key: string]: (ctx: {
+    children: (T | string)[]
+    values: ValuesRecord<T>
+  }) => string | T | (string | T)[]
+  [key: `~${string}`]: (ctx: { values: ValuesRecord<T> }) => string | T
 }
 
 export const FormattedMessage = defineComponent(
-  function FormattedMessage<Values extends MessageValues>(
-    props: FormattedMessageProps<Values>,
-    ctx: SetupContext<{}, SlotsType<Partial<FormattedMessageSlots<Values>>>>,
+  function FormattedMessage<T = MessageValueType>(
+    props: FormattedMessageProps<T>,
+    ctx: SetupContext<{}, SlotsType<Partial<FormattedMessageSlots<T>>>>,
   ) {
     const descriptor = computed(() => ({
       id: props.id,
@@ -36,11 +44,11 @@ export const FormattedMessage = defineComponent(
       description: props.description,
     }))
 
-    const values = computed<MessageValues>(() => {
-      const combinedValues = createRecord() as Values
+    const values = computed<ValuesRecord<T>>(() => {
+      const combinedValues = createRecord() as ValuesRecord<T>
       Object.assign(combinedValues, props.values)
 
-      const slotValues = createRecord() as MessageValues
+      const slotValues = createRecord() as ValuesRecord<T>
 
       const { slots } = ctx
 
@@ -52,8 +60,11 @@ export const FormattedMessage = defineComponent(
             values: combinedValues,
           })
         } else {
-          slotValues[slotKey] = (children: (string | VNode)[]) =>
-            slots[slotKey]!({ values: combinedValues, children })
+          slotValues[slotKey] = (children: (T | string)[]) =>
+            slots[slotKey]!({
+              values: combinedValues,
+              children,
+            })
         }
       }
 
@@ -65,7 +76,10 @@ export const FormattedMessage = defineComponent(
     const vintl = useVIntl()
 
     return () => {
-      const output = vintl.intl.formatMessage(descriptor.value, values.value)
+      const output = vintl.intl.formatMessage(
+        descriptor.value,
+        values.value as any,
+      )
 
       return normalizeDynamicOutput(output)
     }
@@ -97,4 +111,4 @@ export const FormattedMessage = defineComponent(
     },
     slots: Object as any,
   },
-)
+) as <Values = MessageValueType>(props: FormattedMessageProps<Values>) => any
