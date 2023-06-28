@@ -6,6 +6,7 @@ import {
   type SlotsType,
   computed,
   type PropType,
+  toDisplayString,
 } from 'vue'
 import { useVIntl } from '../runtime/index.ts'
 import { normalizeAttrs } from './utils/index.ts'
@@ -38,9 +39,12 @@ export const FormattedListParts = defineComponent(
     return () => {
       const { items } = props as FormattedListPartsDefinedProps<Item>
 
-      const parts = vintl.intl.formatListToParts(items, options.value) as any
+      const parts = vintl.intl.formatListToParts(items, options.value)
 
-      return ctx.slots.default?.({ parts }) ?? parts
+      return (
+        ctx.slots.default?.({ parts }) ??
+        parts.map((part) => toDisplayString(part))
+      )
     }
   },
   {
