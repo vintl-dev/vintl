@@ -54,4 +54,4 @@ export const FormattedListParts = defineComponent(
       },
     },
   },
-)
+) as <Item extends string | VNode>(props: FormattedListPartsProps<Item>) => any
