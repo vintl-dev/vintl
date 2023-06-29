@@ -5,7 +5,6 @@ import {
   type SetupContext,
   type SlotsType,
 } from 'vue'
-import { type MessageValueType } from '../types/index.ts'
 import { useVIntl } from '../runtime/index.ts'
 import { normalizeAttrs } from './utils/index.ts'
 
@@ -28,7 +27,7 @@ export interface FormattedPluralSlots<T = string> extends PluralSlots {
 }
 
 export const FormattedPlural = defineComponent(
-  <T extends MessageValueType>(
+  <T = string>(
     props: FormattedPluralProps,
     ctx: SetupContext<{}, SlotsType<Partial<FormattedPluralSlots<T>>>>,
   ) => {
