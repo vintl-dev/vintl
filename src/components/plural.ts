@@ -43,7 +43,9 @@ export const FormattedPlural = defineComponent(
 
       const rule = vintl.intl.formatPlural(value, $options.value)
 
-      const ruleRender = ctx.slots[rule]?.() ?? []
+      const ruleSlot = ctx.slots[rule] ?? ctx.slots.other
+
+      const ruleRender = ruleSlot != null ? ruleSlot() : []
 
       return ctx.slots.default?.({ children: ruleRender }) ?? ruleRender
     }
