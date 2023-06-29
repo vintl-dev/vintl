@@ -23,7 +23,7 @@ export interface FormattedPluralProps
   extends FormattedPluralDefinedProps,
     FormatPluralOptions {}
 
-export interface FormattedPluralSlots<T> extends PluralSlots {
+export interface FormattedPluralSlots<T = string> extends PluralSlots {
   default(props: { children: string | T | (string | T)[] }): any
 }
 
