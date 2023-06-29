@@ -3,11 +3,12 @@ import {
   defineComponent,
   type SlotsType,
   type SetupContext,
+  type VNodeArrayChildren,
 } from 'vue'
 import type { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat'
 import { useVIntl } from '../runtime/index.ts'
 import { type MessageContent, type MessageValueType } from '../types/index.ts'
-import { createRecord, normalizeDynamicOutput } from './utils/index.ts'
+import { createRecord } from './utils/index.ts'
 
 function isValueSlotName(slotName: string): slotName is `~${string}` {
   return slotName.startsWith('~')
@@ -33,6 +34,48 @@ export interface FormattedMessageSlots<T> {
   [key: `~${string}`]: (ctx: { values: ValuesRecord<T> }) => string | T
 }
 
+class SlotOutput<T = any> {
+  constructor(public readonly value: T | T[]) {}
+}
+
+type NonArray<T> = T extends any[] ? never : T
+type VNodeChildAtom = NonArray<VNodeArrayChildren[number]>
+type VNodeArrayChildrenWith<T> = (
+  | T
+  | VNodeChildAtom
+  | VNodeArrayChildrenWith<T>
+)[]
+
+function normalizeOutput<T = any>(
+  rawOutput:
+    | string
+    | SlotOutput<string | T | (string | T)[]>
+    | T
+    | (string | SlotOutput<string | T | (string | T)[]> | T)[],
+): VNodeArrayChildrenWith<T> {
+  if (Array.isArray(rawOutput)) {
+    const output: VNodeArrayChildrenWith<T> = []
+    for (const child of rawOutput) {
+      if (child instanceof SlotOutput) {
+        if (Array.isArray(child.value)) {
+          output.push(...child.value)
+        } else {
+          output.push(child.value)
+        }
+      } else {
+        output.push(child)
+      }
+    }
+    return output
+  } else if (rawOutput instanceof SlotOutput) {
+    return Array.isArray(rawOutput.value) ? rawOutput.value : [rawOutput.value]
+  } else if (typeof rawOutput === 'string') {
+    return [rawOutput]
+  }
+
+  return [rawOutput]
+}
+
 export const FormattedMessage = defineComponent(
   function FormattedMessage<T = MessageValueType>(
     props: FormattedMessageProps<T>,
@@ -48,7 +91,9 @@ export const FormattedMessage = defineComponent(
       const combinedValues = createRecord() as ValuesRecord<T>
       Object.assign(combinedValues, props.values)
 
-      const slotValues = createRecord() as ValuesRecord<T>
+      const slotValues = createRecord() as ValuesRecord<
+        T | SlotOutput | ((children: (T | string)[]) => SlotOutput)
+      >
 
       const { slots } = ctx
 
@@ -56,15 +101,19 @@ export const FormattedMessage = defineComponent(
         if (slots[slotKey] == null) continue
 
         if (isValueSlotName(slotKey)) {
-          slotValues[slotKey.slice(1)] = slots[slotKey]!({
-            values: combinedValues,
-          })
-        } else {
-          slotValues[slotKey] = (children: (T | string)[]) =>
+          slotValues[slotKey.slice(1)] = new SlotOutput(
             slots[slotKey]!({
               values: combinedValues,
-              children,
-            })
+            }),
+          )
+        } else {
+          slotValues[slotKey] = (children: (T | string)[]) =>
+            new SlotOutput(
+              slots[slotKey]!({
+                values: combinedValues,
+                children,
+              }),
+            )
         }
       }
 
@@ -81,7 +130,7 @@ export const FormattedMessage = defineComponent(
         values.value as any,
       )
 
-      return normalizeDynamicOutput(output)
+      return normalizeOutput(output)
     }
   },
   {
