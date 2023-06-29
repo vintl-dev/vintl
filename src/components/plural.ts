@@ -51,19 +51,13 @@ export const FormattedPlural = defineComponent(
     }
   },
   {
+    inheritAttrs: false,
     props: {
       value: {
         type: Number,
         required: false,
         default: 0,
       },
-      options: {
-        type: Object,
-        required: false,
-        default() {
-          return {}
-        },
-      },
     },
   },
-)
+) as (props: FormattedPluralProps) => any
