@@ -12,7 +12,7 @@ import { normalizeAttrs } from './utils/index.ts'
 type PluralSelectors = ReturnType<IntlFormatters['formatPlural']>
 
 type PluralSlots = {
-  [K in PluralSelectors]: (props: { value: number }) => any
+  [K in PluralSelectors]?: (props: { value: number }) => any
 }
 
 interface FormattedPluralDefinedProps {
@@ -24,7 +24,7 @@ export interface FormattedPluralProps
     FormatPluralOptions {}
 
 export interface FormattedPluralSlots<T = string> extends PluralSlots {
-  default(props: { children: string | T | (string | T)[] }): any
+  default?(props: { children: string | T | (string | T)[] }): any
 }
 
 export const FormattedPlural = defineComponent(
