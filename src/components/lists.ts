@@ -8,7 +8,7 @@ import {
   type VNode,
 } from 'vue'
 import { useVIntl } from '../runtime/index.ts'
-import { normalizeAttrs, normalizeDynamicOutput } from './utils/index.ts'
+import { normalizeAttrs } from './utils/index.ts'
 
 interface FormattedListDefinedProps<Item extends string | VNode> {
   items: readonly Item[]
@@ -41,9 +41,7 @@ export const FormattedList = defineComponent(
 
       const children = vintl.intl.formatList(items, options.value) as any
 
-      return (
-        ctx.slots.default?.({ children }) ?? normalizeDynamicOutput(children)
-      )
+      return ctx.slots.default?.({ children }) ?? children
     }
   },
   {
