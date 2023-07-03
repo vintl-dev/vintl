@@ -41,7 +41,7 @@
       "parserOptions": { "project": "./tsconfig.build.json" }
     },
     {
-      "files": ["./vitest.config.ts", "./test/*.test.ts"],
+      "files": ["./vitest.config.ts", "./test/**/*.ts", "./test/**/*.tsx"],
       "parserOptions": { "project": "./tsconfig.tests.json" }
     }
   ]

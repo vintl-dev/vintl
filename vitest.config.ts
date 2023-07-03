@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config'
+import tsconfig from './tsconfig.tests.json'
 
 export default defineConfig({
   test: {
@@ -7,5 +8,8 @@ export default defineConfig({
       registerNodeLoader: true,
     },
     environment: 'happy-dom',
+  },
+  esbuild: {
+    tsconfigRaw: tsconfig as any,
   },
 })
