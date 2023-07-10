@@ -7,12 +7,21 @@ export function withAbnormalSpacesReplaced(value: string): string {
 
 export function createVIntlPlugin(
   locales: string[],
-  loadLocale?: (e: LocaleLoadEvent) => void | Promise<void>,
+  loadLocale?:
+    | ((e: LocaleLoadEvent) => void | Promise<void>)
+    | Record<string, Record<string, string> | undefined>,
 ) {
   const plugin = createPlugin({
     controllerOpts: {
       locales: locales.map((tag) => ({ tag })),
-      listen: { localeload: loadLocale },
+      listen: {
+        localeload:
+          typeof loadLocale === 'function' || loadLocale == null
+            ? loadLocale
+            : (e) => {
+                e.addMessages(loadLocale[e.locale.tag] ?? {})
+              },
+      },
     },
   })
 
