@@ -74,18 +74,18 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.1",
+    "@changesets/cli": "^2.26.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
-    "@types/node": "^18.16.16",
-    "del-cli": "^5.0.0",
+    "@types/node": "^18.17.17",
+    "del-cli": "^5.1.0",
     "eslint": "^8.49.0",
-    "happy-dom": "^11.0.3",
+    "happy-dom": "^11.2.0",
     "prettier": "^3.0.3",
     "prettier-plugin-jsdoc": "^1.0.2",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
-    "vitepress": "1.0.0-beta.1",
-    "vitest": "^0.32.0"
+    "vitepress": "1.0.0-rc.14",
+    "vitest": "^0.34.4"
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
@@ -100,5 +100,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@8.6.1"
+  "packageManager": "pnpm@8.7.6"
 }
