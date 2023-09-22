@@ -1,5 +1,13 @@
 # @vintl/vintl
 
+## 4.2.2
+
+### Patch Changes
+
+- abb0805: Unpin FormatJS dependencies
+
+  Previously FormatJS dependencies were pinned because of the unexpected breaking change, but this has since been resolved.
+
 ## 4.2.1
 
 ### Patch Changes
