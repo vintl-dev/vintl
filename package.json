@@ -89,10 +89,10 @@
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
-    "@formatjs/icu-messageformat-parser": "2.6.2",
-    "@formatjs/intl": "2.9.3",
-    "@formatjs/intl-localematcher": "0.4.2",
-    "intl-messageformat": "10.5.3"
+    "@formatjs/icu-messageformat-parser": "^2.6.2",
+    "@formatjs/intl": "^2.9.3",
+    "@formatjs/intl-localematcher": "^0.4.2",
+    "intl-messageformat": "^10.5.3"
   },
   "peerDependencies": {
     "vue": "^3.2.47"
