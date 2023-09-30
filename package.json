@@ -79,7 +79,7 @@
     "@types/node": "^18.18.0",
     "del-cli": "^5.1.0",
     "eslint": "^8.50.0",
-    "happy-dom": "^11.2.0",
+    "happy-dom": "^12.2.1",
     "prettier": "^3.0.3",
     "prettier-plugin-jsdoc": "^1.0.2",
     "typescript": "^5.2.2",

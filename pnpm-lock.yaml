@@ -41,8 +41,8 @@ devDependencies:
     specifier: ^8.50.0
     version: 8.50.0
   happy-dom:
-    specifier: ^11.2.0
-    version: 11.2.0
+    specifier: ^12.2.1
+    version: 12.2.2
   prettier:
     specifier: ^3.0.3
     version: 3.0.3
@@ -60,7 +60,7 @@ devDependencies:
     version: 1.0.0-rc.20(@algolia/client-search@4.20.0)(@types/node@18.18.0)(search-insights@2.8.2)
   vitest:
     specifier: ^0.34.5
-    version: 0.34.5(happy-dom@11.2.0)
+    version: 0.34.5(happy-dom@12.2.2)
 
 packages:
 
@@ -3451,8 +3451,8 @@ packages:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
     dev: true
 
-  /happy-dom@11.2.0:
-    resolution: {integrity: sha512-z4PshcYIIH6SkymSNRcDFwYUJOENe+FOQDx5BbHgg/wQUgxF5p9I9/BN45Jff34bbhXV8yJgkC5N99eyOzXK3w==}
+  /happy-dom@12.2.2:
+    resolution: {integrity: sha512-9ADD0d99BgRX/mZEu2yYD44ecfq2wZpPCfK+bUIvnbjJoLjxhYD962GvSMda5nIXNG4wMBoINLbhTPvWr5rKdg==}
     dependencies:
       css.escape: 1.5.1
       entities: 4.5.0
@@ -5561,7 +5561,7 @@ packages:
       - universal-cookie
     dev: true
 
-  /vitest@0.34.5(happy-dom@11.2.0):
+  /vitest@0.34.5(happy-dom@12.2.2):
     resolution: {integrity: sha512-CPI68mmnr2DThSB3frSuE5RLm9wo5wU4fbDrDwWQQB1CWgq9jQVoQwnQSzYAjdoBOPoH2UtXpOgHVge/uScfZg==}
     engines: {node: '>=v14.18.0'}
     hasBin: true
@@ -5605,7 +5605,7 @@ packages:
       cac: 6.7.14
       chai: 4.3.7
       debug: 4.3.4
-      happy-dom: 11.2.0
+      happy-dom: 12.2.2
       local-pkg: 0.4.3
       magic-string: 0.30.3
       pathe: 1.1.1
