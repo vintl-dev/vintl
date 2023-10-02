@@ -85,7 +85,7 @@
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "vitepress": "1.0.0-rc.20",
-    "vitest": "^0.34.5"
+    "vitest": "^0.34.6"
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
@@ -100,5 +100,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@8.7.6"
+  "packageManager": "pnpm@8.8.0"
 }
