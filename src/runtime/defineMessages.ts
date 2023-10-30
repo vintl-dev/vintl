@@ -1,9 +1,13 @@
-import type { MessageDescriptor } from "../types/index.js";
+import type { MessageDescriptor } from '../types/index.js'
 
-export function defineMessage<const Descriptor extends MessageDescriptor>(descriptor: Descriptor) {
+export function defineMessage<const Descriptor extends MessageDescriptor>(
+  descriptor: Descriptor,
+) {
   return descriptor
 }
 
-export function defineMessages<const Descriptors extends Record<string, MessageDescriptor>>(descriptors: Descriptors) {
+export function defineMessages<
+  const Descriptors extends Record<string, MessageDescriptor>,
+>(descriptors: Descriptors) {
   return descriptors
 }
