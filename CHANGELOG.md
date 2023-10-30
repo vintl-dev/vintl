@@ -1,5 +1,11 @@
 # @vintl/vintl
 
+## 4.4.1
+
+### Patch Changes
+
+- e72dd92: Fixed missing global mixin properties when using Volar
+
 ## 4.4.0
 
 ### Minor Changes
