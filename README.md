@@ -374,6 +374,14 @@ You can declare your messages by creating an ambient declaration file where you 
 
   A map of locale resources provided by the load event listeners.
 
+- `interface` `Options`
+
+  A map of options affecting type augmentation.
+
+  Currently supported options:
+
+  - `globalMixin` (`boolean`, default `true`) - whether to augment Vue types to type mixin-provided global properties.
+
 <details>
 <summary>Example</summary>
 
@@ -394,6 +402,10 @@ import type { ExampleObject } from '~/utils/convertibleObject.ts'
 
 declare global {
   namespace VueIntlController {
+    interface Options {
+      globalMixin: false // Remove types for mixin-provided properties.
+    }
+
     interface MessageValueTypes {
       // key doesn't matter as long as it does not collide with other key;
       // the interface used here solely for extensibility since you cannot
