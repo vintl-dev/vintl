@@ -1,6 +1,6 @@
 {
   "name": "@vintl/vintl",
-  "version": "4.4.0",
+  "version": "4.4.1",
   "description": "Integrate @formatjs/intl into your Vue apps for easier internationalisation",
   "keywords": [
     "i18n",
