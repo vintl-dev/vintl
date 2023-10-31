@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from 'vitest'
 import { type App, createApp, defineComponent } from 'vue'
 import {
   type PreferredLocalesSource,
-  useI18n,
+  useVIntl,
   type LocaleDescriptor,
 } from '../dist'
 import { type IntlController, createController } from '../dist/controller'
@@ -35,7 +35,7 @@ let controller: IntlController<string>
 const appComponent = defineComponent({
   name: 'App',
   setup() {
-    const i18nResult = useI18n()
+    const i18nResult = useVIntl()
     return { i18nResult }
   },
 })

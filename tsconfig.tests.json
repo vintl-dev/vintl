@@ -5,13 +5,24 @@
 
     "module": "ESNext",
 
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
+
     "moduleResolution": "bundler",
 
     "esModuleInterop": true,
 
     "types": [],
 
-    "lib": ["ES2022", "DOM"]
+    "lib": ["ES2022", "DOM"],
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "vue"
   },
-  "include": ["./vitest.config.ts", "./test/*.test.ts", "./tsconfig.tests.json"]
+  "include": [
+    "./vitest.config.ts",
+    "./test/**/*.ts",
+    "./test/**/*.tsx",
+    "./tsconfig.tests.json"
+  ]
 }

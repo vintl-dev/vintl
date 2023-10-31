@@ -2,15 +2,19 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
 
     "types": [],
 
     "outDir": "./dist",
 
-    "noEmit": true
+    "noEmit": true,
+
+    "jsx": "react-jsx",
+    "jsxImportSource": "vue"
   },
-  "include": ["./src/**/*.ts"],
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
   "references": [
     {
       "path": "./tsconfig.build.json"

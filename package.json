@@ -76,6 +76,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@testing-library/vue": "^7.0.0",
     "@types/node": "^18.18.7",
     "@vue/runtime-core": "^3.3.7",
     "del-cli": "^5.1.0",
@@ -86,17 +87,19 @@
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
     "vitepress": "1.0.0-rc.24",
-    "vitest": "^0.34.6"
+    "vitest": "^0.34.6",
+    "vue": "^3.3.7"
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
+    "@formatjs/ecma402-abstract": "^1.17.2",
     "@formatjs/icu-messageformat-parser": "^2.7.0",
     "@formatjs/intl": "^2.9.5",
     "@formatjs/intl-localematcher": "^0.4.2",
     "intl-messageformat": "^10.5.4"
   },
   "peerDependencies": {
-    "vue": "^3.2.47"
+    "vue": "^3.3.7"
   },
   "publishConfig": {
     "access": "public"

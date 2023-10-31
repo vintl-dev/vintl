@@ -57,7 +57,7 @@ export default defineBuildConfig({
       outDir: './dist',
     },
     {
-      input: './src/components',
+      input: './src/components/index',
       name: 'components',
       builder: 'rollup',
       declaration: true,
@@ -79,4 +79,10 @@ export default defineBuildConfig({
     },
   ],
   declaration: true,
+  rollup: {
+    esbuild: {
+      jsx: 'automatic',
+      jsxImportSource: 'vue',
+    },
+  },
 })

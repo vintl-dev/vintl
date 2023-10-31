@@ -30,6 +30,7 @@
     "indent": "off",
     "no-useless-constructor": "off",
     "@typescript-eslint/no-useless-constructor": "warn",
+    "vue/one-component-per-file": "off",
     "@typescript-eslint/no-unsafe-declaration-merging": "off"
   },
   "parserOptions": {
@@ -41,7 +42,7 @@
       "parserOptions": { "project": "./tsconfig.build.json" }
     },
     {
-      "files": ["./vitest.config.ts", "./test/*.test.ts"],
+      "files": ["./vitest.config.ts", "./test/**/*.ts", "./test/**/*.tsx"],
       "parserOptions": { "project": "./tsconfig.tests.json" }
     }
   ]
