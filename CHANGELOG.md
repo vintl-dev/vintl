@@ -1,5 +1,58 @@
 # @vintl/vintl
 
+## 5.0.0-next.0
+
+### Major Changes
+
+- 997402a: Remove deprecated composables
+
+  Composables, such as `useI18n`, `useTranslate` and `useFormatters` were previously deprecated with the warning that they will be removed in the next major version. They now get removed as scheduled.
+
+  Migration steps:
+
+  - Use `useVIntl` everywhere you used `useI18n`, the latter was just an alias for `useVIntl` in previous versions.
+  - To retrieve translate function previously returned by `useTranslate`, destructure `formatMessage` function from the controller:
+
+    ```js
+    const { formatMessage } = useVIntl
+    ```
+
+    It is bound to the controller and as such is safe to use on its own.
+
+  - To retrieve formatters previously returned by `useFormatters`, destructure `formats` property from the controller:
+
+    ```js
+    const { formats } = useVIntl
+    ```
+
+    It is reactively updated object and also safe to use on its own.
+
+- c2c6cb6: Bump Vue version to 3.3.4
+
+  We're now requiring a newer Vue version because we are relying on functionality added in Vue 3.3, such as generic components. Since it's not compatible with previous versions of Vue, this is marked as a breaking change.
+
+### Minor Changes
+
+- 5e746fa: Add more formatting components similar to `react-intl`
+
+  - `FormattedDate`, `FormattedDateParts`
+  - `FormattedTime`, `FormattedTimeParts`
+  - `FormattedDateTimeRange`
+  - `FormattedRelativeTime` (static, unlike `react-intl`)
+  - `FormattedNumber`, `FormattedNumberParts`
+  - `FormattedPlural`
+  - `FormattedList`, `FormattedListParts`
+  - `FormattedDisplayName`
+  - `FormattedMessage`
+
+  Since this is a Vue library, they use slots to pass formatted values (otherwise rendering them as is).
+
+  `FormattedMessage` is very similar to `IntlFormatted`, but accepts descriptor properties and does not allow to format raw messages.
+
+- b194662: Add `useMessages` composable
+
+  v5 introduces a new API that allows you to create messages more effectively.
+
 ## 4.4.1
 
 ### Patch Changes
