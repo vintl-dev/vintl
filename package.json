@@ -77,26 +77,26 @@
     "@changesets/cli": "^2.26.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@testing-library/vue": "^7.0.0",
-    "@types/node": "^18.18.7",
-    "@vue/runtime-core": "^3.3.7",
+    "@types/node": "^18.18.9",
+    "@vue/runtime-core": "^3.3.8",
     "del-cli": "^5.1.0",
-    "eslint": "^8.52.0",
-    "happy-dom": "^12.10.1",
-    "prettier": "^3.0.3",
+    "eslint": "^8.53.0",
+    "happy-dom": "^12.10.3",
+    "prettier": "^3.1.0",
     "prettier-plugin-jsdoc": "^1.1.1",
     "typescript": "^5.2.2",
     "unbuild": "^2.0.0",
-    "vitepress": "1.0.0-rc.24",
+    "vitepress": "1.0.0-rc.25",
     "vitest": "^0.34.6",
-    "vue": "^3.3.7"
+    "vue": "^3.3.8"
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
-    "@formatjs/ecma402-abstract": "^1.17.2",
-    "@formatjs/icu-messageformat-parser": "^2.7.0",
-    "@formatjs/intl": "^2.9.5",
-    "@formatjs/intl-localematcher": "^0.4.2",
-    "intl-messageformat": "^10.5.4"
+    "@formatjs/ecma402-abstract": "^1.18.0",
+    "@formatjs/icu-messageformat-parser": "^2.7.3",
+    "@formatjs/intl": "^2.9.9",
+    "@formatjs/intl-localematcher": "^0.5.2",
+    "intl-messageformat": "^10.5.8"
   },
   "peerDependencies": {
     "vue": "^3.3.7"
@@ -104,5 +104,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@8.9.2"
+  "packageManager": "pnpm@8.10.5"
 }
