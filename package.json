@@ -76,7 +76,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
-    "@testing-library/vue": "^7.0.0",
+    "@testing-library/vue": "^8.0.1",
     "@types/node": "^18.19.3",
     "@vue/runtime-core": "^3.3.11",
     "del-cli": "^5.1.0",
