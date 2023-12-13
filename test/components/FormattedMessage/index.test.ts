@@ -59,7 +59,7 @@ describe('FormattedMessage', () => {
     refreshDisplay()
 
     expect(display.innerHTML).toMatchInlineSnapshot(
-      '"Hello, <b>Oleksandr</b> <span class=\\"emoji\\">👋</span> You have 1 new message"',
+      `"Hello, <b>Oleksandr</b> <span class="emoji">👋</span> You have 1 new message"`,
     )
   })
 })
