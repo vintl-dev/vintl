@@ -2,18 +2,18 @@
 '@vintl/vintl': minor
 ---
 
-Add more formatting components similar to `react-intl`
+Add more formatting components similar to ones found in `react-intl`:
 
 - `FormattedDate`, `FormattedDateParts`
 - `FormattedTime`, `FormattedTimeParts`
 - `FormattedDateTimeRange`
-- `FormattedRelativeTime` (static, unlike `react-intl`)
+- `FormattedRelativeTime` (doesn't update live like `react-intl`)
 - `FormattedNumber`, `FormattedNumberParts`
 - `FormattedPlural`
 - `FormattedList`, `FormattedListParts`
 - `FormattedDisplayName`
 - `FormattedMessage`
 
-Since this is a Vue library, they use slots to pass formatted values (otherwise rendering them as is).
+Slots can be used to receive the formatted values instead of being formatted as is.
 
 `FormattedMessage` is very similar to `IntlFormatted`, but accepts descriptor properties and does not allow to format raw messages.
