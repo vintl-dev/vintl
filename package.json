@@ -82,7 +82,7 @@
     "del-cli": "^5.1.0",
     "eslint": "^8.55.0",
     "happy-dom": "^12.10.3",
-    "prettier": "^3.1.0",
+    "prettier": "^3.1.1",
     "prettier-plugin-jsdoc": "^1.1.1",
     "typescript": "^5.3.3",
     "unbuild": "^2.0.0",
@@ -104,5 +104,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@8.11.0"
+  "packageManager": "pnpm@8.12.1"
 }
