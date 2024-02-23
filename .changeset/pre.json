@@ -4,5 +4,10 @@
   "initialVersions": {
     "@vintl/vintl": "4.2.0"
   },
-  "changesets": []
+  "changesets": [
+    "happy-clocks-hug",
+    "new-turkeys-pump",
+    "olive-bugs-visit",
+    "tender-zoos-shop"
+  ]
 }
