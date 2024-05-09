@@ -1,5 +1,58 @@
 # @vintl/vintl
 
+## 5.0.0-next.0
+
+### Major Changes
+
+- 997402a: Removed deprecated composables
+
+  Composables like `useI18n`, `useTranslate` and `useFormatters` were previously deprecated with the warning that they will be removed in the next major version. They now get removed as scheduled.
+
+  Here's how you migrate:
+
+  - Replace all uses of `useI18n` with `useVIntl`, the former was just an alias for `useVIntl` in the previous versions.
+  - To retrieve translate function previously returned by `useTranslate`, destructure `formatMessage` function from the controller:
+
+    ```js
+    const { formatMessage } = useVIntl();
+    ```
+
+    It is bound to the controller and as such is safe to use on its own.
+
+  - To retrieve formatters previously returned by `useFormatters`, destructure `formats` property from the controller:
+
+    ```js
+    const { formats } = useVIntl();
+    ```
+
+    It is a reactively updated object and is also safe to use on its own.
+
+- c2c6cb6: Bumped Vue version to 3.3.4
+
+  We now require a newer Vue version because we are relying on functionality added in Vue 3.3, such as generic components. Since this is not compatible with the previous versions of Vue, this is marked as a breaking change.
+
+### Minor Changes
+
+- 5e746fa: Add more formatting components similar to ones found in `react-intl`:
+
+  - `FormattedDate`, `FormattedDateParts`
+  - `FormattedTime`, `FormattedTimeParts`
+  - `FormattedDateTimeRange`
+  - `FormattedRelativeTime` (doesn't update live like `react-intl`)
+  - `FormattedNumber`, `FormattedNumberParts`
+  - `FormattedPlural`
+  - `FormattedList`, `FormattedListParts`
+  - `FormattedDisplayName`
+  - `FormattedMessage`
+
+  Slots can be used to receive the formatted values instead of being formatted as is.
+
+  `FormattedMessage` is very similar to `IntlFormatted`, but accepts descriptor properties and does not allow to format raw messages.
+
+- b194662: Added `useMessages` composable
+
+  `useMessages` is the new composable that allows you to pass in an object with the extended message descriptors, and returns back a reactive object with the current messages. Extended message descriptors can contain values or formatters that will be used when interpreting the message. This allows you to create messages in a very inefferctive manner.
+
 ## 4.4.1
 
 ### Patch Changes
@@ -20,7 +73,7 @@
   declare global {
     namespace VueIntlController {
       interface Options {
-        globalMixin: false
+        globalMixin: false;
       }
     }
   }
