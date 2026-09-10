@@ -92,11 +92,11 @@
   },
   "dependencies": {
     "@braw/async-computed": "^5.0.2",
-    "@formatjs/ecma402-abstract": "^1.18.2",
-    "@formatjs/icu-messageformat-parser": "^2.7.6",
-    "@formatjs/intl": "^2.10.0",
+    "@formatjs/ecma402-abstract": "^3.2.0",
+    "@formatjs/icu-messageformat-parser": "^3.5.17",
+    "@formatjs/intl": "^4.1.20",
     "@formatjs/intl-localematcher": "^0.5.4",
-    "intl-messageformat": "^10.5.11"
+    "intl-messageformat": "^11.2.14"
   },
   "peerDependencies": {
     "vue": "^3.3.7"
